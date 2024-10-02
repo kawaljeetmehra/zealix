@@ -3,6 +3,9 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\OrderController;
+use App\http\Controllers\StockListAdminController;
+use App\http\Controllers\stockManagementDisributorController;
+use App\http\Controllers\AssignStockController;
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -29,3 +32,21 @@ Route::post('/products', [ProductController::class, 'store'])->name('products.st
 
 Route::resource('orders', OrderController::class);
 Route::post('/orders/updateStatus', [OrderController::class, 'updateStatus'])->name('orders.updateStatus');
+
+Route::get('/your-product-route', [OrderController::class, 'getProducts']);
+Route::get('/orders/{id}', [OrderController::class, 'show'])->name('orders.show');
+
+
+
+
+
+Route::get('/assign-stocks', [AssignStockController::class, 'index'])->name('products.stockAssign');
+Route::post('/assign-stock', [AssignStockController::class, 'assignStock'])->name('assignStock');
+
+
+Route::get('/stockAdmin',[StockListAdminController::class,'index'])->name('stockAdmin');
+Route::post('/update-stock', [StockListAdminController::class, 'updateStock'])->name('update.stock');
+Route::get('/stockExpire',[StockListAdminController::class,'stockExipre'])->name('expirestockAdmin');
+Route::get('/stockmanagementDistributor',[stockManagementDisributorController::class,'index'])->name('stockDistributor');;
+Route::post('/update-stock-distributor', [stockManagementDisributorController::class, 'updateStock'])->name('update.stock.distributor');
+Route::get('/stockExpireDistributor',[stockManagementDisributorController::class,'stockExipre'])->name('expirestockDistributor');

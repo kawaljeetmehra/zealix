@@ -2,7 +2,7 @@
 <html lang="en">
 
 <head>
-<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <title>Datatables - Kaiadmin Bootstrap 5 Admin Dashboard</title>
     <meta content="width=device-width, initial-scale=1.0, shrink-to-fit=no" name="viewport" />
     <link rel="icon" href="../assets/img/kaiadmin/favicon.ico" type="image/x-icon" />
@@ -36,59 +36,12 @@
 
     <!-- CSS Just for demo purpose, don't include it in your project -->
     <link rel="stylesheet" href="../assets/css/demo.css" />
-    <style>
-    /* Custom CSS goes here */
-    .custom-dropdown {
-  position: relative;
-  display: inline-block;
-  width: 100%;
-}
-
-.dropdown-selected {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  background: #fff;
-  border: 1px solid #ced4da;
-  padding: 10px;
-  cursor: pointer;
-}
-
-.dropdown-options {
-  display: none; /* Initially hidden */
-  position: absolute;
-  z-index: 1;
-  background: #fff;
-  border: 1px solid #ced4da;
-  width: 100%;
-  max-height: 200px;
-  overflow-y: auto;
-}
-
-.dropdown-option {
-  padding: 10px;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  cursor: pointer;
-}
-
-/* Adjusting icon spacing */
-.dropdown-option i {
-  margin-left: 5px; 
-  margin-right: 5px;
-}
-
-.dropdown-option:hover {
-  background: #f1f1f1;
-}
-    </style>
 </head>
 
 <body>
     <div class="wrapper">
-            <!-- Sidebar -->
-       <div class="sidebar" data-background-color="dark">
+        <!-- Sidebar -->
+        <div class="sidebar" data-background-color="dark">
             <div class="sidebar-logo">
                 <!-- Logo Header -->
                 <div class="logo-header" data-background-color="dark">
@@ -111,27 +64,27 @@
                 <!-- End Logo Header -->
             </div>
             <div class="sidebar-wrapper scrollbar scrollbar-inner">
-                <div class="sidebar-content">
-                <ul class="nav nav-secondary">
+    <div class="sidebar-content">
+        <ul class="nav nav-secondary">
 
-<!-- Inventory Management Section -->
-<li class="nav-item submenu">
-    <a data-bs-toggle="collapse" href="#inventory" aria-expanded="{{ request()->routeIs('products.*') ? 'true' : 'false' }}">
-        <i class="fas fa-boxes"></i>
-        <p>Inventory Management</p>
-        <span class="caret"></span>
-    </a>
-    <div class="collapse {{ request()->routeIs('products.*') ? 'show' : '' }}" id="inventory">
-        <ul class="nav nav-collapse">
-            <!-- Product Sub-section -->
-            <li class="{{ request()->routeIs('products.index') ? 'active' : '' }}">
-                <a href="{{ route('products.index') }}">
-                <i class="fas fa-box"></i>
-            
-                <p>Product</p>
+            <!-- Inventory Management Section -->
+            <li class="nav-item submenu">
+                <a data-bs-toggle="collapse" href="#inventory" aria-expanded="{{ request()->routeIs('products.*') ? 'true' : 'false' }}">
+                    <i class="fas fa-boxes"></i>
+                    <p>Inventory Management</p>
+                    <span class="caret"></span>
                 </a>
-            </li>
-            <!-- Stock Assign Sub-section -->
+                <div class="collapse {{ request()->routeIs('products.*') ? 'show' : '' }}" id="inventory">
+                    <ul class="nav nav-collapse">
+                        <!-- Product Sub-section -->
+                        <li class="{{ request()->routeIs('products.index') ? 'active' : '' }}">
+                            <a href="{{ route('products.index') }}">
+                            <i class="fas fa-box"></i>
+                        
+                            <p>Product</p>
+                            </a>
+                        </li>
+                        <!-- Stock Assign Sub-section -->
         <li class="{{ request()->routeIs('products.stockAssign') ? 'active' : '' }}">
             <a href="{{ route('products.stockAssign') }}">
                 <i class="fas fa-clipboard-list"></i>
@@ -170,40 +123,40 @@
                 <p>Expired Stock Distributor</p>
             </a>
         </li>
-        </ul>
-    </div>
-</li>
-
-<!-- Orders Management Section -->
-<li class="nav-item submenu">
-    <a data-bs-toggle="collapse" href="#orders" aria-expanded="{{ request()->routeIs('orders.*') ? 'true' : 'false' }}">
-        <i class="fas fa-shopping-cart"></i>
-        <p>Orders Management</p>
-        <span class="caret"></span>
-    </a>
-    <div class="collapse {{ request()->routeIs('orders.*') ? 'show' : '' }}" id="orders">
-        <ul class="nav nav-collapse">
-            <!-- Order Sub-section -->
-            <li class="{{ request()->routeIs('orders.index') ? 'active' : '' }}">
-                <a href="{{ route('orders.index') }}">
-                <i class="fas fa-receipt"></i>
-                <p>Order</p>
-                   
-                </a>
-            </li>
-            
-        </ul>
-    </div>
-</li>
-
-</ul>
- 
+                    </ul>
                 </div>
-            </div>
+            </li>
+
+            <!-- Orders Management Section -->
+            <li class="nav-item submenu">
+                <a data-bs-toggle="collapse" href="#orders" aria-expanded="{{ request()->routeIs('orders.*') ? 'true' : 'false' }}">
+                    <i class="fas fa-shopping-cart"></i>
+                    <p>Orders Management</p>
+                    <span class="caret"></span>
+                </a>
+                <div class="collapse {{ request()->routeIs('orders.*') ? 'show' : '' }}" id="orders">
+                    <ul class="nav nav-collapse">
+                        <!-- Order Sub-section -->
+                        <li class="{{ request()->routeIs('orders.index') ? 'active' : '' }}">
+                            <a href="{{ route('orders.index') }}">
+                            <i class="fas fa-receipt"></i>
+                            <p>Order</p>
+                               
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </li>
+
+        </ul>
+    </div>
+</div>
+
         </div>
         <!-- End Sidebar -->
+
         <div class="main-panel">
-        <div class="main-header">
+            <div class="main-header">
                 <div class="main-header-logo">
                     <!-- Logo Header -->
                     <div class="logo-header" data-background-color="dark">
@@ -457,7 +410,7 @@
                                 <a class="dropdown-toggle profile-pic" data-bs-toggle="dropdown" href="#"
                                     aria-expanded="false">
                                     <div class="avatar-sm">
-                                        <img src="{{asset('assets/img/profile.jpg')}}" alt="..."
+                                        <img src="../assets/img/profile.jpg" alt="..."
                                             class="avatar-img rounded-circle" />
                                     </div>
                                     <span class="profile-username">
@@ -499,252 +452,147 @@
                 </nav>
                 <!-- End Navbar -->
             </div>
+
             <div class="container">
                 <div class="page-inner">
+
                     <div class="row">
+
+
+
+
                         <div class="col-md-12">
                             <div class="card">
                                 <div class="card-header">
-                                    <div class="card-title">Add Product</div>
+                                    <div class="d-flex align-items-center">
+                                        <h4 class="card-title">Stock Expire-Distributor</h4>
+                                        
+                                    </div>
                                 </div>
-                                <div class="card-body">
-                                    <!-- Form Content -->
-                                    <form action="{{ route('products.store') }}" method="POST">
 
-                                        @csrf
-                                        @if ($errors->any())
-                                        <div class="alert alert-danger">
-                                            <ul>
-                                                @foreach ($errors->all() as $error)
-                                                <li>{{ $error }}</li>
-                                                @endforeach
-                                            </ul>
-                                        </div>
-                                        @endif
-                                        <div class="row">
-                                            <div class="col-md-4">
-                                                <div class="form-group">
-                                                    <label for="productName">Product Name</label>
-                                                    <input type="text" name="product_name" class="form-control"
-                                                        id="productName" placeholder="Enter product name" required />
-                                                </div>
-                                            </div>
-                                            <div class="col-md-4">
-                                                <div class="form-group">
-                                                    <label for="manufacturingDate">Manufacturing Date</label>
-                                                    <input type="date" name="manufacturing_date" class="form-control"
-                                                        id="manufacturingDate" required />
-                                                </div>
-                                            </div>
-                                            <div class="col-md-4">
-                                                <div class="form-group">
-                                                    <label for="expiryDate">Expiry Date</label>
-                                                    <input type="date" name="expiry_date" class="form-control"
-                                                        id="expiryDate" required />
-                                                </div>
-                                            </div>
 
-                                        </div>
+                                <div class="table-responsive">
+                                    <table id="add-row" class="display table table-striped table-hover">
+                                        <thead>
+                                            <tr>
+                                                <th>Batch Number</th>
+                                                <th>Product Category</th>
+                                                <th>Product Name</th>
+                                                <th>Package</th>
+                                                <th>Quantity</th>
+                                                <th>Stock Count</th>
+                                                <th>MFG</th>
+                                                <th>Exp</th>
+                                                
+                                            </tr>
+                                        </thead>
 
-                                        <div class="row">
-                                            <div class="col-md-4">
-                                                <div class="form-group">
-                                                    <label for="batchNumber">Batch Number</label>
-                                                    <input type="text" name="batch_number" class="form-control"
-                                                        id="batchNumber" placeholder="Enter batch number" required />
-                                                </div>
-                                            </div>
-                                            <div class="col-md-4">
-                                                <div class="form-group">
-                                                    <label for="productPackaging">Product Packaging</label>
-                                                    <select name="packaging" class="form-select" id="productPackaging"
-                                                        required>
-                                                        <option value="Box">Box</option>
-                                                        <option value="Bottle">Bottle</option>
-                                                    </select>
-                                                </div>
-                                            </div>
-                                            <div class="col-md-4">
-                                                <div class="form-group">
-                                                    <label for="stockCount">Stock Count</label>
-                                                    <input type="number" name="stock_count" class="form-control"
-                                                        id="stockCount" placeholder="Enter stock count" required />
-                                                </div>
-                                            </div>
-                                        </div>
-
-                                        <div class="row">
-                                            <div class="col-md-6">
-                                                <div class="form-group">
-                                                    <label for="productCategory">Product Category</label>
-                                                    <div class="custom-dropdown">
-                                                        <div class="dropdown-selected" onclick="toggleDropdown()">
-                                                            <span id="selectedCategory">Select Product Category</span>
-                                                            <i class="fa fa-caret-down"></i>
-                                                        </div>
-                                                        <div class="dropdown-options" id="categoryOptions">
-                                                            <div class="dropdown-option"
-                                                                onclick="selectCategory('Gynecology')">
-                                                                Gynecology
-                                                                <i class="fa fa-edit" title="Edit"
-                                                                    onclick="editCategory('Gynecology', event)"></i>
-                                                                <i class="fa fa-trash" title="Delete"
-                                                                    onclick="deleteCategory('Gynecology', event)"></i>
-                                                            </div>
-                                                            <div class="dropdown-option"
-                                                                onclick="selectCategory('General Medicine')">
-                                                                General Medicine
-                                                                <i class="fa fa-edit" title="Edit"
-                                                                    onclick="editCategory('General Medicine', event)"></i>
-                                                                <i class="fa fa-trash" title="Delete"
-                                                                    onclick="deleteCategory('General Medicine', event)"></i>
-                                                            </div>
-                                                            <div class="dropdown-option"
-                                                                onclick="selectCategory('Dermatology')">
-                                                                Dermatology
-                                                                <i class="fa fa-edit" title="Edit"
-                                                                    onclick="editCategory('Dermatology', event)"></i>
-                                                                <i class="fa fa-trash" title="Delete"
-                                                                    onclick="deleteCategory('Dermatology', event)"></i>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                    <!-- Hidden input to store selected category -->
-                                                    <input type="hidden" name="product_category"
-                                                        id="productCategoryInput" />
-                                                </div>
-                                            </div>
-                                            <div class="col-md-6">
-                                                <div class="form-group">
-                                                    <label for="productQuantity">Product Quantity</label>
-                                                    <div class="input-group">
-                                                        <input type="number" name="product_quantity"
-                                                            class="form-control" id="productQuantity"
-                                                            placeholder="Enter quantity" required />
-                                                        <select name="quantity_unit" class="form-control"
-                                                            id="quantityUnit" style="width: auto;" required>
-                                                            <option value="Unit">Unit</option>
-                                                            <option value="ML">ML</option>
-                                                            <option value="L">L</option>
-                                                            <option value="Pack">Pack</option>
-                                                        </select>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-
-                                        <div class="row">
-                                            <div class="col-md-6">
-                                                <div class="form-group">
-                                                    <label for="mrp">MRP of a Box/Bottles</label>
-                                                    <input type="number" name="mrp" class="form-control" id="mrp"
-                                                        placeholder="Enter MRP" required />
-                                                </div>
-                                            </div>
-                                        </div>
-
-                                        <div class="row">
-                                            <div class="col-md-12">
-                                                <div class="form-group">
-                                                    <label for="description">Description</label>
-                                                    <textarea name="description" class="form-control" id="description"
-                                                        rows="5" placeholder="Enter product description"
-                                                        required></textarea>
-                                                </div>
-                                            </div>
-                                        </div>
-
-                                        <div class="card-action text-right">
-                                            <button type="submit" class="btn btn-success">Submit</button>
-                                            <button type="button" class="btn btn-danger"
-                                                onclick="window.history.back();">Cancel</button>
-                                        </div>
-                                    </form>
+                                        <tbody>
+                                            @foreach($expiredProducts as $product)
+                                            <tr>
+                                                <td>{{$product->batch_number}}</td>
+                                                <td>{{$product->category}}</td>
+                                                <td>{{$product->product_name}}</td>
+                                                <td>{{$product->packaging}}</td>
+                                                <td>{{$product->quantity}}</td>
+                                                <td>{{$product->stock_count}}</td>
+                                                <td>{{$product->manufacturing_date}}</td>
+                                                <td>{{$product->expiry_date}}</td>
+                                               
+                                            </tr>
+                                            @endforeach
+                                            </tbody>
+                                    </table>
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
-
-           
         </div>
-        
+
+       
     </div>
 
-    <!-- Core JS Files -->
-    <script src="{{ asset('assets/js/core/jquery-3.7.1.min.js') }}"></script>
-    <script src="{{ asset('assets/js/core/popper.min.js') }}"></script>
-    <script src="{{ asset('assets/js/core/bootstrap.min.js') }}"></script>
-    <script src="{{ asset('assets/js/plugin/jquery-scrollbar/jquery.scrollbar.min.js') }}"></script>
-    <script src="{{ asset('assets/js/plugin/jquery-ui/jquery-ui.min.js') }}"></script>
-    <script src="{{ asset('assets/js/plugin/jquery-ui/jquery-ui.touch-punch.min.js') }}"></script>
-    <script src="{{ asset('assets/js/plugin/jquery.mask/jquery.mask.min.js') }}"></script>
-    <script src="{{ asset('assets/js/kaiadmin.min.js') }}"></script>
-    <script src="{{ asset('assets/js/plugin/chart.js/chart.min.js') }}"></script>
-    <script src="{{ asset('assets/js/plugin/printThis/printThis.js') }}"></script>
 
+    </div>
+    <!--   Core JS Files   -->
+    <script src="../assets/js/core/jquery-3.7.1.min.js"></script>
+    <script src="../assets/js/core/popper.min.js"></script>
+    <script src="../assets/js/core/bootstrap.min.js"></script>
+
+    <!-- jQuery Scrollbar -->
+    <script src="../assets/js/plugin/jquery-scrollbar/jquery.scrollbar.min.js"></script>
+    <!-- Datatables -->
+    <script src="../assets/js/plugin/datatables/datatables.min.js"></script>
+    <!-- Kaiadmin JS -->
+    <script src="../assets/js/kaiadmin.min.js"></script>
+    <!-- Kaiadmin DEMO methods, don't include it in your project! -->
+    <script src="../assets/js/setting-demo2.js"></script>
     <script>
-    // Dropdown toggle function
-    function toggleDropdown() {
-        const dropdownOptions = document.getElementById("categoryOptions");
-        dropdownOptions.style.display = dropdownOptions.style.display === "block" ? "none" : "block";
-    }
-
-    function selectCategory(category) {
-        document.getElementById("selectedCategory").innerText = category;
-        document.getElementById("productCategoryInput").value = category; // Set the hidden input value
-        document.getElementById("categoryOptions").style.display = "none";
-    }
-    // Select category function
+    $(document).ready(function() {
+        $("#basic-datatables").DataTable({});
+        $('.delete-form').on('submit', function(e) {
+            e.preventDefault();
 
 
-    // Edit category function (placeholder)
-    function editCategory(category, event) {
-        event.stopPropagation();
-        alert("Editing " + category);
-    }
+            var confirmed = confirm("Are you sure you want to delete this record?");
 
-    // Delete category function (placeholder)
-    function deleteCategory(category, event) {
-        event.stopPropagation();
-        if (confirm("Are you sure you want to delete " + category + "?")) {
-            alert(category + " deleted");
-        }
-    }
+            if (confirmed) {
+                this.submit();
+            }
+        });
+        $("#multi-filter-select").DataTable({
+            pageLength: 5,
+            initComplete: function() {
+                this.api()
+                    .columns()
+                    .every(function() {
+                        var column = this;
+                        var select = $(
+                                '<select class="form-select"><option value=""></option></select>'
+                            )
+                            .appendTo($(column.footer()).empty())
+                            .on("change", function() {
+                                var val = $.fn.dataTable.util.escapeRegex($(this).val());
 
-    // Close dropdown on click outside
-    document.addEventListener('click', function(event) {
-        const dropdown = document.getElementById("categoryOptions");
-        if (!event.target.closest('.custom-dropdown')) {
-            dropdown.style.display = 'none';
-        }
-    });
-    document.addEventListener('DOMContentLoaded', function() {
-        const manufacturingInput = document.getElementById('manufacturingDate');
-        const expiryInput = document.getElementById('expiryDate');
+                                column
+                                    .search(val ? "^" + val + "$" : "", true, false)
+                                    .draw();
+                            });
 
-        manufacturingInput.addEventListener('change', function() {
-            const manufacturingDate = new Date(this.value);
-            const expiryDate = new Date(manufacturingDate);
-
-            // Set expiry date to the next day
-            expiryDate.setDate(manufacturingDate.getDate() + 1);
-
-            // Format the date to YYYY-MM-DD
-            const year = expiryDate.getFullYear();
-            const month = String(expiryDate.getMonth() + 1).padStart(2, '0'); // Months are 0-indexed
-            const day = String(expiryDate.getDate()).padStart(2, '0');
-
-            // Set the expiry date input value
-            expiryInput.value = `${year}-${month}-${day}`;
-
-            // Set minimum date for expiry date to the next day of manufacturing date
-            expiryInput.setAttribute('min', `${year}-${month}-${day}`);
+                        column
+                            .data()
+                            .unique()
+                            .sort()
+                            .each(function(d, j) {
+                                select.append(
+                                    '<option value="' + d + '">' + d + "</option>"
+                                );
+                            });
+                    });
+            },
         });
 
-        // Set min attribute for expiry date when the page loads
-        expiryInput.setAttribute('min', expiryInput.value);
+        // Add Row
+        $("#add-row").DataTable({
+            pageLength: 5,
+        });
+
+        var action =
+            '<td> <div class="form-button-action"> <button type="button" data-bs-toggle="tooltip" title="" class="btn btn-link btn-primary btn-lg" data-original-title="Edit Task"> <i class="fa fa-edit"></i> </button> <button type="button" data-bs-toggle="tooltip" title="" class="btn btn-link btn-danger" data-original-title="Remove"> <i class="fa fa-times"></i> </button> </div> </td>';
+
+        $("#addRowButton").click(function() {
+            $("#add-row")
+                .dataTable()
+                .fnAddData([
+                    $("#addName").val(),
+                    $("#addPosition").val(),
+                    $("#addOffice").val(),
+                    action,
+                ]);
+            $("#addRowModal").modal("hide");
+        });
     });
     </script>
 </body>

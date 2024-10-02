@@ -15,6 +15,8 @@ class CreateOrdersTable extends Migration
             $table->string('location');
             $table->string('distributor_name');
             $table->string('order_by');
+            $table->string('contact')->nullable();
+            $table->string('email')->nullable();
             $table->enum('order_status', ['Accept','Decline']);
             $table->timestamps();
         });

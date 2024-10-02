@@ -133,6 +133,45 @@
                 <p>Product</p>
                 </a>
             </li>
+            <!-- Stock Assign Sub-section -->
+        <li class="{{ request()->routeIs('products.stockAssign') ? 'active' : '' }}">
+            <a href="{{ route('products.stockAssign') }}">
+                <i class="fas fa-clipboard-list"></i>
+                <p>Stock Assign</p>
+            </a>
+        </li>
+
+        <!-- Stock Admin Sub-section -->
+        <li class="{{ request()->routeIs('stockAdmin') ? 'active' : '' }}">
+            <a href="{{ route('stockAdmin') }}">
+                <i class="fas fa-user-shield"></i>
+                <p>Stock Admin</p>
+            </a>
+        </li>
+
+        <!-- Stock Distributor Sub-section -->
+        <li class="{{ request()->routeIs('stockDistributor') ? 'active' : '' }}">
+            <a href="{{ route('stockDistributor') }}">
+                <i class="fas fa-truck"></i>
+                <p>Stock Distributor</p>
+            </a>
+        </li>
+
+        <!-- Expired Stock Admin Sub-section -->
+        <li class="{{ request()->routeIs('expirestockAdmin') ? 'active' : '' }}">
+            <a href="{{ route('expirestockAdmin') }}">
+                <i class="fas fa-times-circle"></i>
+                <p>Expired Stock Admin</p>
+            </a>
+        </li>
+
+        <!-- Expired Stock Distributor Sub-section -->
+        <li class="{{ request()->routeIs('expirestockDistributor') ? 'active' : '' }}">
+            <a href="{{ route('expirestockDistributor') }}">
+                <i class="fas fa-exclamation-triangle"></i>
+                <p>Expired Stock Distributor</p>
+            </a>
+        </li>
         </ul>
     </div>
 </li>
@@ -154,6 +193,7 @@
                    
                 </a>
             </li>
+            
         </ul>
     </div>
 </li>
