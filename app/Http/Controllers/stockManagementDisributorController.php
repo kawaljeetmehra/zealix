@@ -28,8 +28,9 @@ class stockManagementDisributorController extends Controller
     } else {
         $message = null; // No message if products are found
     }
+    
 
-    return view('StockManagement.stockListDistributor', compact('products', 'message'));
+    return view('stockManagement.stockListDistributor', compact('products', 'message'));
 }
 
      public function updateStock(Request $request)
@@ -72,7 +73,7 @@ class stockManagementDisributorController extends Controller
     }
 
     // Return the view with expired products and a message if applicable
-    return view('StockManagement.stockExpireDistributor', compact('expiredProducts', 'message'));
+    return view('stockManagement.stockExpireDistributor', compact('expiredProducts', 'message'));
 }
 
 }

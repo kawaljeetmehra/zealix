@@ -33,6 +33,6 @@ public function stockExipre(){
 
     // Fetch products where expiration date has passed
     $expiredProducts = Product::where('expiry_date', '<', $currentDate)->get();
-    return view('StockManagement.stockExpireAdmin', compact('expiredProducts'));
+    return view('stockManagement.stockExpireAdmin', compact('expiredProducts'));
 }
 }

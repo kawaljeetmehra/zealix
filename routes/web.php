@@ -3,9 +3,9 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\OrderController;
-use App\http\Controllers\StockListAdminController;
-use App\http\Controllers\stockManagementDisributorController;
-use App\http\Controllers\AssignStockController;
+use App\Http\Controllers\StockListAdminController;
+use App\Http\Controllers\stockManagementDisributorController;
+use App\Http\Controllers\AssignStockController;
 /*
 |--------------------------------------------------------------------------
 | Web Routes
