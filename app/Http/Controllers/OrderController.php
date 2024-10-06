@@ -94,6 +94,7 @@ public function show($id)
         )
         ->where('orders.id', $id)
         ->get();
+        
 
     return view('orders.view', compact('order'));
 }
@@ -104,13 +105,14 @@ public function show($id)
 
     // Show order edit form
     public function edit($id)
-    {
+    {  
         // Fetch the order and associated products
         $order = Order::join('distributors', 'orders.distributor_name', '=', 'distributors.id')
             ->join('order_details', 'orders.id', '=', 'order_details.order_id') // Join with order_details
             ->select(
                 'orders.*', 
                 'distributors.name as distributor_name',
+                'order_details.id',
                 'order_details.batch_number',
                 'order_details.category',
                 'order_details.name as product_name',
@@ -130,14 +132,14 @@ public function show($id)
     {
         // Validate the incoming request
         $request->validate([
-            'name' => 'required',  // Use 'name' for 'order_by'
+            'name' => 'required',
             'location' => 'required',
             'contact' => 'required',
             'email' => 'required|email',
             'total_stock' => 'required|numeric',
             'distributor_id' => 'required',
             'total_cost' => 'required|numeric',
-            'products' => 'required|array', // Ensure products are provided
+            'products' => 'required|array',
         ]);
     
         // Find the existing order
@@ -152,26 +154,66 @@ public function show($id)
             'email' => $request->input('email'),
             'total_stock' => $request->input('total_stock'),
             'total_cost' => $request->input('total_cost'),
-            'order_date' => now(), // You might want to keep this unchanged
+            'order_date' => now(),
         ]);
     
-        // Update the order products
-        foreach ($request->input('products') as $productId => $productData) {
+        // Get existing products in the order
+        $existingProducts = DB::table('order_details')->where('order_id', $id)->get();
+        $existingProductIds = $existingProducts->pluck('id')->toArray();
+    
+        // Get submitted product IDs
+        $submittedProductIds = array_keys($request->input('products'));
+    
+        // Determine which products to remove
+        $productsToRemove = array_diff($existingProductIds, $submittedProductIds);
+    
+        // Remove products that are not submitted
+        if (!empty($productsToRemove)) {
             DB::table('order_details')
-                ->where('order_id', $id) // Assuming each product has a unique order_id
-                ->where('name', $productData['name']) // Assuming the product name is unique per order
-                ->update([
+                ->where('order_id', $id)
+                ->whereIn('id', $productsToRemove)
+                ->delete();
+        }
+    
+        // Update existing products and add new ones
+        foreach ($request->input('products') as $productId => $productData) {
+            // Retrieve the existing product record
+            $existingProduct = DB::table('order_details')
+                ->where('order_id', $id)
+                ->where('id', $productId)
+                ->first();
+            
+            if ($existingProduct) {
+                // Update the product directly without adding to the existing stock count
+                DB::table('order_details')
+                    ->where('id', $productId)
+                    ->update([
+                        'batch_number' => $productData['batch_number'],
+                        'category' => $productData['category'],
+                        'stock_count' => $productData['stock_count'], // Use the submitted stock count directly
+                        'mrp' => $productData['mrp'],
+                        'updated_at' => now(),
+                    ]);
+            } else {
+                // If the product doesn't exist, add it
+                DB::table('order_details')->insert([
+                    'order_id' => $id,
                     'batch_number' => $productData['batch_number'],
                     'category' => $productData['category'],
-                    'stock_count' => $productData['stock_count'],
+                    'name' => $productData['name'],
+                    'stock_count' => $productData['stock_count'], // Treat as a new entry
                     'mrp' => $productData['mrp'],
+                    'created_at' => now(),
                     'updated_at' => now(),
                 ]);
+            }
         }
     
         // Redirect after successful order update
         return redirect()->route('orders.index')->with('success', 'Order updated successfully.');
     }
+    
+    
     
 
     // Delete an order

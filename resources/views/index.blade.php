@@ -145,6 +145,12 @@
                                
                             </a>
                         </li>
+                        <li class="{{ request()->routeIs('orderstatus.index') ? 'active' : '' }}">
+    <a href="{{ route('orderstatus.index') }}">
+        <i class="fas fa-list-alt"></i> <!-- Use an appropriate icon for order status -->
+        <p>Order Status</p>
+    </a>
+</li>
                     </ul>
                 </div>
             </li>
@@ -531,7 +537,9 @@
                         </div>
                     </div>
                 </div>
+                @include('partials.footer')
             </div>
+          
         </div>
 
        

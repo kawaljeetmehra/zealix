@@ -145,6 +145,12 @@
                                
                             </a>
                         </li>
+                        <li class="{{ request()->routeIs('orderstatus.index') ? 'active' : '' }}">
+    <a href="{{ route('orderstatus.index') }}">
+        <i class="fas fa-list-alt"></i>
+        <p>Order Status</p>
+    </a>
+</li>
                     </ul>
                 </div>
             </li>
@@ -495,9 +501,9 @@
                         <!-- Product Information -->
                         <div class="row">
                             <div class="col-md-12">
-                                <h6>Product Information</h6>
+                                <h5>Product Information</h5>
                                 <table class="table table-striped">
-                                    <thead>
+                                    <thead class="table-dark">
                                         <tr>
                                             <th>Batch Number</th>
                                             <th>Product Category</th>
@@ -549,6 +555,7 @@
             </div>
         </div>
     </div>
+    @include('partials.footer')
 </div>
         </div>
 

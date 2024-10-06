@@ -6,6 +6,7 @@ use App\Http\Controllers\OrderController;
 use App\Http\Controllers\StockListAdminController;
 use App\Http\Controllers\stockManagementDisributorController;
 use App\Http\Controllers\AssignStockController;
+use App\Http\Controllers\OrderStatusController;
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -49,4 +50,18 @@ Route::post('/update-stock', [StockListAdminController::class, 'updateStock'])->
 Route::get('/stockExpire',[StockListAdminController::class,'stockExipre'])->name('expirestockAdmin');
 Route::get('/stockmanagementDistributor',[stockManagementDisributorController::class,'index'])->name('stockDistributor');;
 Route::post('/update-stock-distributor', [stockManagementDisributorController::class, 'updateStock'])->name('update.stock.distributor');
-Route::get('/stockExpireDistributor',[stockManagementDisributorController::class,'stockExipre'])->name('expirestockDistributor');
+Route::get('/stockExpireDistributor',[stockManagementDisributorController::class,'stockExipre'])->name('expirestockDistributor'); 
+
+
+/***************************Order Status***************** */
+  
+
+Route::get('/orderstatus',[OrderStatusController::class,'index'])->name('orderstatus.index');
+Route::get('/orderstatus/{id}/edit', [OrderStatusController::class, 'edit']);
+Route::put('/orderstatus/{id}',[OrderStatusController::class,'update']);
+
+
+
+
+
+

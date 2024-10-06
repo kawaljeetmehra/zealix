@@ -3,12 +3,18 @@
 
 <head>
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-    <title>Datatables - Kaiadmin Bootstrap 5 Admin Dashboard</title>
+    <title>Product Entry Form</title>
     <meta content="width=device-width, initial-scale=1.0, shrink-to-fit=no" name="viewport" />
-    <link rel="icon" href="../assets/img/kaiadmin/favicon.ico" type="image/x-icon" />
+    <link rel="icon" href="{{ asset('assets/img/kaiadmin/favicon.ico') }}" type="image/x-icon" />
 
-    <!-- Fonts and icons -->
-    <script src="../assets/js/plugin/webfont/webfont.min.js"></script>
+    <!-- CSS Files -->
+    <link rel="stylesheet" href="{{ asset('assets/css/bootstrap.min.css') }}" />
+    <link rel="stylesheet" href="{{ asset('assets/css/plugins.min.css') }}" />
+    <link rel="stylesheet" href="{{ asset('assets/css/kaiadmin.min.css') }}" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    
+    <script src="{{asset('assets/js/plugin/webfont/webfont.min.js')}}"></script>
+    
     <script>
     WebFont.load({
         google: {
@@ -21,21 +27,13 @@
                 "Font Awesome 5 Brands",
                 "simple-line-icons",
             ],
-            urls: ["../assets/css/fonts.min.css"],
+            urls: ["{{asset('/assets/css/fonts.min.css')}}"],
         },
         active: function() {
             sessionStorage.fonts = true;
         },
     });
     </script>
-
-    <!-- CSS Files -->
-    <link rel="stylesheet" href="../assets/css/bootstrap.min.css" />
-    <link rel="stylesheet" href="../assets/css/plugins.min.css" />
-    <link rel="stylesheet" href="../assets/css/kaiadmin.min.css" />
-
-    <!-- CSS Just for demo purpose, don't include it in your project -->
-    <link rel="stylesheet" href="../assets/css/demo.css" />
 </head>
 
 <body>
@@ -46,7 +44,7 @@
                 <!-- Logo Header -->
                 <div class="logo-header" data-background-color="dark">
                     <a href="#" class="logo">
-                        <img src="../assets/img/zealx logo.png" alt="navbar brand" class="navbar-brand"
+                        <img src="{{asset('assets/img/zealx logo.png')}}" alt="navbar brand" class="navbar-brand"
                             height="80" />
                     </a>
                     <div class="nav-toggle">
@@ -64,27 +62,27 @@
                 <!-- End Logo Header -->
             </div>
             <div class="sidebar-wrapper scrollbar scrollbar-inner">
-    <div class="sidebar-content">
-        <ul class="nav nav-secondary">
+                <div class="sidebar-content">
+                <ul class="nav nav-secondary">
 
-            <!-- Inventory Management Section -->
-            <li class="nav-item submenu">
-                <a data-bs-toggle="collapse" href="#inventory" aria-expanded="{{ request()->routeIs('products.*') ? 'true' : 'false' }}">
-                    <i class="fas fa-boxes"></i>
-                    <p>Inventory Management</p>
-                    <span class="caret"></span>
+<!-- Inventory Management Section -->
+<li class="nav-item submenu">
+    <a data-bs-toggle="collapse" href="#inventory" aria-expanded="{{ request()->routeIs('products.*') ? 'true' : 'false' }}">
+        <i class="fas fa-boxes"></i>
+        <p>Inventory Management</p>
+        <span class="caret"></span>
+    </a>
+    <div class="collapse {{ request()->routeIs('products.*') ? 'show' : '' }}" id="inventory">
+        <ul class="nav nav-collapse">
+            <!-- Product Sub-section -->
+            <li class="{{ request()->routeIs('products.index') ? 'active' : '' }}">
+                <a href="{{ route('products.index') }}">
+                <i class="fas fa-box"></i>
+            
+                <p>Product</p>
                 </a>
-                <div class="collapse {{ request()->routeIs('products.*') ? 'show' : '' }}" id="inventory">
-                    <ul class="nav nav-collapse">
-                        <!-- Product Sub-section -->
-                        <li class="{{ request()->routeIs('products.index') ? 'active' : '' }}">
-                            <a href="{{ route('products.index') }}">
-                            <i class="fas fa-box"></i>
-                        
-                            <p>Product</p>
-                            </a>
-                        </li>
-                        <!-- Stock Assign Sub-section -->
+            </li>
+            <!-- Stock Assign Sub-section -->
         <li class="{{ request()->routeIs('products.stockAssign') ? 'active' : '' }}">
             <a href="{{ route('products.stockAssign') }}">
                 <i class="fas fa-clipboard-list"></i>
@@ -123,46 +121,44 @@
                 <p>Expired Stock Distributor</p>
             </a>
         </li>
-                    </ul>
-                </div>
-            </li>
+        </ul>
+    </div>
+</li>
 
-            <!-- Orders Management Section -->
-            <li class="nav-item submenu">
-                <a data-bs-toggle="collapse" href="#orders" aria-expanded="{{ request()->routeIs('orders.*') ? 'true' : 'false' }}">
-                    <i class="fas fa-shopping-cart"></i>
-                    <p>Orders Management</p>
-                    <span class="caret"></span>
+<!-- Orders Management Section -->
+<li class="nav-item submenu">
+    <a data-bs-toggle="collapse" href="#orders" aria-expanded="{{ request()->routeIs('orders.*') ? 'true' : 'false' }}">
+        <i class="fas fa-shopping-cart"></i>
+        <p>Orders Management</p>
+        <span class="caret"></span>
+    </a>
+    <div class="collapse {{ request()->routeIs('orders.*') ? 'show' : '' }}" id="orders">
+        <ul class="nav nav-collapse">
+            <!-- Order Sub-section -->
+            <li class="{{ request()->routeIs('orders.index') ? 'active' : '' }}">
+                <a href="{{ route('orders.index') }}">
+                <i class="fas fa-receipt"></i>
+                <p>Order</p>
+                   
                 </a>
-                <div class="collapse {{ request()->routeIs('orders.*') ? 'show' : '' }}" id="orders">
-                    <ul class="nav nav-collapse">
-                        <!-- Order Sub-section -->
-                        <li class="{{ request()->routeIs('orders.index') ? 'active' : '' }}">
-                            <a href="{{ route('orders.index') }}">
-                            <i class="fas fa-receipt"></i>
-                            <p>Order</p>
-                               
-                            </a>
-                        </li>
-                        <li class="{{ request()->routeIs('orderstatus.index') ? 'active' : '' }}">
+            </li>
+            <li class="{{ request()->routeIs('orderstatus.index') ? 'active' : '' }}">
     <a href="{{ route('orderstatus.index') }}">
         <i class="fas fa-list-alt"></i>
         <p>Order Status</p>
     </a>
 </li>
-                    </ul>
-                </div>
-            </li>
-
         </ul>
     </div>
-</div>
+</li>
 
+</ul>
+                </div>
+            </div>
         </div>
         <!-- End Sidebar -->
-
         <div class="main-panel">
-            <div class="main-header">
+        <div class="main-header">
                 <div class="main-header-logo">
                     <!-- Logo Header -->
                     <div class="logo-header" data-background-color="dark">
@@ -416,7 +412,7 @@
                                 <a class="dropdown-toggle profile-pic" data-bs-toggle="dropdown" href="#"
                                     aria-expanded="false">
                                     <div class="avatar-sm">
-                                        <img src="../assets/img/profile.jpg" alt="..."
+                                        <img src="{{asset('assets/img/profile.jpg')}}" alt="..."
                                             class="avatar-img rounded-circle" />
                                     </div>
                                     <span class="profile-username">
@@ -458,96 +454,153 @@
                 </nav>
                 <!-- End Navbar -->
             </div>
-
             <div class="container">
+         
                 <div class="page-inner">
-
                     <div class="row">
-
-
-
-
                         <div class="col-md-12">
                             <div class="card">
                                 <div class="card-header">
-                                    <div class="d-flex align-items-center">
-                                        <h4 class="card-title">Stock Management-Distributor</h4>
-                                       
+                                    <div class="d-flex justify-content-between align-items-center">
+                                        <h4 class="card-title">Edit Order Status</h4>
+                                        <h5><strong>Order Date:</strong> {{$order->order_date}}</h5>
+                                    </div>
                                 </div>
-                                <div class="table-responsive">
-                                    <table id="add-row" class="display table table-striped table-hover">
-                                        <thead>
-                                            <tr>
-                                                <th>Batch Number</th>
-                                                <th>Product Category</th>
-                                                <th>Product Name</th>
-                                                
-                                                <th>Package</th>
-                                                <th>Quantity</th>
-                                                <th>Stock Count</th>
-                                                <th>Stock Update</th>
-                                              
-                                            </tr>
-                                        </thead>
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <h4 class="mt-3 mb-3 p-2">Order Information</h4>
+                                        <div class="form-group ps-3 pe-3">
+                                            <!-- Added padding start and end -->
+                                            <span><strong>Order Number:</strong>{{ $order->order_id }}</span>
+                                        </div>
+                                        <div class="form-group ps-3 pe-3">
+                                            <label for="deliveryStatus"><strong>Delivery Status:</strong></label>
+                                            <select name="delivery_status" id="deliveryStatus"
+                                                class="form-select w-25">
+                                                <option value="Processing"
+                                                    {{ $order->delivery_status == 'Processing' ? 'selected' : '' }}>
+                                                    Processing</option>
+                                                <option value="In-Transit"
+                                                    {{ $order->delivery_status == 'In-Transit' ? 'selected' : '' }}>In
+                                                    Transit</option>
+                                                <option value="Dispatched"
+                                                    {{ $order->delivery_status == 'Dispatched' ? 'selected' : '' }}>
+                                                    Dispatched</option>
+                                                <option value="Delivered"
+                                                    {{ $order->delivery_status == 'Delivered' ? 'selected' : '' }}>
+                                                    Delivered</option>
+                                            </select>
+                                          
+                                        </div>
+                                        <div class="form-group ps-3 pe-3">
+                                            <label for="orderAdjustment"><strong>Order Adjustment:</strong></label>
+                                            <select name="order_adjustment" id="orderAdjustment"
+                                                class="form-select w-25">
+                                                <option value="return"
+                                                    {{ $order->order_adjustment == 'return' ? 'selected' : '' }}>Return
+                                                </option>
+                                                <option value="exchange"
+                                                    {{ $order->order_adjustment == 'exchange' ? 'selected' : '' }}>
+                                                    Exchange</option>
+                                                <option value="Null"
+                                                    {{ $order->order_adjustment == 'Null' ? 'selected' : '' }}>No
+                                                    Adjustment</option>
+                                            </select>
+                                           
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <h4 class="mt-3 mb-3">Customer Information</h4>
+                                        <div class="form-group ps-3 pe-3">
+                                            <!-- Added padding start and end -->
+                                            <span><strong>Name:</strong> {{$order->order_by}}</span>
+                                            <span style="margin-left: 20px;"><strong>Location:</strong> {{$order->location}}</span>
+                                        </div>
+                                        <div class="form-group ps-3 pe-3">
+                                            <!-- Added padding start and end -->
+                                            <span><strong>Contact Number:</strong>{{$order->contact}}</span>
+                                            <span style="margin-left: 20px;"><strong>Distributor:</strong>
+                                               {{$order->distributor_name}}</span>
+                                        </div>
+                                        <div class="form-group ps-3 pe-3">
+                                            <!-- Added padding start and end -->
 
-                                        <tbody>
-                                            @foreach($products as $product)
-                                            <tr>
-                                                <td>{{$product->batch_number}}</td>
-                                                <td>{{$product->category}}</td>
-                                                <td>{{$product->product_name}}</td>
-                                                <td>{{$product->packaging}}</td>
-                                                <td>{{$product->quantity}}</td>
-                                                <td>
-                    <input type="number" name="stock_count[]" class="form-control stock-input" 
-                           data-id="{{ $product->id }}" value="{{ $product->stock_count }}" min="0">
-                </td>
-                                                <td>
-                    @if($product->stock_count == 0)
-                    <button class="btn btn-danger btn-round ms-auto">Out-Stock</button>
-                       
-                    @elseif($product->stock_count < 7)
-                        <button class="btn btn-warning btn-round ms-auto">Low-Stock</button>
-                    @else
-                    <button class="btn btn-success btn-round ms-auto">In-Stock</button>
-                    @endif
-                </td>
-                                                
-                                                
-                                            </tr>
-                                            @endforeach
+                                            <span><strong>Email:</strong>{{$order->email}}</span>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="col-md-12">
+                                    <h4 class="p-2">Order Products</h4>
+                                    <div class="table-responsive ">
+                                        <table id="add-row" class="display table table-striped table-hover">
+                                            <thead class="table-dark">
+                                                <tr>
+                                                    <th>Batch Number</th>
+                                                    <th>Product Category</th>
+                                                    <th>Product Name </th>
+                                                    <th>Stock Count</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                            @foreach($orderDetails as $detail)
+                                        <tr>
+                                            <td>{{ $detail->batch_number }}</td>
+                                            <td>{{ $detail->category }}</td>
+                                            <td>{{ $detail->name }}</td>
+                                            <td>{{ $detail->stock_count }}</td>
+                                          
+                                        </tr>
+                                    @endforeach
                                             </tbody>
-                                    </table>
+                                        </table>
+                                    </div>
                                 </div>
-
-                               
+                                <div class="col-md-11 mt-4">
+                                    <div class="d-flex justify-content-between align-items-center">
+                                        <div class="d-flex">
+                                            <div class="form-group me-3">
+                                                <!-- Margin end -->
+                                                <label for="totalProducts"><strong>Total Items:</strong></label>
+                                                <input type="text" id="totalProducts" class="form-control" value="{{$orderDetails->count()}}"
+                                                    readonly>
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="totalCost"><strong>Total Cost:</strong></label>
+                                                <input type="text" id="totalCost" class="form-control" value="{{$order->total_cost}}"
+                                                    readonly>
+                                            </div>
+                                        </div>
+                                        <div>
+                                            <button type="submit" id="updateOrderStatus" class="btn btn-primary">Update</button>
+                                        </div>
+                                      
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
+                   
                 </div>
-               
+                @include('partials.footer')
             </div>
-           
+  
+
+            
         </div>
-        @include('partials.footer')
-       
     </div>
 
-
-    </div>
-    <!--   Core JS Files   -->
-    <script src="../assets/js/core/jquery-3.7.1.min.js"></script>
-    <script src="../assets/js/core/popper.min.js"></script>
-    <script src="../assets/js/core/bootstrap.min.js"></script>
-
-    <!-- jQuery Scrollbar -->
-    <script src="../assets/js/plugin/jquery-scrollbar/jquery.scrollbar.min.js"></script>
-    <!-- Datatables -->
-    <script src="../assets/js/plugin/datatables/datatables.min.js"></script>
-    <!-- Kaiadmin JS -->
-    <script src="../assets/js/kaiadmin.min.js"></script>
-    <!-- Kaiadmin DEMO methods, don't include it in your project! -->
-    <script src="../assets/js/setting-demo2.js"></script>
+    <script src="{{ asset('assets/js/core/jquery-3.7.1.min.js') }}"></script>
+    <script src="{{ asset('assets/js/core/popper.min.js') }}"></script>
+    <script src="{{ asset('assets/js/core/bootstrap.min.js') }}"></script>
+    <script src="{{ asset('assets/js/plugin/jquery-scrollbar/jquery.scrollbar.min.js') }}"></script>
+    <script src="{{ asset('assets/js/plugin/jquery-ui/jquery-ui.min.js') }}"></script>
+    <script src="{{ asset('assets/js/plugin/jquery-ui/jquery-ui.touch-punch.min.js') }}"></script>
+    <script src="{{ asset('assets/js/plugin/jquery.mask/jquery.mask.min.js') }}"></script>
+    <script src="{{ asset('assets/js/kaiadmin.min.js') }}"></script>
+    <script src="{{ asset('assets/js/plugin/chart.js/chart.min.js') }}"></script>
+    <script src="{{ asset('assets/js/plugin/printThis/printThis.js') }}"></script>
+    <script src="{{ asset('assets/js/plugin/datatables/datatables.min.js')}}"></script>
     <script>
     $(document).ready(function() {
         $("#basic-datatables").DataTable({});
@@ -614,47 +667,34 @@
         });
 
 
-        function updateStockAndRefresh(inputElement) {
-        var stockCount = inputElement.val();          // Get the updated stock count
-        var productId = inputElement.data('id');      // Get the product ID from data-id
+        $('#updateOrderStatus').click(function() {
+            // Get the selected values
+            const deliveryStatus = $('#deliveryStatus').val();
+            const orderAdjustment = $('#orderAdjustment').val();
+            const orderId = {{ $order->id }};  // Assuming you have access to the order ID
 
-        // Send AJAX request to update stock count
-        $.ajax({
-            url: '/update-stock-distributor',               // Replace with the route URL that handles stock update
-            method: 'POST',
-            data: {
-                _token: '{{ csrf_token() }}',   // Laravel CSRF token for security
-                id: productId,
-                stock_count: stockCount
-            },
-            success: function (response) {
-                if (response.success) {
-                    // Refresh the page after the stock is updated successfully
-                    location.reload();  // This refreshes the page
-                } else {
-                    alert('Failed to update stock. Please try again.');
+            // Send the AJAX request
+            $.ajax({
+                url: `/orderstatus/${orderId}`, // URL for the resource route
+                method: 'PUT', // Use PUT for updating
+                data: {
+                    delivery_status: deliveryStatus,
+                    order_adjustment: orderAdjustment,
+                    _token: '{{ csrf_token() }}' // CSRF token for Laravel
+                },
+                success: function(response) {
+                    // Handle the success response
+                    alert('Order status updated successfully!');
+                    // Redirect to the order status index page
+                    window.location.href =
+                    '{{ url("orderstatus") }}'; // Redirect to the orderStatus index route
+                },
+                error: function(xhr, status, error) {
+                    // Handle the error response
+                    alert('Error updating order status: ' + error);
                 }
-            },
-            error: function () {
-                alert('Error while updating stock.');
-            }
+            });
         });
-    }
-
-    // Event listener for when input box loses focus (blur event)
-    $('.stock-input').on('blur', function () {
-        updateStockAndRefresh($(this));
-    });
-
-    // Event listener for pressing "Enter" key inside input field
-    $('.stock-input').on('keypress', function (e) {
-        if (e.which == 13) {  // 13 is the keycode for the "Enter" key
-            updateStockAndRefresh($(this));
-        }
-    });
-
-
-        
     });
     </script>
 </body>
