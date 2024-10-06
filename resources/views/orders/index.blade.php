@@ -3,7 +3,7 @@
 
 <head>
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-    <title>Datatables - Kaiadmin Bootstrap 5 Admin Dashboard</title>
+    <title>Zealix</title>
     <meta content="width=device-width, initial-scale=1.0, shrink-to-fit=no" name="viewport" />
     <link rel="icon" href="../assets/img/kaiadmin/favicon.ico" type="image/x-icon" />
 
@@ -508,16 +508,16 @@
                                                 <td>
     @if ($order->order_status == 'Accept')
         
-        <button class="btn btn-primary btn-round ms-auto btn-accept" data-order-id="{{ $order->id }}">Accept</button>
-        <button class="btn btn-danger btn-round ms-auto btn-decline" data-order-id="{{ $order->id }}"  style="opacity: 0.5;">Decline</button>
+        <button class="btn btn-primary btn-round btn-sm ms-auto btn-accept" data-order-id="{{ $order->id }}">Accept</button>
+        <button class="btn btn-danger btn-round btn-sm ms-auto btn-decline" data-order-id="{{ $order->id }}"  style="opacity: 0.5;">Decline</button>
     @elseif ($order->order_status == 'Decline')
       
-        <button class="btn btn-primary btn-round ms-auto btn-accept" data-order-id="{{ $order->id }}"  style="opacity: 0.5;">Accept</button>
-        <button class="btn btn-danger btn-round ms-auto btn-decline" data-order-id="{{ $order->id }}" >Decline</button>
+        <button class="btn btn-primary btn-round btn-sm ms-auto btn-accept" data-order-id="{{ $order->id }}"  style="opacity: 0.5;">Accept</button>
+        <button class="btn btn-danger btn-round btn-sm ms-auto btn-decline" data-order-id="{{ $order->id }}" >Decline</button>
     @else
        
-        <button class="btn btn-primary btn-round ms-auto btn-accept" data-order-id="{{ $order->id }}">Accept</button>
-        <button class="btn btn-danger btn-round ms-auto btn-decline" data-order-id="{{ $order->id }}">Decline</button>
+        <button class="btn btn-primary btn-round btn-sm ms-auto btn-accept" data-order-id="{{ $order->id }}">Accept</button>
+        <button class="btn btn-danger btn-round btn-sm ms-auto btn-decline" data-order-id="{{ $order->id }}">Decline</button>
     @endif
 </td>
 

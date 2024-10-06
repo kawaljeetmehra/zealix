@@ -310,3 +310,13 @@ body[data-background-color="dark"] .demo-icon .icon-class {
     right: -85%; } }
 
 /*# sourceMappingURL=demo.css.map */
+body {
+  zoom: 100%;
+}
+
+/* Adjust the resolution to 90% for laptop screens */
+@media screen and (min-width: 1024px) and (max-width: 1440px) {
+  body {
+      zoom: 90%;
+  }
+}

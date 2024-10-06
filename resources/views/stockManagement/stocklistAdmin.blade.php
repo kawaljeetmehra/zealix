@@ -3,7 +3,7 @@
 
 <head>
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-    <title>Datatables - Kaiadmin Bootstrap 5 Admin Dashboard</title>
+    <title>Zealix</title>
     <meta content="width=device-width, initial-scale=1.0, shrink-to-fit=no" name="viewport" />
     <link rel="icon" href="../assets/img/kaiadmin/favicon.ico" type="image/x-icon" />
 
@@ -46,8 +46,7 @@
                 <!-- Logo Header -->
                 <div class="logo-header" data-background-color="dark">
                     <a href="#" class="logo">
-                        <img src="../assets/img/zealx logo.png" alt="navbar brand" class="navbar-brand"
-                            height="80" />
+                        <img src="../assets/img/zealx logo.png" alt="navbar brand" class="navbar-brand" height="80" />
                     </a>
                     <div class="nav-toggle">
                         <button class="btn btn-toggle toggle-sidebar">
@@ -64,99 +63,101 @@
                 <!-- End Logo Header -->
             </div>
             <div class="sidebar-wrapper scrollbar scrollbar-inner">
-    <div class="sidebar-content">
-        <ul class="nav nav-secondary">
+                <div class="sidebar-content">
+                    <ul class="nav nav-secondary">
 
-            <!-- Inventory Management Section -->
-            <li class="nav-item submenu">
-                <a data-bs-toggle="collapse" href="#inventory" aria-expanded="{{ request()->routeIs('products.*') ? 'true' : 'false' }}">
-                    <i class="fas fa-boxes"></i>
-                    <p>Inventory Management</p>
-                    <span class="caret"></span>
-                </a>
-                <div class="collapse {{ request()->routeIs('products.*') ? 'show' : '' }}" id="inventory">
-                    <ul class="nav nav-collapse">
-                        <!-- Product Sub-section -->
-                        <li class="{{ request()->routeIs('products.index') ? 'active' : '' }}">
-                            <a href="{{ route('products.index') }}">
-                            <i class="fas fa-box"></i>
-                        
-                            <p>Product</p>
+                        <!-- Inventory Management Section -->
+                        <li class="nav-item submenu">
+                            <a data-bs-toggle="collapse" href="#inventory"
+                                aria-expanded="{{ request()->routeIs('products.*') ? 'true' : 'false' }}">
+                                <i class="fas fa-boxes"></i>
+                                <p>Inventory Management</p>
+                                <span class="caret"></span>
                             </a>
+                            <div class="collapse {{ request()->routeIs('products.*') ? 'show' : '' }}" id="inventory">
+                                <ul class="nav nav-collapse">
+                                    <!-- Product Sub-section -->
+                                    <li class="{{ request()->routeIs('products.index') ? 'active' : '' }}">
+                                        <a href="{{ route('products.index') }}">
+                                            <i class="fas fa-box"></i>
+
+                                            <p>Product</p>
+                                        </a>
+                                    </li>
+                                    <!-- Stock Assign Sub-section -->
+                                    <li class="{{ request()->routeIs('products.stockAssign') ? 'active' : '' }}">
+                                        <a href="{{ route('products.stockAssign') }}">
+                                            <i class="fas fa-clipboard-list"></i>
+                                            <p>Stock Assign</p>
+                                        </a>
+                                    </li>
+
+                                    <!-- Stock Admin Sub-section -->
+                                    <li class="{{ request()->routeIs('stockAdmin') ? 'active' : '' }}">
+                                        <a href="{{ route('stockAdmin') }}">
+                                            <i class="fas fa-user-shield"></i>
+                                            <p>Stock Admin</p>
+                                        </a>
+                                    </li>
+
+                                    <!-- Stock Distributor Sub-section -->
+                                    <li class="{{ request()->routeIs('stockDistributor') ? 'active' : '' }}">
+                                        <a href="{{ route('stockDistributor') }}">
+                                            <i class="fas fa-truck"></i>
+                                            <p>Stock Distributor</p>
+                                        </a>
+                                    </li>
+
+                                    <!-- Expired Stock Admin Sub-section -->
+                                    <li class="{{ request()->routeIs('expirestockAdmin') ? 'active' : '' }}">
+                                        <a href="{{ route('expirestockAdmin') }}">
+                                            <i class="fas fa-times-circle"></i>
+                                            <p>Expired Stock Admin</p>
+                                        </a>
+                                    </li>
+
+                                    <!-- Expired Stock Distributor Sub-section -->
+                                    <li class="{{ request()->routeIs('expirestockDistributor') ? 'active' : '' }}">
+                                        <a href="{{ route('expirestockDistributor') }}">
+                                            <i class="fas fa-exclamation-triangle"></i>
+                                            <p>Expired Stock Distributor</p>
+                                        </a>
+                                    </li>
+                                </ul>
+                            </div>
                         </li>
-                        <!-- Stock Assign Sub-section -->
-        <li class="{{ request()->routeIs('products.stockAssign') ? 'active' : '' }}">
-            <a href="{{ route('products.stockAssign') }}">
-                <i class="fas fa-clipboard-list"></i>
-                <p>Stock Assign</p>
-            </a>
-        </li>
 
-        <!-- Stock Admin Sub-section -->
-        <li class="{{ request()->routeIs('stockAdmin') ? 'active' : '' }}">
-            <a href="{{ route('stockAdmin') }}">
-                <i class="fas fa-user-shield"></i>
-                <p>Stock Admin</p>
-            </a>
-        </li>
+                        <!-- Orders Management Section -->
+                        <li class="nav-item submenu">
+                            <a data-bs-toggle="collapse" href="#orders"
+                                aria-expanded="{{ request()->routeIs('orders.*') ? 'true' : 'false' }}">
+                                <i class="fas fa-shopping-cart"></i>
+                                <p>Orders Management</p>
+                                <span class="caret"></span>
+                            </a>
+                            <div class="collapse {{ request()->routeIs('orders.*') ? 'show' : '' }}" id="orders">
+                                <ul class="nav nav-collapse">
+                                    <!-- Order Sub-section -->
+                                    <li class="{{ request()->routeIs('orders.index') ? 'active' : '' }}">
+                                        <a href="{{ route('orders.index') }}">
+                                            <i class="fas fa-receipt"></i>
+                                            <p>Order</p>
 
-        <!-- Stock Distributor Sub-section -->
-        <li class="{{ request()->routeIs('stockDistributor') ? 'active' : '' }}">
-            <a href="{{ route('stockDistributor') }}">
-                <i class="fas fa-truck"></i>
-                <p>Stock Distributor</p>
-            </a>
-        </li>
+                                        </a>
+                                    </li>
+                                    <li class="{{ request()->routeIs('orderstatus.index') ? 'active' : '' }}">
+                                        <a href="{{ route('orderstatus.index') }}">
+                                            <i class="fas fa-list-alt"></i>
+                                            <p>Order Status</p>
+                                        </a>
+                                    </li>
+                                </ul>
+                            </div>
+                        </li>
 
-        <!-- Expired Stock Admin Sub-section -->
-        <li class="{{ request()->routeIs('expirestockAdmin') ? 'active' : '' }}">
-            <a href="{{ route('expirestockAdmin') }}">
-                <i class="fas fa-times-circle"></i>
-                <p>Expired Stock Admin</p>
-            </a>
-        </li>
-
-        <!-- Expired Stock Distributor Sub-section -->
-        <li class="{{ request()->routeIs('expirestockDistributor') ? 'active' : '' }}">
-            <a href="{{ route('expirestockDistributor') }}">
-                <i class="fas fa-exclamation-triangle"></i>
-                <p>Expired Stock Distributor</p>
-            </a>
-        </li>
                     </ul>
                 </div>
-            </li>
-
-            <!-- Orders Management Section -->
-            <li class="nav-item submenu">
-                <a data-bs-toggle="collapse" href="#orders" aria-expanded="{{ request()->routeIs('orders.*') ? 'true' : 'false' }}">
-                    <i class="fas fa-shopping-cart"></i>
-                    <p>Orders Management</p>
-                    <span class="caret"></span>
-                </a>
-                <div class="collapse {{ request()->routeIs('orders.*') ? 'show' : '' }}" id="orders">
-                    <ul class="nav nav-collapse">
-                        <!-- Order Sub-section -->
-                        <li class="{{ request()->routeIs('orders.index') ? 'active' : '' }}">
-                            <a href="{{ route('orders.index') }}">
-                            <i class="fas fa-receipt"></i>
-                            <p>Order</p>
-                               
-                            </a>
-                        </li>
-                        <li class="{{ request()->routeIs('orderstatus.index') ? 'active' : '' }}">
-    <a href="{{ route('orderstatus.index') }}">
-        <i class="fas fa-list-alt"></i>
-        <p>Order Status</p>
-    </a>
-</li>
-                    </ul>
-                </div>
-            </li>
-
-        </ul>
-    </div>
-</div>
+            </div>
 
         </div>
         <!-- End Sidebar -->
@@ -472,69 +473,75 @@
                                 <div class="card-header">
                                     <div class="d-flex align-items-center">
                                         <h4 class="card-title">Stock Management-Admin</h4>
-                                       
-                                </div>
-                                <div class="table-responsive">
-                                    <table id="add-row" class="display table table-striped table-hover">
-                                        <thead>
-                                            <tr>
-                                                <th>Batch Number</th>
-                                                <th>Product Category</th>
-                                                <th>Product Name</th>
-                                                
-                                                <th>Package</th>
-                                                <th>Quantity</th>
-                                                <th>Stock Count</th>
-                                                <th>Stock Update</th>
-                                              
-                                            </tr>
-                                        </thead>
 
-                                        <tbody>
-                                            @foreach($products as $product)
-                                            <tr>
-                                                <td>{{$product->batch_number}}</td>
-                                                <td>{{$product->category}}</td>
-                                                <td>{{$product->product_name}}</td>
-                                                <td>{{$product->packaging}}</td>
-                                                <td>{{$product->quantity}}</td>
-                                                <td>
-                    <input type="number" name="stock_count[]" class="form-control stock-input" 
-                           data-id="{{ $product->id }}" value="{{ $product->stock_count }}" min="0">
-                </td>
-                                                <td>
-                    @if($product->stock_count == 0)
-                    <button class="btn btn-danger btn-round ms-auto">Out-Stock</button>
-                       
-                    @elseif($product->stock_count < 7)
-                        <button class="btn btn-warning btn-round ms-auto">Low-Stock</button>
-                    @else
-                    <button class="btn btn-success btn-round ms-auto">In-Stock</button>
-                    @endif
-                </td>
-                                                
-                                                
-                                            </tr>
-                                            @endforeach
+                                    </div>
+                                    <div class="table-responsive">
+                                        <table id="add-row" class="display table table-striped table-hover">
+                                            <thead>
+                                                <tr>
+                                                    <th>Batch Number</th>
+                                                    <th>Product Category</th>
+                                                    <th>Product Name</th>
+
+                                                    <th>Package</th>
+                                                    <th>Quantity</th>
+                                                    <th>Stock Count</th>
+                                                    <th>Stock Update</th>
+
+                                                </tr>
+                                            </thead>
+
+                                            <tbody>
+                                                @foreach($products as $product)
+                                                <tr>
+                                                    <td>{{$product->batch_number}}</td>
+                                                    <td>{{$product->category}}</td>
+                                                    <td>{{$product->product_name}}</td>
+                                                    <td>{{$product->packaging}}</td>
+                                                    <td>{{$product->quantity}}</td>
+                                                    <td>
+                                                        <input type="number" name="stock_count[]"
+                                                            class="form-control stock-input"
+                                                            data-id="{{ $product->id }}"
+                                                            value="{{ $product->stock_count }}" min="0">
+                                                    </td>
+                                                    <td>
+                                                        @if($product->stock_count == 0)
+                                                        <button
+                                                            class="btn btn-danger btn-round btn-sm ms-auto">Out-Stock</button>
+
+                                                        @elseif($product->stock_count < 7) <button
+                                                            class="btn btn-warning btn-round btn-sm ms-auto">Low-Stock</button>
+                                                            @else
+                                                            <button
+                                                                class="btn btn-success btn-round btn-sm ms-auto">In-Stock</button>
+                                                            @endif
+                                                    </td>
+
+
+                                                </tr>
+                                                @endforeach
                                             </tbody>
-                                    </table>
-                                </div>
+                                        </table>
+                                    </div>
 
-                               
+
+                                </div>
                             </div>
                         </div>
                     </div>
+
                 </div>
-               
+
             </div>
             @include('partials.footer')
+
         </div>
 
-       
-    </div>
 
 
     </div>
+
     <!--   Core JS Files   -->
     <script src="../assets/js/core/jquery-3.7.1.min.js"></script>
     <script src="../assets/js/core/popper.min.js"></script>
@@ -615,46 +622,46 @@
 
 
         function updateStockAndRefresh(inputElement) {
-        var stockCount = inputElement.val();          // Get the updated stock count
-        var productId = inputElement.data('id');      // Get the product ID from data-id
+            var stockCount = inputElement.val(); // Get the updated stock count
+            var productId = inputElement.data('id'); // Get the product ID from data-id
 
-        // Send AJAX request to update stock count
-        $.ajax({
-            url: '/update-stock',               // Replace with the route URL that handles stock update
-            method: 'POST',
-            data: {
-                _token: '{{ csrf_token() }}',   // Laravel CSRF token for security
-                id: productId,
-                stock_count: stockCount
-            },
-            success: function (response) {
-                if (response.success) {
-                    // Refresh the page after the stock is updated successfully
-                    location.reload();  // This refreshes the page
-                } else {
-                    alert('Failed to update stock. Please try again.');
+            // Send AJAX request to update stock count
+            $.ajax({
+                url: '/update-stock', // Replace with the route URL that handles stock update
+                method: 'POST',
+                data: {
+                    _token: '{{ csrf_token() }}', // Laravel CSRF token for security
+                    id: productId,
+                    stock_count: stockCount
+                },
+                success: function(response) {
+                    if (response.success) {
+                        // Refresh the page after the stock is updated successfully
+                        location.reload(); // This refreshes the page
+                    } else {
+                        alert('Failed to update stock. Please try again.');
+                    }
+                },
+                error: function() {
+                    alert('Error while updating stock.');
                 }
-            },
-            error: function () {
-                alert('Error while updating stock.');
+            });
+        }
+
+        // Event listener for when input box loses focus (blur event)
+        $('.stock-input').on('blur', function() {
+            updateStockAndRefresh($(this));
+        });
+
+        // Event listener for pressing "Enter" key inside input field
+        $('.stock-input').on('keypress', function(e) {
+            if (e.which == 13) { // 13 is the keycode for the "Enter" key
+                updateStockAndRefresh($(this));
             }
         });
-    }
-
-    // Event listener for when input box loses focus (blur event)
-    $('.stock-input').on('blur', function () {
-        updateStockAndRefresh($(this));
-    });
-
-    // Event listener for pressing "Enter" key inside input field
-    $('.stock-input').on('keypress', function (e) {
-        if (e.which == 13) {  // 13 is the keycode for the "Enter" key
-            updateStockAndRefresh($(this));
-        }
-    });
 
 
-        
+
     });
     </script>
 </body>

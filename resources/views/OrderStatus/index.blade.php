@@ -3,7 +3,7 @@
 
 <head>
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-    <title>Datatables - Kaiadmin Bootstrap 5 Admin Dashboard</title>
+    <title>Zealix</title>
     <meta content="width=device-width, initial-scale=1.0, shrink-to-fit=no" name="viewport" />
     <link rel="icon" href="../assets/img/kaiadmin/favicon.ico" type="image/x-icon" />
 
@@ -505,46 +505,46 @@
                                                 <td>
     @if ($order->order_status == 'Accept')
         
-        <button class="btn btn-success  ms-auto btn-accept" >Accepted</button>
+        <button class="btn btn-success btn-sm ms-auto btn-accept" >Accepted</button>
         
     @else($order->order_status == 'Decline')
       
        
-        <button class="btn btn-danger  ms-auto btn-decline"  >Declined</button>
+        <button class="btn btn-danger btn-sm ms-auto btn-decline"  >Declined</button>
     
     @endif
 </td>
 <td>
     @if ($order->delivery_status == 'Processing')
         
-        <button class="btn btn-primary  ms-auto btn-accept" >Processing</button>
+        <button class="btn btn-primary btn-sm ms-auto btn-accept" >Processing</button>
         
     @elseif($order->delivery_status == 'In-Transit')
       
        
-        <button class="btn btn-warning  ms-auto btn-decline" >In-Transit</button>
+        <button class="btn btn-warning btn-sm ms-auto btn-decline" >In-Transit</button>
     @elseif($order->delivery_status == 'Dispatched')
       
        
-        <button class="btn btn-info  ms-auto btn-decline" >Dispatched</button>
+        <button class="btn btn-info btn-sm ms-auto btn-decline" >Dispatched</button>
 
     @else
        
-        <button class="btn btn-success  ms-auto btn-decline" >Delivered</button>
+        <button class="btn btn-success btn-sm ms-auto btn-decline" >Delivered</button>
 </td>
     @endif                                            
                                                 <td>  @if ($order->order_adjustment == 'return')
         
-        <button class="btn btn-danger  ms-auto btn-accept" >Return</button>
+        <button class="btn btn-danger btn-sm ms-auto btn-accept" >Return</button>
          
     @elseif($order->order_adjustment == 'exchange')
       
        
-        <button class="btn btn-warning  ms-auto btn-decline" >Exchange</button>
+        <button class="btn btn-warning btn-sm ms-auto btn-decline" >Exchange</button>
 
     @else
        
-        <button class="btn btn-success  ms-auto btn-decline" >No Adjustment</button>
+        <button class="btn btn-success btn-sm ms-auto btn-decline" >No Adjustment</button>
     @endif
                                                          </td>
                                                
