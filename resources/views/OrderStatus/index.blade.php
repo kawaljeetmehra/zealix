@@ -46,8 +46,7 @@
                 <!-- Logo Header -->
                 <div class="logo-header" data-background-color="dark">
                     <a href="#" class="logo">
-                        <img src="../assets/img/zealx logo.png" alt="navbar brand" class="navbar-brand"
-                            height="80" />
+                        <img src="../assets/img/zealx logo.png" alt="navbar brand" class="navbar-brand" height="80" />
                     </a>
                     <div class="nav-toggle">
                         <button class="btn btn-toggle toggle-sidebar">
@@ -63,101 +62,7 @@
                 </div>
                 <!-- End Logo Header -->
             </div>
-            <div class="sidebar-wrapper scrollbar scrollbar-inner">
-    <div class="sidebar-content">
-        <ul class="nav nav-secondary">
-
-            <!-- Inventory Management Section -->
-            <li class="nav-item submenu">
-                <a data-bs-toggle="collapse" href="#inventory" aria-expanded="{{ request()->routeIs('products.*') ? 'true' : 'false' }}">
-                    <i class="fas fa-boxes"></i>
-                    <p>Inventory Management</p>
-                    <span class="caret"></span>
-                </a>
-                <div class="collapse {{ request()->routeIs('products.*') ? 'show' : '' }}" id="inventory">
-                    <ul class="nav nav-collapse">
-                        <!-- Product Sub-section -->
-                        <li class="{{ request()->routeIs('products.index') ? 'active' : '' }}">
-                            <a href="{{ route('products.index') }}">
-                            <i class="fas fa-box"></i>
-                        
-                            <p>Product</p>
-                            </a>
-                        </li>
-
-                         <!-- Stock Assign Sub-section -->
-        <li class="{{ request()->routeIs('products.stockAssign') ? 'active' : '' }}">
-            <a href="{{ route('products.stockAssign') }}">
-                <i class="fas fa-clipboard-list"></i>
-                <p>Stock Assign</p>
-            </a>
-        </li>
-
-        <!-- Stock Admin Sub-section -->
-        <li class="{{ request()->routeIs('stockAdmin') ? 'active' : '' }}">
-            <a href="{{ route('stockAdmin') }}">
-                <i class="fas fa-user-shield"></i>
-                <p>Stock Admin</p>
-            </a>
-        </li>
-
-        <!-- Stock Distributor Sub-section -->
-        <li class="{{ request()->routeIs('stockDistributor') ? 'active' : '' }}">
-            <a href="{{ route('stockDistributor') }}">
-                <i class="fas fa-truck"></i>
-                <p>Stock Distributor</p>
-            </a>
-        </li>
-
-        <!-- Expired Stock Admin Sub-section -->
-        <li class="{{ request()->routeIs('expirestockAdmin') ? 'active' : '' }}">
-            <a href="{{ route('expirestockAdmin') }}">
-                <i class="fas fa-times-circle"></i>
-                <p>Expired Stock Admin</p>
-            </a>
-        </li>
-
-        <!-- Expired Stock Distributor Sub-section -->
-        <li class="{{ request()->routeIs('expirestockDistributor') ? 'active' : '' }}">
-            <a href="{{ route('expirestockDistributor') }}">
-                <i class="fas fa-exclamation-triangle"></i>
-                <p>Expired Stock Distributor</p>
-            </a>
-        </li>
-                    </ul>
-                </div>
-            </li>
-
-            <!-- Orders Management Section -->
-            <li class="nav-item submenu">
-                <a data-bs-toggle="collapse" href="#orders" aria-expanded="{{ request()->routeIs('orders.*') ? 'true' : 'false' }}">
-                    <i class="fas fa-shopping-cart"></i>
-                    <p>Orders Management</p>
-                    <span class="caret"></span>
-                </a>
-                <div class="collapse {{ request()->routeIs('orders.*') ? 'show' : '' }}" id="orders">
-                    <ul class="nav nav-collapse">
-                        <!-- Order Sub-section -->
-                        <li class="{{ request()->routeIs('orders.index') ? 'active' : '' }}">
-                            <a href="{{ route('orders.index') }}">
-                            <i class="fas fa-receipt"></i>
-                            <p>Order</p>
-                               
-                            </a>
-                        </li>
-                        <li class="{{ request()->routeIs('orderstatus.index') ? 'active' : '' }}">
-    <a href="{{ route('orderstatus.index') }}">
-        <i class="fas fa-list-alt"></i>
-        <p>Order Status</p>
-    </a>
-</li>
-                    </ul>
-                </div>
-            </li>
-
-        </ul>
-    </div>
-</div>
+            @include('partials.sidebar')
 
         </div>
         <!-- End Sidebar -->
@@ -449,7 +354,14 @@
                                             <div class="dropdown-divider"></div>
                                             <a class="dropdown-item" href="#">Account Setting</a>
                                             <div class="dropdown-divider"></div>
-                                            <a class="dropdown-item" href="/">Logout</a>
+                                            <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
+    @csrf
+</form>
+
+<!-- Logout Link -->
+<a class="dropdown-item" href="#" onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
+    Logout
+</a>
                                         </li>
                                     </div>
                                 </ul>
@@ -473,7 +385,7 @@
                                 <div class="card-header">
                                     <div class="d-flex align-items-center">
                                         <h4 class="card-title">Order Status</h4>
-                                       
+
                                     </div>
                                 </div>
 
@@ -481,7 +393,8 @@
                                 <div class="table-responsive">
                                     <table id="add-row" class="display table table-striped table-hover">
                                         <thead>
-                                            <tr><th>Order Date</th>
+                                            <tr>
+                                                <th>Order Date</th>
                                                 <th>Order Number</th>
                                                 <th>Total Cost</th>
                                                 <th>Location</th>
@@ -489,7 +402,7 @@
                                                 <th>Order Status</th>
                                                 <th>Delivery Status</th>
                                                 <th>Order Adjustment</th>
-                                                
+
                                                 <th style="width: 10%">Action</th>
                                             </tr>
                                         </thead>
@@ -503,76 +416,86 @@
                                                 <td>{{$order->location}}</td>
                                                 <td>{{$order->order_by}}</td>
                                                 <td>
-    @if ($order->order_status == 'Accept')
-        
-        <button class="btn btn-success btn-sm ms-auto btn-accept" >Accepted</button>
-        
-    @else($order->order_status == 'Decline')
-      
-       
-        <button class="btn btn-danger btn-sm ms-auto btn-decline"  >Declined</button>
-    
-    @endif
-</td>
-<td>
-    @if ($order->delivery_status == 'Processing')
-        
-        <button class="btn btn-primary btn-sm ms-auto btn-accept" >Processing</button>
-        
-    @elseif($order->delivery_status == 'In-Transit')
-      
-       
-        <button class="btn btn-warning btn-sm ms-auto btn-decline" >In-Transit</button>
-    @elseif($order->delivery_status == 'Dispatched')
-      
-       
-        <button class="btn btn-info btn-sm ms-auto btn-decline" >Dispatched</button>
+                                                    @if ($order->order_status == 'Accept')
 
-    @else
-       
-        <button class="btn btn-success btn-sm ms-auto btn-decline" >Delivered</button>
-</td>
-    @endif                                            
-                                                <td>  @if ($order->order_adjustment == 'return')
-        
-        <button class="btn btn-danger btn-sm ms-auto btn-accept" >Return</button>
-         
-    @elseif($order->order_adjustment == 'exchange')
-      
-       
-        <button class="btn btn-warning btn-sm ms-auto btn-decline" >Exchange</button>
+                                                    <button
+                                                        class="btn btn-success btn-sm ms-auto btn-accept">Accepted</button>
 
-    @else
-       
-        <button class="btn btn-success btn-sm ms-auto btn-decline" >No Adjustment</button>
-    @endif
-                                                         </td>
-                                               
+                                                    @else($order->order_status == 'Decline')
+
+
+                                                    <button
+                                                        class="btn btn-danger btn-sm ms-auto btn-decline">Declined</button>
+
+                                                    @endif
+                                                </td>
                                                 <td>
+                                                    @if ($order->delivery_status == 'Processing')
+
+                                                    <button
+                                                        class="btn btn-primary btn-sm ms-auto btn-accept">Processing</button>
+
+                                                    @elseif($order->delivery_status == 'In-Transit')
+
+
+                                                    <button
+                                                        class="btn btn-warning btn-sm ms-auto btn-decline">In-Transit</button>
+                                                    @elseif($order->delivery_status == 'Dispatched')
+
+
+                                                    <button
+                                                        class="btn btn-info btn-sm ms-auto btn-decline">Dispatched</button>
+
+                                                    @else
+
+                                                    <button
+                                                        class="btn btn-success btn-sm ms-auto btn-decline">Delivered</button>
+                                                </td>
+                                                @endif
+                                                <td> @if ($order->order_adjustment == 'return')
+
+                                                    <button
+                                                        class="btn btn-danger btn-sm ms-auto btn-accept">Return</button>
+
+                                                    @elseif($order->order_adjustment == 'exchange')
+
+
+                                                    <button
+                                                        class="btn btn-warning btn-sm ms-auto btn-decline">Exchange</button>
+
+                                                    @else
+
+                                                    <button class="btn btn-success btn-sm ms-auto btn-decline">No
+                                                        Adjustment</button>
+                                                    @endif
+                                                </td>
+
+                                                <td> @if(Auth::check() && Auth::user()->role_id == 1 )
                                                     <div class="form-button-action">
                                                         <a href="/orderstatus/{{$order->id}}/edit" data-toggle="tooltip"
                                                             title="Edit" class="btn btn-link btn-primary btn-lg">
                                                             <i class="fa fa-edit"></i>
                                                         </a>
-                                                        
+
 
                                                     </div>
+                                                    @endif
                                                 </td>
                                             </tr>
                                             @endforeach
-                                            </tbody>
+                                        </tbody>
                                     </table>
+                                </div>
                             </div>
                         </div>
                     </div>
-                </div>
-                
-            </div>
-            @include('partials.footer')
-        </div>
 
-       
-    </div>
+                </div>
+                @include('partials.footer')
+            </div>
+
+
+        </div>
 
 
     </div>

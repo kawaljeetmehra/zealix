@@ -46,8 +46,7 @@
                 <!-- Logo Header -->
                 <div class="logo-header" data-background-color="dark">
                     <a href="#" class="logo">
-                        <img src="../assets/img/zealx logo.png" alt="navbar brand" class="navbar-brand"
-                            height="80" />
+                        <img src="../assets/img/zealx logo.png" alt="navbar brand" class="navbar-brand" height="80" />
                     </a>
                     <div class="nav-toggle">
                         <button class="btn btn-toggle toggle-sidebar">
@@ -63,100 +62,7 @@
                 </div>
                 <!-- End Logo Header -->
             </div>
-            <div class="sidebar-wrapper scrollbar scrollbar-inner">
-    <div class="sidebar-content">
-        <ul class="nav nav-secondary">
-
-            <!-- Inventory Management Section -->
-            <li class="nav-item submenu">
-                <a data-bs-toggle="collapse" href="#inventory" aria-expanded="{{ request()->routeIs('products.*') ? 'true' : 'false' }}">
-                    <i class="fas fa-boxes"></i>
-                    <p>Inventory Management</p>
-                    <span class="caret"></span>
-                </a>
-                <div class="collapse {{ request()->routeIs('products.*') ? 'show' : '' }}" id="inventory">
-                    <ul class="nav nav-collapse">
-                        <!-- Product Sub-section -->
-                        <li class="{{ request()->routeIs('products.index') ? 'active' : '' }}">
-                            <a href="{{ route('products.index') }}">
-                            <i class="fas fa-box"></i>
-                        
-                            <p>Product</p>
-                            </a>
-                        </li>
-                        <!-- Stock Assign Sub-section -->
-        <li class="{{ request()->routeIs('products.stockAssign') ? 'active' : '' }}">
-            <a href="{{ route('products.stockAssign') }}">
-                <i class="fas fa-clipboard-list"></i>
-                <p>Stock Assign</p>
-            </a>
-        </li>
-
-        <!-- Stock Admin Sub-section -->
-        <li class="{{ request()->routeIs('stockAdmin') ? 'active' : '' }}">
-            <a href="{{ route('stockAdmin') }}">
-                <i class="fas fa-user-shield"></i>
-                <p>Stock Admin</p>
-            </a>
-        </li>
-
-        <!-- Stock Distributor Sub-section -->
-        <li class="{{ request()->routeIs('stockDistributor') ? 'active' : '' }}">
-            <a href="{{ route('stockDistributor') }}">
-                <i class="fas fa-truck"></i>
-                <p>Stock Distributor</p>
-            </a>
-        </li>
-
-        <!-- Expired Stock Admin Sub-section -->
-        <li class="{{ request()->routeIs('expirestockAdmin') ? 'active' : '' }}">
-            <a href="{{ route('expirestockAdmin') }}">
-                <i class="fas fa-times-circle"></i>
-                <p>Expired Stock Admin</p>
-            </a>
-        </li>
-
-        <!-- Expired Stock Distributor Sub-section -->
-        <li class="{{ request()->routeIs('expirestockDistributor') ? 'active' : '' }}">
-            <a href="{{ route('expirestockDistributor') }}">
-                <i class="fas fa-exclamation-triangle"></i>
-                <p>Expired Stock Distributor</p>
-            </a>
-        </li>
-                    </ul>
-                </div>
-            </li>
-
-            <!-- Orders Management Section -->
-            <li class="nav-item submenu">
-                <a data-bs-toggle="collapse" href="#orders" aria-expanded="{{ request()->routeIs('orders.*') ? 'true' : 'false' }}">
-                    <i class="fas fa-shopping-cart"></i>
-                    <p>Orders Management</p>
-                    <span class="caret"></span>
-                </a>
-                <div class="collapse {{ request()->routeIs('orders.*') ? 'show' : '' }}" id="orders">
-                    <ul class="nav nav-collapse">
-                        <!-- Order Sub-section -->
-                        <li class="{{ request()->routeIs('orders.index') ? 'active' : '' }}">
-                            <a href="{{ route('orders.index') }}">
-                            <i class="fas fa-receipt"></i>
-                            <p>Order</p>
-                               
-                            </a>
-                        </li>
-                        <li class="{{ request()->routeIs('orderstatus.index') ? 'active' : '' }}">
-    <a href="{{ route('orderstatus.index') }}">
-        <i class="fas fa-list-alt"></i>
-        <p>Order Status</p>
-    </a>
-</li>
-                    </ul>
-                </div>
-            </li>
-
-        </ul>
-    </div>
-</div>
+            @include('partials.sidebar')
 
         </div>
         <!-- End Sidebar -->
@@ -448,7 +354,14 @@
                                             <div class="dropdown-divider"></div>
                                             <a class="dropdown-item" href="#">Account Setting</a>
                                             <div class="dropdown-divider"></div>
-                                            <a class="dropdown-item" href="/">Logout</a>
+                                            <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
+    @csrf
+</form>
+
+<!-- Logout Link -->
+<a class="dropdown-item" href="#" onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
+    Logout
+</a>
                                         </li>
                                     </div>
                                 </ul>
@@ -472,74 +385,79 @@
                                 <div class="card-header">
                                     <div class="d-flex align-items-center">
                                         <h4 class="card-title">Assign Stock</h4>
-                                       
+
+                                    </div>
+                                    <div class="table-responsive mt-2">
+                                        <div class="mb-3">
+                                            <label for="distributor" class="mr-2 ">Select Distributor:</label>
+                                            <select id="distributor" class="form-control d-inline-block"
+                                                style="width: auto;">
+                                                <option value="">-- Select Distributor --</option>
+                                                @foreach($distributors as $distributor)
+                                                <option value="{{ $distributor->id }}">{{ $distributor->name }}</option>
+                                                @endforeach
+                                            </select>
+                                            <input type="checkbox" id="select-all" class="ml-3"> <label
+                                                for="select-all">Select All</label>
+                                        </div>
+
+                                        <table id="add-row" class="display table table-striped table-hover">
+                                            <thead>
+                                                <tr>
+                                                    <th>Select</th> <!-- Empty header for checkboxes -->
+                                                    <th>Batch Number</th>
+                                                    <th>Product Category</th>
+                                                    <th>Product Name</th>
+                                                    <th>MRP</th>
+                                                    <th>Package</th>
+                                                    <th>Quantity</th>
+                                                    <th>Stock Count</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                @foreach($products as $product)
+                                                <tr>
+                                                    <td>
+                                                        <input type="checkbox" class="product-checkbox"
+                                                            value="{{ $product->id }}">
+                                                    </td>
+                                                    <td>{{ $product->batch_number }}</td>
+                                                    <td>{{ $product->category }}</td>
+                                                    <td>{{ $product->product_name }}</td>
+                                                    <td>{{ $product->mrp }}</td>
+                                                    <td>{{ $product->packaging }}</td>
+                                                    <td>{{ $product->quantity }}</td>
+                                                    <td>
+                                                        <input type="number" name="stock_count[]"
+                                                            class="form-control stock-input"
+                                                            data-id="{{ $product->id }}"
+                                                            value="{{ $product->stock_count }}" min="0">
+                                                    </td>
+                                                </tr>
+                                                @endforeach
+                                            </tbody>
+                                        </table>
+
+                                        <!-- Assign Button Positioned Here -->
+                                        <div class="mt-3" style="text-align:right">
+                                            <button id="assign-stock" class="btn btn-success btn-round">Assign</button>
+                                        </div>
+                                    </div>
+
+
                                 </div>
-                                <div class="table-responsive mt-2">
-    <div class="mb-3">
-        <label for="distributor" class="mr-2 ">Select Distributor:</label>
-        <select id="distributor" class="form-control d-inline-block" style="width: auto;">
-            <option value="">-- Select Distributor --</option>
-            @foreach($distributors as $distributor)
-                <option value="{{ $distributor->id }}">{{ $distributor->name }}</option>
-            @endforeach
-        </select>
-        <input type="checkbox" id="select-all" class="ml-3"> <label for="select-all">Select All</label>
-    </div>
-
-    <table id="add-row" class="display table table-striped table-hover">
-        <thead>
-            <tr>
-                <th>Select</th> <!-- Empty header for checkboxes -->
-                <th>Batch Number</th>
-                <th>Product Category</th>
-                <th>Product Name</th>
-                <th>MRP</th>
-                <th>Package</th>
-                <th>Quantity</th>
-                <th>Stock Count</th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach($products as $product)
-            <tr>
-                <td>
-                    <input type="checkbox" class="product-checkbox" value="{{ $product->id }}">
-                </td>
-                <td>{{ $product->batch_number }}</td>
-                <td>{{ $product->category }}</td>
-                <td>{{ $product->product_name }}</td>
-                <td>{{ $product->mrp }}</td>
-                <td>{{ $product->packaging }}</td>
-                <td>{{ $product->quantity }}</td>
-                <td>
-                    <input type="number" name="stock_count[]" class="form-control stock-input" 
-                           data-id="{{ $product->id }}" value="{{ $product->stock_count }}" min="0">
-                </td>
-            </tr>
-            @endforeach
-        </tbody>
-    </table>
-
-    <!-- Assign Button Positioned Here -->
-    <div class="mt-3" style="text-align:right">
-        <button id="assign-stock" class="btn btn-success btn-round">Assign</button>
-    </div>
-</div>
-
-                               
                             </div>
-                        </div>
-                       
-                    </div>
-                    
-                </div>
-               
-            </div>
-            @include('partials.footer')
-        </div>
 
-       
-    </div>
+                        </div>
+
+                    </div>
+
+                </div>
+                @include('partials.footer')
+            </div>
+
+
+        </div>
 
 
     </div>
@@ -620,99 +538,100 @@
                 ]);
             $("#addRowModal").modal("hide");
         });
+
         function updateStockAndRefresh(inputElement) {
-        var stockCount = inputElement.val();          // Get the updated stock count
-        var productId = inputElement.data('id');      // Get the product ID from data-id
-          console.log(productId,"hi");
-          console.log(stockCount,"how")
-        // Send AJAX request to update stock count
-        $.ajax({
-            url: '/update-stock',               // Replace with the route URL that handles stock update
-            method: 'POST',
-            data: {
-                _token: '{{ csrf_token() }}',   // Laravel CSRF token for security
-                id: productId,
-                stock_count: stockCount
-            },
-            success: function (response) {
-                if (response.success) {
-                    // Refresh the page after the stock is updated successfully
-                    location.reload();  // This refreshes the page
-                } else {
-                    alert('Failed to update stock. Please try again.');
+            var stockCount = inputElement.val(); // Get the updated stock count
+            var productId = inputElement.data('id'); // Get the product ID from data-id
+            console.log(productId, "hi");
+            console.log(stockCount, "how")
+            // Send AJAX request to update stock count
+            $.ajax({
+                url: '/update-stock', // Replace with the route URL that handles stock update
+                method: 'POST',
+                data: {
+                    _token: '{{ csrf_token() }}', // Laravel CSRF token for security
+                    id: productId,
+                    stock_count: stockCount
+                },
+                success: function(response) {
+                    if (response.success) {
+                        // Refresh the page after the stock is updated successfully
+                        location.reload(); // This refreshes the page
+                    } else {
+                        alert('Failed to update stock. Please try again.');
+                    }
+                },
+                error: function() {
+                    alert('Error while updating stock.');
                 }
-            },
-            error: function () {
-                alert('Error while updating stock.');
+            });
+        }
+
+        // Event listener for when input box loses focus (blur event)
+        $('.stock-input').on('blur', function() {
+            updateStockAndRefresh($(this));
+        });
+
+        // Event listener for pressing "Enter" key inside input field
+        $('.stock-input').on('keypress', function(e) {
+            if (e.which == 13) { // 13 is the keycode for the "Enter" key
+                updateStockAndRefresh($(this));
             }
         });
-    }
 
-    // Event listener for when input box loses focus (blur event)
-    $('.stock-input').on('blur', function () {
-        updateStockAndRefresh($(this));
-    });
 
-    // Event listener for pressing "Enter" key inside input field
-    $('.stock-input').on('keypress', function (e) {
-        if (e.which == 13) {  // 13 is the keycode for the "Enter" key
-            updateStockAndRefresh($(this));
-        }
-    });
-   
+        // Select/Deselect All Checkboxes
+        $('#select-all').off('change').on('change', function() {
+            $('.product-checkbox').prop('checked', this.checked);
+        });
 
-// Select/Deselect All Checkboxes
-$('#select-all').off('change').on('change', function() {
-    $('.product-checkbox').prop('checked', this.checked);
-});
+        // Handle Distributor Filter
+        $('#distributor').on('change', function() {
+            var distributorId = $(this).val();
+            // Filtering logic can go here
+        });
 
-// Handle Distributor Filter
-$('#distributor').on('change', function() {
-    var distributorId = $(this).val();
-    // Filtering logic can go here
-});
+        // Assign Stock AJAX Request
+        $('#assign-stock').off('click').on('click', function() {
+            const selectedProducts = $('.product-checkbox:checked').map(function() {
+                return $(this).val();
+            }).get();
 
-// Assign Stock AJAX Request
-$('#assign-stock').off('click').on('click', function() {
-    const selectedProducts = $('.product-checkbox:checked').map(function() {
-        return $(this).val();
-    }).get();
+            const distributorId = $('#distributor').val();
 
-    const distributorId = $('#distributor').val();
+            if (selectedProducts.length === 0) {
+                alert('Please select at least one product.');
+                return;
+            }
+            if (!distributorId) {
+                alert('Please select a distributor.');
+                return;
+            }
 
-    if (selectedProducts.length === 0) {
-        alert('Please select at least one product.');
-        return;
-    }
-    if (!distributorId) {
-        alert('Please select a distributor.');
-        return;
-    }
+            const data = {
+                product_ids: selectedProducts,
+                distributor_id: distributorId,
+                _token: '{{ csrf_token() }}' // Include CSRF token for Laravel
+            };
 
-    const data = {
-        product_ids: selectedProducts,
-        distributor_id: distributorId,
-        _token: '{{ csrf_token() }}' // Include CSRF token for Laravel
-    };
+            $.ajax({
+                url: '/assign-stock', // Adjust this URL as needed
+                method: 'POST',
+                data: data,
+                success: function(response) {
+                    // Combine messages into a single string
+                    if (response.messages.length > 0) {
+                        // Show only the first message
+                        alert(response.messages[0]);
+                    }
 
-    $.ajax({
-        url: '/assign-stock', // Adjust this URL as needed
-        method: 'POST',
-        data: data,
-        success: function(response) {
-        // Combine messages into a single string
-        if (response.messages.length > 0) {
-            // Show only the first message
-            alert(response.messages[0]); 
-        } 
-
-       location.reload();
-    },
-        error: function(xhr) {
-            alert('Error: ' + xhr.responseText);
-        }
-    });
-});
+                    location.reload();
+                },
+                error: function(xhr) {
+                    alert('Error: ' + xhr.responseText);
+                }
+            });
+        });
 
 
     });

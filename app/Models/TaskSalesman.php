@@ -5,11 +5,14 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Distributors extends Model
+class TaskSalesman extends Model
 {
     use HasFactory;
 
-    
-    protected $table = 'distributors';
-    public $timestamps = true;
+    protected $fillable = [
+        'task_id',
+        'salesman_id',
+    ];
+
+    protected $table = 'task_salesman';
 }

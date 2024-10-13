@@ -12,9 +12,9 @@
     <link rel="stylesheet" href="{{ asset('assets/css/plugins.min.css') }}" />
     <link rel="stylesheet" href="{{ asset('assets/css/kaiadmin.min.css') }}" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-    
+
     <script src="{{asset('assets/js/plugin/webfont/webfont.min.js')}}"></script>
-    
+
     <script>
     WebFont.load({
         google: {
@@ -61,104 +61,11 @@
                 </div>
                 <!-- End Logo Header -->
             </div>
-            <div class="sidebar-wrapper scrollbar scrollbar-inner">
-                <div class="sidebar-content">
-                <ul class="nav nav-secondary">
-
-<!-- Inventory Management Section -->
-<li class="nav-item submenu">
-    <a data-bs-toggle="collapse" href="#inventory" aria-expanded="{{ request()->routeIs('products.*') ? 'true' : 'false' }}">
-        <i class="fas fa-boxes"></i>
-        <p>Inventory Management</p>
-        <span class="caret"></span>
-    </a>
-    <div class="collapse {{ request()->routeIs('products.*') ? 'show' : '' }}" id="inventory">
-        <ul class="nav nav-collapse">
-            <!-- Product Sub-section -->
-            <li class="{{ request()->routeIs('products.index') ? 'active' : '' }}">
-                <a href="{{ route('products.index') }}">
-                <i class="fas fa-box"></i>
-            
-                <p>Product</p>
-                </a>
-            </li>
-            <!-- Stock Assign Sub-section -->
-        <li class="{{ request()->routeIs('products.stockAssign') ? 'active' : '' }}">
-            <a href="{{ route('products.stockAssign') }}">
-                <i class="fas fa-clipboard-list"></i>
-                <p>Stock Assign</p>
-            </a>
-        </li>
-
-        <!-- Stock Admin Sub-section -->
-        <li class="{{ request()->routeIs('stockAdmin') ? 'active' : '' }}">
-            <a href="{{ route('stockAdmin') }}">
-                <i class="fas fa-user-shield"></i>
-                <p>Stock Admin</p>
-            </a>
-        </li>
-
-        <!-- Stock Distributor Sub-section -->
-        <li class="{{ request()->routeIs('stockDistributor') ? 'active' : '' }}">
-            <a href="{{ route('stockDistributor') }}">
-                <i class="fas fa-truck"></i>
-                <p>Stock Distributor</p>
-            </a>
-        </li>
-
-        <!-- Expired Stock Admin Sub-section -->
-        <li class="{{ request()->routeIs('expirestockAdmin') ? 'active' : '' }}">
-            <a href="{{ route('expirestockAdmin') }}">
-                <i class="fas fa-times-circle"></i>
-                <p>Expired Stock Admin</p>
-            </a>
-        </li>
-
-        <!-- Expired Stock Distributor Sub-section -->
-        <li class="{{ request()->routeIs('expirestockDistributor') ? 'active' : '' }}">
-            <a href="{{ route('expirestockDistributor') }}">
-                <i class="fas fa-exclamation-triangle"></i>
-                <p>Expired Stock Distributor</p>
-            </a>
-        </li>
-        </ul>
-    </div>
-</li>
-
-<!-- Orders Management Section -->
-<li class="nav-item submenu">
-    <a data-bs-toggle="collapse" href="#orders" aria-expanded="{{ request()->routeIs('orders.*') ? 'true' : 'false' }}">
-        <i class="fas fa-shopping-cart"></i>
-        <p>Orders Management</p>
-        <span class="caret"></span>
-    </a>
-    <div class="collapse {{ request()->routeIs('orders.*') ? 'show' : '' }}" id="orders">
-        <ul class="nav nav-collapse">
-            <!-- Order Sub-section -->
-            <li class="{{ request()->routeIs('orders.index') ? 'active' : '' }}">
-                <a href="{{ route('orders.index') }}">
-                <i class="fas fa-receipt"></i>
-                <p>Order</p>
-                   
-                </a>
-            </li>
-            <li class="{{ request()->routeIs('orderstatus.index') ? 'active' : '' }}">
-    <a href="{{ route('orderstatus.index') }}">
-        <i class="fas fa-list-alt"></i>
-        <p>Order Status</p>
-    </a>
-</li>
-        </ul>
-    </div>
-</li>
-
-</ul>
-                </div>
-            </div>
+            @include('partials.sidebar')
         </div>
         <!-- End Sidebar -->
         <div class="main-panel">
-        <div class="main-header">
+            <div class="main-header">
                 <div class="main-header-logo">
                     <!-- Logo Header -->
                     <div class="logo-header" data-background-color="dark">
@@ -444,7 +351,14 @@
                                             <div class="dropdown-divider"></div>
                                             <a class="dropdown-item" href="#">Account Setting</a>
                                             <div class="dropdown-divider"></div>
-                                            <a class="dropdown-item" href="/">Logout</a>
+                                            <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
+    @csrf
+</form>
+
+<!-- Logout Link -->
+<a class="dropdown-item" href="#" onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
+    Logout
+</a>
                                         </li>
                                     </div>
                                 </ul>
@@ -455,7 +369,7 @@
                 <!-- End Navbar -->
             </div>
             <div class="container">
-         
+
                 <div class="page-inner">
                     <div class="row">
                         <div class="col-md-12">
@@ -475,8 +389,7 @@
                                         </div>
                                         <div class="form-group ps-3 pe-3">
                                             <label for="deliveryStatus"><strong>Delivery Status:</strong></label>
-                                            <select name="delivery_status" id="deliveryStatus"
-                                                class="form-select w-25">
+                                            <select name="delivery_status" id="deliveryStatus" class="form-select w-25">
                                                 <option value="Processing"
                                                     {{ $order->delivery_status == 'Processing' ? 'selected' : '' }}>
                                                     Processing</option>
@@ -490,7 +403,7 @@
                                                     {{ $order->delivery_status == 'Delivered' ? 'selected' : '' }}>
                                                     Delivered</option>
                                             </select>
-                                          
+
                                         </div>
                                         <div class="form-group ps-3 pe-3">
                                             <label for="orderAdjustment"><strong>Order Adjustment:</strong></label>
@@ -506,7 +419,7 @@
                                                     {{ $order->order_adjustment == 'Null' ? 'selected' : '' }}>No
                                                     Adjustment</option>
                                             </select>
-                                           
+
                                         </div>
                                     </div>
                                     <div class="col-md-6">
@@ -514,13 +427,14 @@
                                         <div class="form-group ps-3 pe-3">
                                             <!-- Added padding start and end -->
                                             <span><strong>Name:</strong> {{$order->order_by}}</span>
-                                            <span style="margin-left: 20px;"><strong>Location:</strong> {{$order->location}}</span>
+                                            <span style="margin-left: 20px;"><strong>Location:</strong>
+                                                {{$order->location}}</span>
                                         </div>
                                         <div class="form-group ps-3 pe-3">
                                             <!-- Added padding start and end -->
                                             <span><strong>Contact Number:</strong>{{$order->contact}}</span>
                                             <span style="margin-left: 20px;"><strong>Distributor:</strong>
-                                               {{$order->distributor_name}}</span>
+                                                {{$order->distributor_name}}</span>
                                         </div>
                                         <div class="form-group ps-3 pe-3">
                                             <!-- Added padding start and end -->
@@ -543,15 +457,15 @@
                                                 </tr>
                                             </thead>
                                             <tbody>
-                                            @foreach($orderDetails as $detail)
-                                        <tr>
-                                            <td>{{ $detail->batch_number }}</td>
-                                            <td>{{ $detail->category }}</td>
-                                            <td>{{ $detail->name }}</td>
-                                            <td>{{ $detail->stock_count }}</td>
-                                          
-                                        </tr>
-                                    @endforeach
+                                                @foreach($orderDetails as $detail)
+                                                <tr>
+                                                    <td>{{ $detail->batch_number }}</td>
+                                                    <td>{{ $detail->category }}</td>
+                                                    <td>{{ $detail->name }}</td>
+                                                    <td>{{ $detail->stock_count }}</td>
+
+                                                </tr>
+                                                @endforeach
                                             </tbody>
                                         </table>
                                     </div>
@@ -562,31 +476,32 @@
                                             <div class="form-group me-3">
                                                 <!-- Margin end -->
                                                 <label for="totalProducts"><strong>Total Items:</strong></label>
-                                                <input type="text" id="totalProducts" class="form-control" value="{{$orderDetails->count()}}"
-                                                    readonly>
+                                                <input type="text" id="totalProducts" class="form-control"
+                                                    value="{{$orderDetails->count()}}" readonly>
                                             </div>
                                             <div class="form-group">
                                                 <label for="totalCost"><strong>Total Cost:</strong></label>
-                                                <input type="text" id="totalCost" class="form-control" value="{{$order->total_cost}}"
-                                                    readonly>
+                                                <input type="text" id="totalCost" class="form-control"
+                                                    value="{{$order->total_cost}}" readonly>
                                             </div>
                                         </div>
                                         <div>
-                                            <button type="submit" id="updateOrderStatus" class="btn btn-primary">Update</button>
+                                            <button type="submit" id="updateOrderStatus"
+                                                class="btn btn-primary">Update</button>
                                         </div>
-                                      
+
                                     </div>
                                 </div>
                             </div>
                         </div>
                     </div>
-                   
+
                 </div>
                 @include('partials.footer')
             </div>
-  
 
-            
+
+
         </div>
     </div>
 
@@ -671,7 +586,11 @@
             // Get the selected values
             const deliveryStatus = $('#deliveryStatus').val();
             const orderAdjustment = $('#orderAdjustment').val();
-            const orderId = {{ $order->id }};  // Assuming you have access to the order ID
+            const orderId = {
+                {
+                    $order - > id
+                }
+            }; // Assuming you have access to the order ID
 
             // Send the AJAX request
             $.ajax({
@@ -687,7 +606,7 @@
                     alert('Order status updated successfully!');
                     // Redirect to the order status index page
                     window.location.href =
-                    '{{ url("orderstatus") }}'; // Redirect to the orderStatus index route
+                        '{{ url("orderstatus") }}'; // Redirect to the orderStatus index route
                 },
                 error: function(xhr, status, error) {
                     // Handle the error response

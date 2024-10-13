@@ -2,7 +2,7 @@
 <html lang="en">
 
 <head>
-<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <title>Zealix</title>
     <meta content="width=device-width, initial-scale=1.0, shrink-to-fit=no" name="viewport" />
     <link rel="icon" href="../assets/img/kaiadmin/favicon.ico" type="image/x-icon" />
@@ -39,62 +39,62 @@
     <style>
     /* Custom CSS goes here */
     .custom-dropdown {
-  position: relative;
-  display: inline-block;
-  width: 100%;
-}
+        position: relative;
+        display: inline-block;
+        width: 100%;
+    }
 
-.dropdown-selected {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  background: #fff;
-  border: 1px solid #ced4da;
-  padding: 10px;
-  cursor: pointer;
-}
+    .dropdown-selected {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        background: #fff;
+        border: 1px solid #ced4da;
+        padding: 10px;
+        cursor: pointer;
+    }
 
-.dropdown-options {
-  display: none; /* Initially hidden */
-  position: absolute;
-  z-index: 1;
-  background: #fff;
-  border: 1px solid #ced4da;
-  width: 100%;
-  max-height: 200px;
-  overflow-y: auto;
-}
+    .dropdown-options {
+        display: none;
+        /* Initially hidden */
+        position: absolute;
+        z-index: 1;
+        background: #fff;
+        border: 1px solid #ced4da;
+        width: 100%;
+        max-height: 200px;
+        overflow-y: auto;
+    }
 
-.dropdown-option {
-  padding: 10px;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  cursor: pointer;
-}
+    .dropdown-option {
+        padding: 10px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        cursor: pointer;
+    }
 
-/* Adjusting icon spacing */
-.dropdown-option i {
-  margin-left: 5px; 
-  margin-right: 5px;
-}
+    /* Adjusting icon spacing */
+    .dropdown-option i {
+        margin-left: 5px;
+        margin-right: 5px;
+    }
 
-.dropdown-option:hover {
-  background: #f1f1f1;
-}
+    .dropdown-option:hover {
+        background: #f1f1f1;
+    }
     </style>
 </head>
 
 <body>
     <div class="wrapper">
-            <!-- Sidebar -->
-       <div class="sidebar" data-background-color="dark">
+        <!-- Sidebar -->
+        <div class="sidebar" data-background-color="dark">
             <div class="sidebar-logo">
                 <!-- Logo Header -->
                 <div class="logo-header" data-background-color="dark">
                     <a href="#" class="logo">
-                        <img src="../assets/img/zealx logo.png" alt="navbar brand" class="navbar-brand"
-                            height="80" />
+                        <img src="../assets/img/zealx logo.png" alt="navbar brand" class="navbar-brand" height="80" />
                     </a>
                     <div class="nav-toggle">
                         <button class="btn btn-toggle toggle-sidebar">
@@ -110,105 +110,11 @@
                 </div>
                 <!-- End Logo Header -->
             </div>
-            <div class="sidebar-wrapper scrollbar scrollbar-inner">
-                <div class="sidebar-content">
-                <ul class="nav nav-secondary">
-
-<!-- Inventory Management Section -->
-<li class="nav-item submenu">
-    <a data-bs-toggle="collapse" href="#inventory" aria-expanded="{{ request()->routeIs('products.*') ? 'true' : 'false' }}">
-        <i class="fas fa-boxes"></i>
-        <p>Inventory Management</p>
-        <span class="caret"></span>
-    </a>
-    <div class="collapse {{ request()->routeIs('products.*') ? 'show' : '' }}" id="inventory">
-        <ul class="nav nav-collapse">
-            <!-- Product Sub-section -->
-            <li class="{{ request()->routeIs('products.index') ? 'active' : '' }}">
-                <a href="{{ route('products.index') }}">
-                <i class="fas fa-box"></i>
-            
-                <p>Product</p>
-                </a>
-            </li>
-            <!-- Stock Assign Sub-section -->
-        <li class="{{ request()->routeIs('products.stockAssign') ? 'active' : '' }}">
-            <a href="{{ route('products.stockAssign') }}">
-                <i class="fas fa-clipboard-list"></i>
-                <p>Stock Assign</p>
-            </a>
-        </li>
-
-        <!-- Stock Admin Sub-section -->
-        <li class="{{ request()->routeIs('stockAdmin') ? 'active' : '' }}">
-            <a href="{{ route('stockAdmin') }}">
-                <i class="fas fa-user-shield"></i>
-                <p>Stock Admin</p>
-            </a>
-        </li>
-
-        <!-- Stock Distributor Sub-section -->
-        <li class="{{ request()->routeIs('stockDistributor') ? 'active' : '' }}">
-            <a href="{{ route('stockDistributor') }}">
-                <i class="fas fa-truck"></i>
-                <p>Stock Distributor</p>
-            </a>
-        </li>
-
-        <!-- Expired Stock Admin Sub-section -->
-        <li class="{{ request()->routeIs('expirestockAdmin') ? 'active' : '' }}">
-            <a href="{{ route('expirestockAdmin') }}">
-                <i class="fas fa-times-circle"></i>
-                <p>Expired Stock Admin</p>
-            </a>
-        </li>
-
-        <!-- Expired Stock Distributor Sub-section -->
-        <li class="{{ request()->routeIs('expirestockDistributor') ? 'active' : '' }}">
-            <a href="{{ route('expirestockDistributor') }}">
-                <i class="fas fa-exclamation-triangle"></i>
-                <p>Expired Stock Distributor</p>
-            </a>
-        </li>
-        </ul>
-    </div>
-</li>
-
-<!-- Orders Management Section -->
-<li class="nav-item submenu">
-    <a data-bs-toggle="collapse" href="#orders" aria-expanded="{{ request()->routeIs('orders.*') ? 'true' : 'false' }}">
-        <i class="fas fa-shopping-cart"></i>
-        <p>Orders Management</p>
-        <span class="caret"></span>
-    </a>
-    <div class="collapse {{ request()->routeIs('orders.*') ? 'show' : '' }}" id="orders">
-        <ul class="nav nav-collapse">
-            <!-- Order Sub-section -->
-            <li class="{{ request()->routeIs('orders.index') ? 'active' : '' }}">
-                <a href="{{ route('orders.index') }}">
-                <i class="fas fa-receipt"></i>
-                <p>Order</p>
-                   
-                </a>
-            </li>
-            <li class="{{ request()->routeIs('orderstatus.index') ? 'active' : '' }}">
-    <a href="{{ route('orderstatus.index') }}">
-        <i class="fas fa-list-alt"></i>
-        <p>Order Status</p>
-    </a>
-</li>
-        </ul>
-    </div>
-</li>
-
-</ul>
- 
-                </div>
-            </div>
+            @include('partials.sidebar')
         </div>
         <!-- End Sidebar -->
         <div class="main-panel">
-        <div class="main-header">
+            <div class="main-header">
                 <div class="main-header-logo">
                     <!-- Logo Header -->
                     <div class="logo-header" data-background-color="dark">
@@ -494,7 +400,14 @@
                                             <div class="dropdown-divider"></div>
                                             <a class="dropdown-item" href="#">Account Setting</a>
                                             <div class="dropdown-divider"></div>
-                                            <a class="dropdown-item" href="/">Logout</a>
+                                            <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
+    @csrf
+</form>
+
+<!-- Logout Link -->
+<a class="dropdown-item" href="#" onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
+    Logout
+</a>
                                         </li>
                                     </div>
                                 </ul>
@@ -669,14 +582,14 @@
                             </div>
                         </div>
                     </div>
-                   
+
                 </div>
                 @include('partials.footer')
             </div>
 
-           
+
         </div>
-        
+
     </div>
 
     <!-- Core JS Files -->

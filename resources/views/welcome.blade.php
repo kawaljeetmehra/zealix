@@ -198,15 +198,17 @@ input[type="submit"]:active{
 </head>
 <body>
     <div class="box">
-        <form action="{{route('products.index')}}">
+    <form action="{{ route('login.submit') }}" method="POST">
+        @csrf <!-- CSRF token for security -->
+
             <div class="input-box">
                 <h2>Sign In</h2>
-                <input type="text" required>
+                <input type="text"  name="email" required>
                 <span>Username</span>
                 <i></i>
             </div>
             <div class="input-box">
-                <input type="password" required>
+                <input type="password"  name="password" required>
                 <span>Enter Password</span>
                 <i></i>
             </div>
@@ -214,10 +216,4 @@ input[type="submit"]:active{
         </form>
     </div>
 </body>
-</html>
-  
-  
-  
-</body>
-
 </html>

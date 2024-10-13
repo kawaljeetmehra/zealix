@@ -46,8 +46,7 @@
                 <!-- Logo Header -->
                 <div class="logo-header" data-background-color="dark">
                     <a href="#" class="logo">
-                        <img src="../assets/img/zealx logo.png" alt="navbar brand" class="navbar-brand"
-                            height="80" />
+                        <img src="../assets/img/zealx logo.png" alt="navbar brand" class="navbar-brand" height="80" />
                     </a>
                     <div class="nav-toggle">
                         <button class="btn btn-toggle toggle-sidebar">
@@ -63,101 +62,7 @@
                 </div>
                 <!-- End Logo Header -->
             </div>
-            <div class="sidebar-wrapper scrollbar scrollbar-inner">
-    <div class="sidebar-content">
-        <ul class="nav nav-secondary">
-
-            <!-- Inventory Management Section -->
-            <li class="nav-item submenu">
-                <a data-bs-toggle="collapse" href="#inventory" aria-expanded="{{ request()->routeIs('products.*') ? 'true' : 'false' }}">
-                    <i class="fas fa-boxes"></i>
-                    <p>Inventory Management</p>
-                    <span class="caret"></span>
-                </a>
-                <div class="collapse {{ request()->routeIs('products.*') ? 'show' : '' }}" id="inventory">
-                    <ul class="nav nav-collapse">
-                        <!-- Product Sub-section -->
-                        <li class="{{ request()->routeIs('products.index') ? 'active' : '' }}">
-                            <a href="{{ route('products.index') }}">
-                            <i class="fas fa-box"></i>
-                        
-                            <p>Product</p>
-                            </a>
-                        </li>
-
-                         <!-- Stock Assign Sub-section -->
-        <li class="{{ request()->routeIs('products.stockAssign') ? 'active' : '' }}">
-            <a href="{{ route('products.stockAssign') }}">
-                <i class="fas fa-clipboard-list"></i>
-                <p>Stock Assign</p>
-            </a>
-        </li>
-
-        <!-- Stock Admin Sub-section -->
-        <li class="{{ request()->routeIs('stockAdmin') ? 'active' : '' }}">
-            <a href="{{ route('stockAdmin') }}">
-                <i class="fas fa-user-shield"></i>
-                <p>Stock Admin</p>
-            </a>
-        </li>
-
-        <!-- Stock Distributor Sub-section -->
-        <li class="{{ request()->routeIs('stockDistributor') ? 'active' : '' }}">
-            <a href="{{ route('stockDistributor') }}">
-                <i class="fas fa-truck"></i>
-                <p>Stock Distributor</p>
-            </a>
-        </li>
-
-        <!-- Expired Stock Admin Sub-section -->
-        <li class="{{ request()->routeIs('expirestockAdmin') ? 'active' : '' }}">
-            <a href="{{ route('expirestockAdmin') }}">
-                <i class="fas fa-times-circle"></i>
-                <p>Expired Stock Admin</p>
-            </a>
-        </li>
-
-        <!-- Expired Stock Distributor Sub-section -->
-        <li class="{{ request()->routeIs('expirestockDistributor') ? 'active' : '' }}">
-            <a href="{{ route('expirestockDistributor') }}">
-                <i class="fas fa-exclamation-triangle"></i>
-                <p>Expired Stock Distributor</p>
-            </a>
-        </li>
-                    </ul>
-                </div>
-            </li>
-
-            <!-- Orders Management Section -->
-            <li class="nav-item submenu">
-                <a data-bs-toggle="collapse" href="#orders" aria-expanded="{{ request()->routeIs('orders.*') ? 'true' : 'false' }}">
-                    <i class="fas fa-shopping-cart"></i>
-                    <p>Orders Management</p>
-                    <span class="caret"></span>
-                </a>
-                <div class="collapse {{ request()->routeIs('orders.*') ? 'show' : '' }}" id="orders">
-                    <ul class="nav nav-collapse">
-                        <!-- Order Sub-section -->
-                        <li class="{{ request()->routeIs('orders.index') ? 'active' : '' }}">
-                            <a href="{{ route('orders.index') }}">
-                            <i class="fas fa-receipt"></i>
-                            <p>Order</p>
-                               
-                            </a>
-                        </li>
-                        <li class="{{ request()->routeIs('orderstatus.index') ? 'active' : '' }}">
-    <a href="{{ route('orderstatus.index') }}">
-        <i class="fas fa-list-alt"></i>
-        <p>Order Status</p>
-    </a>
-</li>
-                    </ul>
-                </div>
-            </li>
-
-        </ul>
-    </div>
-</div>
+            @include('partials.sidebar')
 
         </div>
         <!-- End Sidebar -->
@@ -449,7 +354,14 @@
                                             <div class="dropdown-divider"></div>
                                             <a class="dropdown-item" href="#">Account Setting</a>
                                             <div class="dropdown-divider"></div>
-                                            <a class="dropdown-item" href="/">Logout</a>
+                                            <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
+    @csrf
+</form>
+
+<!-- Logout Link -->
+<a class="dropdown-item" href="#" onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
+    Logout
+</a>
                                         </li>
                                     </div>
                                 </ul>
@@ -461,105 +373,110 @@
             </div>
 
             <div class="container">
-    <div class="page-inner">
-        <div class="row">
-            <div class="col-md-12">
-                <div class="card">
-                    <div class="card-header">
-                        <div class="card-title">Orders</div>
-                        <p>View Order</p>
-                    </div>
-                    <div class="card-body">
+                <div class="page-inner">
                     <div class="row">
-        <div class="col-md-6">
-            <h4>Order Information</h4>
-            <div class="form-group">
-                <span><strong>Order Number:</strong> {{ $order[0]->order_id }}</span>
-            </div>
-            <div class="form-group">
-                <span><strong>Order Date:</strong> {{ $order[0]->order_date }}</span>
-            </div>
-        </div>
-        
-        <div class="col-md-6">
-            <h4>Customer Information</h4>
-            <div class="form-group">
-                <span><strong>Name:</strong> {{ $order[0]->order_by }}</span>
-                <span style="margin-left: 20px;"><strong>Location:</strong> {{ $order[0]->location }}</span>
-            </div>
-            <div class="form-group">
-                <span><strong>Contact Number:</strong> {{ $order[0]->contact }}</span>
-                <span style="margin-left: 20px;"><strong >Distributor:</strong> {{ $order[0]->distributor_name }}</span>
-            </div>
-            <div class="form-group">
-              
-                <span><strong>Email:</strong> {{ $order[0]->email }}</span>
-            </div>
-        </div>
-    </div>
+                        <div class="col-md-12">
+                            <div class="card">
+                                <div class="card-header">
+                                    <div class="card-title">Orders</div>
+                                    <p>View Order</p>
+                                </div>
+                                <div class="card-body">
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <h4>Order Information</h4>
+                                            <div class="form-group">
+                                                <span><strong>Order Number:</strong> {{ $order[0]->order_id }}</span>
+                                            </div>
+                                            <div class="form-group">
+                                                <span><strong>Order Date:</strong> {{ $order[0]->order_date }}</span>
+                                            </div>
+                                        </div>
 
-                        <!-- Product Information -->
-                        <div class="row">
-                            <div class="col-md-12">
-                                <h5>Product Information</h5>
-                                <table class="table table-striped">
-                                    <thead class="table-dark">
-                                        <tr>
-                                            <th>Batch Number</th>
-                                            <th>Product Category</th>
-                                            <th>Stock Count</th>
-                                            <th>MRP</th>
-                                        </tr>
-                                    </thead>
-                                    
-                                    
-    <tbody>
-        @foreach($order as $product)
-        <tr>
-            <td>{{ $product->batch_number }}</td>
-            <td>{{ $product->category }}</td>
-          
-            <td>{{ $product->stock_count }}</td>
-            <td>{{ $product->mrp }}</td>
-        </tr>
-        @endforeach
-    </tbody>
+                                        <div class="col-md-6">
+                                            <h4>Customer Information</h4>
+                                            <div class="form-group">
+                                                <span><strong>Name:</strong> {{ $order[0]->order_by }}</span>
+                                                <span style="margin-left: 20px;"><strong>Location:</strong>
+                                                    {{ $order[0]->location }}</span>
+                                            </div>
+                                            <div class="form-group">
+                                                <span><strong>Contact Number:</strong> {{ $order[0]->contact }}</span>
+                                                <span style="margin-left: 20px;"><strong>Distributor:</strong>
+                                                    {{ $order[0]->distributor_name }}</span>
+                                            </div>
+                                            <div class="form-group">
 
-                                    
-                                </table>
+                                                <span><strong>Email:</strong> {{ $order[0]->email }}</span>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <!-- Product Information -->
+                                    <div class="row">
+                                        <div class="col-md-12">
+                                            <h5>Product Information</h5>
+                                            <table class="table table-striped">
+                                                <thead class="table-dark">
+                                                    <tr>
+                                                        <th>Batch Number</th>
+                                                        <th>Product Category</th>
+                                                        <th>Stock Count</th>
+                                                        <th>MRP</th>
+                                                    </tr>
+                                                </thead>
+
+
+                                                <tbody>
+                                                    @foreach($order as $product)
+                                                    <tr>
+                                                        <td>{{ $product->batch_number }}</td>
+                                                        <td>{{ $product->category }}</td>
+
+                                                        <td>{{ $product->stock_count }}</td>
+                                                        <td>{{ $product->mrp }}</td>
+                                                    </tr>
+                                                    @endforeach
+                                                </tbody>
+
+
+                                            </table>
+                                        </div>
+                                    </div>
+
+                                    <div class="row p-3">
+                                        <div class="col-md-6">
+                                            <div class="mb-3">
+                                                <label for="total-stock">Total Products</label>
+                                                <input type="number" class="form-control col-md-4 w-25" id="total-stock"
+                                                    value="{{ $order->count() }}" readonly />
+                                            </div>
+
+                                            <div class="mb-3">
+                                                <label for="total-cost">Total Items</label>
+                                                <input type="number" class="form-control col-md-4 w-25" id="total-cost"
+                                                    value="{{ $order[0]->total_cost }}" readonly />
+                                            </div>
+                                        </div>
+
+                                        <div class="col-md-6 d-flex justify-content-end align-items-center">
+                                            <div>
+                                                <a href="{{ route('orders.index') }}"
+                                                    class="btn btn-primary btn-round me-2">Back to Orders</a>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                </div>
                             </div>
                         </div>
-
-                        <div class="row p-3">
-                            <div class="col-md-6">
-                                <div class="mb-3">
-                                    <label for="total-stock">Total Products</label>
-                                    <input type="number" class="form-control col-md-4 w-25" id="total-stock" value="{{ $order->count() }}" readonly />
-                                </div>
-
-                                <div class="mb-3">
-                                    <label for="total-cost">Total Items</label>
-                                    <input type="number" class="form-control col-md-4 w-25" id="total-cost" value="{{ $order[0]->total_cost }}" readonly />
-                                </div>
-                            </div>
-
-                            <div class="col-md-6 d-flex justify-content-end align-items-center">
-                                <div>
-                                    <a href="{{ route('orders.index') }}" class="btn btn-primary btn-round me-2">Back to Orders</a>
-                                </div>
-                            </div>
-                        </div>
-
                     </div>
                 </div>
+                @include('partials.footer')
             </div>
         </div>
-    </div>
-    @include('partials.footer')
-</div>
-        </div>
 
-       
+
     </div>
 
 

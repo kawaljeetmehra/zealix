@@ -5,10 +5,10 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <title>Zealix</title>
     <meta content="width=device-width, initial-scale=1.0, shrink-to-fit=no" name="viewport" />
-    <link rel="icon" href="{{asset('assets/img/kaiadmin/favicon.ico')}}" type="image/x-icon" />
+    <link rel="icon" href="../assets/img/kaiadmin/favicon.ico" type="image/x-icon" />
 
     <!-- Fonts and icons -->
-    <script src="{{asset('assets/js/plugin/webfont/webfont.min.js')}}"></script>
+    <script src="../assets/js/plugin/webfont/webfont.min.js"></script>
     <script>
     WebFont.load({
         google: {
@@ -21,7 +21,7 @@
                 "Font Awesome 5 Brands",
                 "simple-line-icons",
             ],
-            urls: ["{{asset('/assets/css/fonts.min.css')}}"],
+            urls: ["../assets/css/fonts.min.css"],
         },
         active: function() {
             sessionStorage.fonts = true;
@@ -29,63 +29,13 @@
     });
     </script>
 
-
+    <!-- CSS Files -->
+    <link rel="stylesheet" href="../assets/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="../assets/css/plugins.min.css" />
+    <link rel="stylesheet" href="../assets/css/kaiadmin.min.css" />
 
     <!-- CSS Just for demo purpose, don't include it in your project -->
-    <link rel="stylesheet" href="{{asset('assets/css/demo.css')}}" />
-
-    <!-- CSS Files -->
-    <link rel="stylesheet" href="{{ asset('assets/css/bootstrap.min.css') }}" />
-    <link rel="stylesheet" href="{{ asset('assets/css/plugins.min.css') }}" />
-    <link rel="stylesheet" href="{{ asset('assets/css/kaiadmin.min.css') }}" />
-    <style>
-    /* Custom CSS goes here */
-    .custom-dropdown {
-        position: relative;
-        display: inline-block;
-        width: 100%;
-    }
-
-    .dropdown-selected {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        background: #fff;
-        border: 1px solid #ced4da;
-        padding: 10px;
-        cursor: pointer;
-    }
-
-    .dropdown-options {
-        display: none;
-        /* Initially hidden */
-        position: absolute;
-        z-index: 1;
-        background: #fff;
-        border: 1px solid #ced4da;
-        width: 100%;
-        max-height: 200px;
-        overflow-y: auto;
-    }
-
-    .dropdown-option {
-        padding: 10px;
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        cursor: pointer;
-    }
-
-    /* Adjusting icon spacing */
-    .dropdown-option i {
-        margin-left: 5px;
-        margin-right: 5px;
-    }
-
-    .dropdown-option:hover {
-        background: #f1f1f1;
-    }
-    </style>
+    <link rel="stylesheet" href="../assets/css/demo.css" />
 </head>
 
 <body>
@@ -96,8 +46,7 @@
                 <!-- Logo Header -->
                 <div class="logo-header" data-background-color="dark">
                     <a href="#" class="logo">
-                        <img src="{{asset('assets/img/zealx logo.png')}}" alt="navbar brand" class="navbar-brand"
-                            height="80" />
+                        <img src="../assets/img/zealx logo.png" alt="navbar brand" class="navbar-brand" height="80" />
                     </a>
                     <div class="nav-toggle">
                         <button class="btn btn-toggle toggle-sidebar">
@@ -114,8 +63,9 @@
                 <!-- End Logo Header -->
             </div>
             @include('partials.sidebar')
-        </div>
 
+        </div>
+        <!-- End Sidebar -->
 
         <div class="main-panel">
             <div class="main-header">
@@ -372,7 +322,7 @@
                                 <a class="dropdown-toggle profile-pic" data-bs-toggle="dropdown" href="#"
                                     aria-expanded="false">
                                     <div class="avatar-sm">
-                                        <img src="{{asset('assets/img/profile.jpg')}}" alt="..."
+                                        <img src="../assets/img/profile.jpg" alt="..."
                                             class="avatar-img rounded-circle" />
                                     </div>
                                     <span class="profile-username">
@@ -385,7 +335,7 @@
                                         <li>
                                             <div class="user-box">
                                                 <div class="avatar-lg">
-                                                    <img src="{{asset('assets/img/profile.jpg')}}" alt="image profile"
+                                                    <img src="../assets/img/profile.jpg" alt="image profile"
                                                         class="avatar-img rounded" />
                                                 </div>
                                                 <div class="u-text">
@@ -421,275 +371,352 @@
                 </nav>
                 <!-- End Navbar -->
             </div>
+
             <div class="container">
+                @if(session('success'))
+                <div class="alert alert-success">
+                    {{ session('success') }}
+                </div>
+                @endif
+
+                @if(session('error'))
+                <div class="alert alert-danger">
+                    {{ session('error') }}
+                </div>
+                @endif
+
                 <div class="page-inner">
                     <div class="row">
                         <div class="col-md-12">
                             <div class="card">
                                 <div class="card-header">
-                                    <div class="card-title">Edit Product</div>
+                                    <div class="d-flex align-items-center">
+                                        <h4 class="card-title">Route Tracking for TA and DA</h4>
+                                        <a class="btn btn-primary btn-round ms-auto" data-toggle="modal"
+                                            data-target="#addRouteModal">
+                                            <i class="fa fa-plus"></i>
+                                            Add
+                                        </a>
+                                    </div>
                                 </div>
-                                <div class="card-body">
-                                    <!-- Form Content -->
-                                    <form action="{{ route('products.update', $product->id) }}" method="POST">
 
-                                        @csrf
-                                        @method('PUT')
-                                        @if ($errors->any())
-                                        <div class="alert alert-danger">
-                                            <ul>
-                                                @foreach ($errors->all() as $error)
-                                                <li>{{ $error }}</li>
-                                                @endforeach
-                                            </ul>
-                                        </div>
-                                        @endif
-                                        <div class="row">
-                                            <div class="col-md-4">
-                                                <div class="form-group">
-                                                    <label for="productName">Product Name</label>
-                                                    <input type="text" name="product_name" class="form-control"
-                                                        id="productName" placeholder="Enter product name" required
-                                                        value="{{ old('product_name', $product->product_name) }}" />
-                                                </div>
-                                            </div>
-                                            <div class="col-md-4">
-                                                <div class="form-group">
-                                                    <label for="manufacturingDate">Manufacturing Date</label>
-                                                    <input type="date" name="manufacturing_date" class="form-control"
-                                                        id="manufacturingDate" required
-                                                        value="{{ old('manufacturing_date', $product->manufacturing_date) }}" />
-                                                </div>
-                                            </div>
-                                            <div class="col-md-4">
-                                                <div class="form-group">
-                                                    <label for="expiryDate">Expiry Date</label>
-                                                    <input type="date" name="expiry_date" class="form-control"
-                                                        id="expiryDate" required
-                                                        value="{{ old('expiry_date', $product->expiry_date) }}" />
-                                                </div>
-                                            </div>
-                                        </div>
+                                <div class="table-responsive">
+                                    <table id="add-row" class="display table table-striped table-hover">
+                                        <thead>
+                                            <tr>
+                                                <th>Salesman ID</th>
+                                                <th>Travel Date</th>
+                                                <th>Start Location</th>
+                                                <th>End Location</th>
+                                                <th>Distance Traveled (KM)</th>
+                                                <th>Mode of Transportation</th>
+                                                <th>TA Rate (per KM)</th>
+                                                <th>TA Amount</th>
+                                                <th>DA Amount</th>
+                                                <th style="width: 10%">Action</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            @foreach($routeTrackings as $tracking)
+                                            <tr>
+                                                <td>{{ $tracking->salesman_id }}</td>
+                                                <td>{{ \Carbon\Carbon::parse($tracking->travel_date)->format('Y-m-d') }}
+                                                </td>
+                                                <td>{{ $tracking->start_location }}</td>
+                                                <td>{{ $tracking->end_location }}</td>
+                                                <td>{{ $tracking->distance_traveled }}</td>
+                                                <td>{{ $tracking->mode_of_transportation }}</td>
+                                                <td>{{ $tracking->ta_rate }}</td>
+                                                <td>{{ $tracking->ta_amount }}</td>
+                                                <td>{{ $tracking->da_amount }}</td>
+                                                <td>
+                                                    <div class="form-button-action">
 
-                                        <div class="row">
-                                            <div class="col-md-4">
-                                                <div class="form-group">
-                                                    <label for="batchNumber">Batch Number</label>
-                                                    <input type="text" name="batch_number" class="form-control"
-                                                        id="batchNumber" placeholder="Enter batch number" required
-                                                        value="{{ old('batch_number', $product->batch_number) }}" />
-                                                </div>
-                                            </div>
-                                            <div class="col-md-4">
-                                                <div class="form-group">
-                                                    <label for="productPackaging">Product Packaging</label>
-                                                    <select name="packaging" class="form-select" id="productPackaging"
-                                                        required>
-                                                        <option value="Box"
-                                                            {{ $product->packaging == 'Box' ? 'selected' : '' }}>Box
-                                                        </option>
-                                                        <option value="Bottle"
-                                                            {{ $product->packaging == 'Bottle' ? 'selected' : '' }}>
-                                                            Bottle</option>
-                                                    </select>
-                                                </div>
-                                            </div>
-                                            <div class="col-md-4">
-                                                <div class="form-group">
-                                                    <label for="stockCount">Stock Count</label>
-                                                    <input type="number" name="stock_count" class="form-control"
-                                                        id="stockCount" placeholder="Enter stock count" required
-                                                        value="{{ old('stock_count', $product->stock_count) }}" />
-                                                </div>
-                                            </div>
-                                        </div>
-
-                                        <div class="row">
-                                            <div class="col-md-6">
-                                                <div class="form-group">
-                                                    <label for="productCategory">Product Category</label>
-                                                    <div class="custom-dropdown">
-                                                        <div class="dropdown-selected" onclick="toggleDropdown()">
-                                                            <span
-                                                                id="selectedCategory">{{ old('product_category', $product->category) ?: 'Select Product Category' }}</span>
-                                                            <i class="fa fa-caret-down"></i>
-                                                        </div>
-                                                        <div class="dropdown-options" id="categoryOptions">
-                                                            <div class="dropdown-option"
-                                                                onclick="selectCategory('Gynecology')">
-                                                                Gynecology
-                                                                <i class="fa fa-edit" title="Edit"
-                                                                    onclick="editCategory('Gynecology', event)"></i>
-                                                                <i class="fa fa-trash" title="Delete"
-                                                                    onclick="deleteCategory('Gynecology', event)"></i>
-                                                            </div>
-                                                            <div class="dropdown-option"
-                                                                onclick="selectCategory('General Medicine')">
-                                                                General Medicine
-                                                                <i class="fa fa-edit" title="Edit"
-                                                                    onclick="editCategory('General Medicine', event)"></i>
-                                                                <i class="fa fa-trash" title="Delete"
-                                                                    onclick="deleteCategory('General Medicine', event)"></i>
-                                                            </div>
-                                                            <div class="dropdown-option"
-                                                                onclick="selectCategory('Dermatology')">
-                                                                Dermatology
-                                                                <i class="fa fa-edit" title="Edit"
-                                                                    onclick="editCategory('Dermatology', event)"></i>
-                                                                <i class="fa fa-trash" title="Delete"
-                                                                    onclick="deleteCategory('Dermatology', event)"></i>
-                                                            </div>
-                                                        </div>
+                                                        <button type="button" class="btn btn-link btn-primary btn-lg"
+                                                            data-toggle="modal" data-target="#editRouteModal"
+                                                            onclick="editRoute({{ $tracking }})">
+                                                            <i class="fa fa-edit"></i>
+                                                        </button>
+                                                        <form
+                                                            action="{{ route('routeTracking.destroy', $tracking->id) }}"
+                                                            method="POST" style="display:inline;" class="delete-form">
+                                                            @csrf
+                                                            @method('DELETE')
+                                                            <button type="submit" class="btn btn-link btn-danger"
+                                                                data-toggle="tooltip" title="Delete">
+                                                                <i class="fa fa-times"></i>
+                                                            </button>
+                                                        </form>
                                                     </div>
-                                                    <!-- Hidden input to store selected category -->
-                                                    <input type="hidden" name="product_category"
-                                                        id="productCategoryInput"
-                                                        value="{{ old('product_category', $product->category) }}" />
-                                                </div>
-                                            </div>
-                                            <div class="col-md-6">
-                                                <div class="form-group">
-                                                    <label for="productQuantity">Product Quantity</label>
-                                                    <div class="input-group">
-                                                        <input type="number" name="product_quantity"
-                                                            class="form-control" id="productQuantity"
-                                                            placeholder="Enter quantity" required
-                                                            value="{{ old('product_quantity', $product->quantity) }}" />
-                                                        <select name="quantity_unit" class="form-control"
-                                                            id="quantityUnit" style="width: auto;" required>
-                                                            <option value="Unit"
-                                                                {{ $product->quantity_unit == 'Unit' ? 'selected' : '' }}>
-                                                                Unit</option>
-                                                            <option value="ML"
-                                                                {{ $product->quantity_unit == 'ML' ? 'selected' : '' }}>
-                                                                ML</option>
-                                                            <option value="L"
-                                                                {{ $product->quantity_unit == 'L' ? 'selected' : '' }}>L
-                                                            </option>
-                                                            <option value="Pack"
-                                                                {{ $product->quantity_unit == 'Pack' ? 'selected' : '' }}>
-                                                                Pack</option>
-                                                        </select>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-
-                                        <div class="row">
-                                            <div class="col-md-6">
-                                                <div class="form-group">
-                                                    <label for="mrp">MRP of a Box/Bottles</label>
-                                                    <input type="number" name="mrp" class="form-control" id="mrp"
-                                                        placeholder="Enter MRP" required
-                                                        value="{{ old('mrp', $product->mrp) }}" />
-                                                </div>
-                                            </div>
-                                        </div>
-
-                                        <div class="row">
-                                            <div class="col-md-12">
-                                                <div class="form-group">
-                                                    <label for="description">Description</label>
-                                                    <textarea name="description" class="form-control" id="description"
-                                                        rows="5"
-                                                        placeholder="Enter product description">{{ old('description', $product->description) }}</textarea>
-                                                </div>
-                                            </div>
-                                        </div>
-
-                                        <div class="form-group">
-                                            <button type="submit" class="btn btn-primary">Update Product</button>
-                                            <a href="{{ route('products.index') }}" class="btn btn-secondary">Cancel</a>
-                                        </div>
-                                    </form>
+                                                </td>
+                                            </tr>
+                                            @endforeach
+                                        </tbody>
+                                    </table>
                                 </div>
                             </div>
                         </div>
+                      
                     </div>
-
+                   
                 </div>
+
                 @include('partials.footer')
             </div>
-
+            <div class="modal fade" id="addRouteModal" tabindex="-1" role="dialog" aria-labelledby="addRouteModalLabel"
+                aria-hidden="true" data-backdrop="false">
+                <div class="modal-dialog" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="addRouteModalLabel">Add </h5>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <form id="routeForm" action="{{ route('routeTracking.store') }}" method="POST">
+                            @csrf
+                            <div class="modal-body">
+                                <div class="form-group">
+                                    <label for="salesman_id">Salesman ID</label>
+                                    <select name="salesman_id" id="salesman_id" class="form-control" required>
+                                        <option value="">Select Salesman</option>
+                                        @foreach($salesmen as $salesman)
+                                        <option value="{{ $salesman->salesman_id }}">{{ $salesman->salesman_id }}
+                                        </option>
+                                        @endforeach
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label for="travel_date">Travel Date</label>
+                                    <input type="date" class="form-control" name="travel_date" id="travel_date"
+                                        required>
+                                </div>
+                                <div class="form-group">
+                                    <label for="start_location">Start Location</label>
+                                    <input type="text" class="form-control" name="start_location" id="start_location"
+                                        required>
+                                </div>
+                                <div class="form-group">
+                                    <label for="end_location">End Location</label>
+                                    <input type="text" class="form-control" name="end_location" id="end_location"
+                                        required>
+                                </div>
+                                <div class="form-group">
+                                    <label for="distance_traveled">Distance Traveled (KM)</label>
+                                    <input type="number" class="form-control" name="distance_traveled"
+                                        id="distance_traveled" required>
+                                </div>
+                                <div class="form-group">
+                                    <label for="mode_of_transportation">Mode of Transportation</label>
+                                    <input type="text" class="form-control" name="mode_of_transportation"
+                                        id="mode_of_transportation" required>
+                                </div>
+                                <div class="form-group">
+                                    <label for="ta_rate">TA Rate (per KM)</label>
+                                    <input type="number" class="form-control" name="ta_rate" id="ta_rate" required>
+                                </div>
+                                <div class="form-group">
+                                    <label for="ta_amount">TA Amount</label>
+                                    <input type="number" class="form-control" name="ta_amount" id="ta_amount" required>
+                                </div>
+                                <div class="form-group">
+                                    <label for="da_amount">DA Amount</label>
+                                    <input type="number" class="form-control" name="da_amount" id="da_amount" required>
+                                </div>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                                <button type="submit" class="btn btn-primary">Add</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+            <!-- Edit Modal -->
+            <div class="modal fade" id="editRouteModal" tabindex="-1" role="dialog"
+                aria-labelledby="editRouteModalLabel" aria-hidden="true" data-backdrop="false">
+                <div class="modal-dialog" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="editRouteModalLabel">Edit </h5>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <form id="editRouteForm" action="" method="POST">
+                            @csrf
+                            @method('PUT')
+                            <div class="modal-body">
+                                <input type="hidden" name="route_id" id="edit_route_id">
+                                <div class="form-group">
+                                    <label for="edit_salesman_id">Salesman ID</label>
+                                    <select name="salesman_id" id="edit_salesman_id" class="form-control" required>
+                                        <option value="">Select Salesman</option>
+                                        @foreach($salesmen as $salesman)
+                                        <option value="{{ $salesman->salesman_id }}">{{ $salesman->salesman_id }}
+                                        </option>
+                                        @endforeach
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label for="edit_travel_date">Travel Date</label>
+                                    <input type="date" class="form-control" name="travel_date" id="edit_travel_date"
+                                        required>
+                                </div>
+                                <div class="form-group">
+                                    <label for="edit_start_location">Start Location</label>
+                                    <input type="text" class="form-control" name="start_location"
+                                        id="edit_start_location" required>
+                                </div>
+                                <div class="form-group">
+                                    <label for="edit_end_location">End Location</label>
+                                    <input type="text" class="form-control" name="end_location" id="edit_end_location"
+                                        required>
+                                </div>
+                                <div class="form-group">
+                                    <label for="edit_distance_traveled">Distance Traveled (KM)</label>
+                                    <input type="number" class="form-control" name="distance_traveled"
+                                        id="edit_distance_traveled" required>
+                                </div>
+                                <div class="form-group">
+                                    <label for="edit_mode_of_transportation">Mode of Transportation</label>
+                                    <input type="text" class="form-control" name="mode_of_transportation"
+                                        id="edit_mode_of_transportation" required>
+                                </div>
+                                <div class="form-group">
+                                    <label for="edit_ta_rate">TA Rate (per KM)</label>
+                                    <input type="number" class="form-control" name="ta_rate" id="edit_ta_rate" required>
+                                </div>
+                                <div class="form-group">
+                                    <label for="edit_ta_amount">TA Amount</label>
+                                    <input type="number" class="form-control" name="ta_amount" id="edit_ta_amount"
+                                        required>
+                                </div>
+                                <div class="form-group">
+                                    <label for="edit_da_amount">DA Amount</label>
+                                    <input type="number" class="form-control" name="da_amount" id="edit_da_amount"
+                                        required>
+                                </div>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                                <button type="submit" class="btn btn-primary">Update </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
 
         </div>
+
+        
     </div>
 
-    <!-- Core JS Files -->
-    <script src="{{ asset('assets/js/core/jquery-3.7.1.min.js') }}"></script>
-    <script src="{{ asset('assets/js/core/popper.min.js') }}"></script>
-    <script src="{{ asset('assets/js/core/bootstrap.min.js') }}"></script>
-    <script src="{{ asset('assets/js/plugin/jquery-scrollbar/jquery.scrollbar.min.js') }}"></script>
-    <script src="{{ asset('assets/js/plugin/jquery-ui/jquery-ui.min.js') }}"></script>
-    <script src="{{ asset('assets/js/plugin/jquery-ui/jquery-ui.touch-punch.min.js') }}"></script>
-    <script src="{{ asset('assets/js/plugin/jquery.mask/jquery.mask.min.js') }}"></script>
-    <script src="{{ asset('assets/js/kaiadmin.min.js') }}"></script>
-    <script src="{{ asset('assets/js/plugin/chart.js/chart.min.js') }}"></script>
-    <script src="{{ asset('assets/js/plugin/printThis/printThis.js') }}"></script>
+   
 
+
+    
+    <!--   Core JS Files   -->
+    <script src="../assets/js/core/jquery-3.7.1.min.js"></script>
+    <script src="../assets/js/core/popper.min.js"></script>
+    <script src="../assets/js/core/bootstrap.min.js"></script>
+
+    <!-- jQuery Scrollbar -->
+    <script src="../assets/js/plugin/jquery-scrollbar/jquery.scrollbar.min.js"></script>
+    <!-- Datatables -->
+    <script src="../assets/js/plugin/datatables/datatables.min.js"></script>
+    <!-- Kaiadmin JS -->
+    <script src="../assets/js/kaiadmin.min.js"></script>
+    <!-- Kaiadmin DEMO methods, don't include it in your project! -->
+    <script src="../assets/js/setting-demo2.js"></script>
     <script>
-    // Dropdown toggle function
-    function toggleDropdown() {
-        const dropdownOptions = document.getElementById("categoryOptions");
-        dropdownOptions.style.display = dropdownOptions.style.display === "block" ? "none" : "block";
-    }
-
-    function selectCategory(category) {
-        document.getElementById("selectedCategory").innerText = category;
-        document.getElementById("productCategoryInput").value = category; // Set the hidden input value
-        document.getElementById("categoryOptions").style.display = "none";
-    }
-    // Select category function
+    $(document).ready(function() {
+        $("#basic-datatables").DataTable({});
+        $('.delete-form').on('submit', function(e) {
+            e.preventDefault();
 
 
-    // Edit category function (placeholder)
-    function editCategory(category, event) {
-        event.stopPropagation();
-        alert("Editing " + category);
-    }
+            var confirmed = confirm("Are you sure you want to delete this record?");
 
-    // Delete category function (placeholder)
-    function deleteCategory(category, event) {
-        event.stopPropagation();
-        if (confirm("Are you sure you want to delete " + category + "?")) {
-            alert(category + " deleted");
-        }
-    }
+            if (confirmed) {
+                this.submit();
+            }
+        });
+        $("#multi-filter-select").DataTable({
+            pageLength: 5,
+            initComplete: function() {
+                this.api()
+                    .columns()
+                    .every(function() {
+                        var column = this;
+                        var select = $(
+                                '<select class="form-select"><option value=""></option></select>'
+                            )
+                            .appendTo($(column.footer()).empty())
+                            .on("change", function() {
+                                var val = $.fn.dataTable.util.escapeRegex($(this).val());
 
-    // Close dropdown on click outside
-    document.addEventListener('click', function(event) {
-        const dropdown = document.getElementById("categoryOptions");
-        if (!event.target.closest('.custom-dropdown')) {
-            dropdown.style.display = 'none';
-        }
-    });
-    document.addEventListener('DOMContentLoaded', function() {
-        const manufacturingInput = document.getElementById('manufacturingDate');
-        const expiryInput = document.getElementById('expiryDate');
+                                column
+                                    .search(val ? "^" + val + "$" : "", true, false)
+                                    .draw();
+                            });
 
-        manufacturingInput.addEventListener('change', function() {
-            const manufacturingDate = new Date(this.value);
-            const expiryDate = new Date(manufacturingDate);
-
-            // Set expiry date to the next day
-            expiryDate.setDate(manufacturingDate.getDate() + 1);
-
-            // Format the date to YYYY-MM-DD
-            const year = expiryDate.getFullYear();
-            const month = String(expiryDate.getMonth() + 1).padStart(2, '0'); // Months are 0-indexed
-            const day = String(expiryDate.getDate()).padStart(2, '0');
-
-            // Set the expiry date input value
-            expiryInput.value = `${year}-${month}-${day}`;
-
-            // Set minimum date for expiry date to the next day of manufacturing date
-            expiryInput.setAttribute('min', `${year}-${month}-${day}`);
+                        column
+                            .data()
+                            .unique()
+                            .sort()
+                            .each(function(d, j) {
+                                select.append(
+                                    '<option value="' + d + '">' + d + "</option>"
+                                );
+                            });
+                    });
+            },
         });
 
-        // Set min attribute for expiry date when the page loads
-        expiryInput.setAttribute('min', expiryInput.value);
+        // Add Row
+        $("#add-row").DataTable({
+            pageLength: 5,
+        });
+
+        var action =
+            '<td> <div class="form-button-action"> <button type="button" data-bs-toggle="tooltip" title="" class="btn btn-link btn-primary btn-lg" data-original-title="Edit Task"> <i class="fa fa-edit"></i> </button> <button type="button" data-bs-toggle="tooltip" title="" class="btn btn-link btn-danger" data-original-title="Remove"> <i class="fa fa-times"></i> </button> </div> </td>';
+
+        $("#addRowButton").click(function() {
+            $("#add-row")
+                .dataTable()
+                .fnAddData([
+                    $("#addName").val(),
+                    $("#addPosition").val(),
+                    $("#addOffice").val(),
+                    action,
+                ]);
+            $("#addRowModal").modal("hide");
+        });
     });
     </script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.3/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <script>
+    function editRoute(tracking) {
+        // Set the form action to the correct route
+        const form = document.getElementById('editRouteForm');
+        form.action = `/routeTracking/${tracking.id}`;
+
+        // Populate the fields with the current data
+        document.getElementById('edit_route_id').value = tracking.id;
+        document.getElementById('edit_salesman_id').value = tracking.salesman_id;
+        document.getElementById('edit_travel_date').value = tracking.travel_date;
+        document.getElementById('edit_start_location').value = tracking.start_location;
+        document.getElementById('edit_end_location').value = tracking.end_location;
+        document.getElementById('edit_distance_traveled').value = tracking.distance_traveled;
+        document.getElementById('edit_mode_of_transportation').value = tracking.mode_of_transportation;
+        document.getElementById('edit_ta_rate').value = tracking.ta_rate;
+        document.getElementById('edit_ta_amount').value = tracking.ta_amount;
+        document.getElementById('edit_da_amount').value = tracking.da_amount;
+    }
+    </script>
+
 </body>
 
 </html>

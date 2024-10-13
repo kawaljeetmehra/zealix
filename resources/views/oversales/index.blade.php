@@ -5,10 +5,10 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <title>Zealix</title>
     <meta content="width=device-width, initial-scale=1.0, shrink-to-fit=no" name="viewport" />
-    <link rel="icon" href="{{asset('assets/img/kaiadmin/favicon.ico')}}" type="image/x-icon" />
+    <link rel="icon" href="../assets/img/kaiadmin/favicon.ico" type="image/x-icon" />
 
     <!-- Fonts and icons -->
-    <script src="{{asset('assets/js/plugin/webfont/webfont.min.js')}}"></script>
+    <script src="../assets/js/plugin/webfont/webfont.min.js"></script>
     <script>
     WebFont.load({
         google: {
@@ -21,7 +21,7 @@
                 "Font Awesome 5 Brands",
                 "simple-line-icons",
             ],
-            urls: ["{{asset('/assets/css/fonts.min.css')}}"],
+            urls: ["../assets/css/fonts.min.css"],
         },
         active: function() {
             sessionStorage.fonts = true;
@@ -29,63 +29,13 @@
     });
     </script>
 
-
+    <!-- CSS Files -->
+    <link rel="stylesheet" href="../assets/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="../assets/css/plugins.min.css" />
+    <link rel="stylesheet" href="../assets/css/kaiadmin.min.css" />
 
     <!-- CSS Just for demo purpose, don't include it in your project -->
-    <link rel="stylesheet" href="{{asset('assets/css/demo.css')}}" />
-
-    <!-- CSS Files -->
-    <link rel="stylesheet" href="{{ asset('assets/css/bootstrap.min.css') }}" />
-    <link rel="stylesheet" href="{{ asset('assets/css/plugins.min.css') }}" />
-    <link rel="stylesheet" href="{{ asset('assets/css/kaiadmin.min.css') }}" />
-    <style>
-    /* Custom CSS goes here */
-    .custom-dropdown {
-        position: relative;
-        display: inline-block;
-        width: 100%;
-    }
-
-    .dropdown-selected {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        background: #fff;
-        border: 1px solid #ced4da;
-        padding: 10px;
-        cursor: pointer;
-    }
-
-    .dropdown-options {
-        display: none;
-        /* Initially hidden */
-        position: absolute;
-        z-index: 1;
-        background: #fff;
-        border: 1px solid #ced4da;
-        width: 100%;
-        max-height: 200px;
-        overflow-y: auto;
-    }
-
-    .dropdown-option {
-        padding: 10px;
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        cursor: pointer;
-    }
-
-    /* Adjusting icon spacing */
-    .dropdown-option i {
-        margin-left: 5px;
-        margin-right: 5px;
-    }
-
-    .dropdown-option:hover {
-        background: #f1f1f1;
-    }
-    </style>
+    <link rel="stylesheet" href="../assets/css/demo.css" />
 </head>
 
 <body>
@@ -96,8 +46,7 @@
                 <!-- Logo Header -->
                 <div class="logo-header" data-background-color="dark">
                     <a href="#" class="logo">
-                        <img src="{{asset('assets/img/zealx logo.png')}}" alt="navbar brand" class="navbar-brand"
-                            height="80" />
+                        <img src="../assets/img/zealx logo.png" alt="navbar brand" class="navbar-brand" height="80" />
                     </a>
                     <div class="nav-toggle">
                         <button class="btn btn-toggle toggle-sidebar">
@@ -114,8 +63,9 @@
                 <!-- End Logo Header -->
             </div>
             @include('partials.sidebar')
-        </div>
 
+        </div>
+        <!-- End Sidebar -->
 
         <div class="main-panel">
             <div class="main-header">
@@ -372,7 +322,7 @@
                                 <a class="dropdown-toggle profile-pic" data-bs-toggle="dropdown" href="#"
                                     aria-expanded="false">
                                     <div class="avatar-sm">
-                                        <img src="{{asset('assets/img/profile.jpg')}}" alt="..."
+                                        <img src="../assets/img/profile.jpg" alt="..."
                                             class="avatar-img rounded-circle" />
                                     </div>
                                     <span class="profile-username">
@@ -385,7 +335,7 @@
                                         <li>
                                             <div class="user-box">
                                                 <div class="avatar-lg">
-                                                    <img src="{{asset('assets/img/profile.jpg')}}" alt="image profile"
+                                                    <img src="../assets/img/profile.jpg" alt="image profile"
                                                         class="avatar-img rounded" />
                                                 </div>
                                                 <div class="u-text">
@@ -421,188 +371,201 @@
                 </nav>
                 <!-- End Navbar -->
             </div>
+
             <div class="container">
                 <div class="page-inner">
                     <div class="row">
-                        <div class="col-md-12">
-                            <div class="card">
-                                <div class="card-header">
-                                    <div class="card-title">Edit Product</div>
-                                </div>
-                                <div class="card-body">
-                                    <!-- Form Content -->
-                                    <form action="{{ route('products.update', $product->id) }}" method="POST">
+                        <div class="modal fade" id="addOverSaleModal" tabindex="-1" aria-labelledby="addOverSaleLabel"
+                            aria-hidden="true" data-bs-backdrop="false">
+                            <div class="modal-dialog" role="document">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                   
+                                        <h5 class="modal-title" id="addOverSaleLabel">Add OverSale</h5>
+                                        <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+                                            <span aria-hidden="true">&times;</span>
+                                        </button>
+                               
+                                    </div>
 
+                                    <form action="{{ route('oversales.store') }}" method="POST">
                                         @csrf
-                                        @method('PUT')
-                                        @if ($errors->any())
-                                        <div class="alert alert-danger">
-                                            <ul>
-                                                @foreach ($errors->all() as $error)
-                                                <li>{{ $error }}</li>
-                                                @endforeach
-                                            </ul>
-                                        </div>
-                                        @endif
-                                        <div class="row">
-                                            <div class="col-md-4">
-                                                <div class="form-group">
-                                                    <label for="productName">Product Name</label>
-                                                    <input type="text" name="product_name" class="form-control"
-                                                        id="productName" placeholder="Enter product name" required
-                                                        value="{{ old('product_name', $product->product_name) }}" />
-                                                </div>
+                                        <div class="modal-body">
+                                            <!-- Salesman Dropdown -->
+                                            <div class="form-group">
+                                                <label for="salesman_id">Salesman</label>
+                                                <select name="salesman_id" id="salesman_id" class="form-control"
+                                                    required>
+                                                    <option value="" disabled selected>Select Salesman</option>
+                                                    <!-- Populate options dynamically -->
+                                                    @foreach($salesmen as $salesman)
+                                                    <option value="{{ $salesman->id }}">{{ $salesman->name }}</option>
+                                                    @endforeach
+                                                </select>
                                             </div>
-                                            <div class="col-md-4">
-                                                <div class="form-group">
-                                                    <label for="manufacturingDate">Manufacturing Date</label>
-                                                    <input type="date" name="manufacturing_date" class="form-control"
-                                                        id="manufacturingDate" required
-                                                        value="{{ old('manufacturing_date', $product->manufacturing_date) }}" />
-                                                </div>
+                                            <!-- Other fields... -->
+                                            <div class="form-group">
+                                                <label for="total_sales">Total Sales</label>
+                                                <input type="number" name="total_sales" id="total_sales"
+                                                    class="form-control" required>
                                             </div>
-                                            <div class="col-md-4">
-                                                <div class="form-group">
-                                                    <label for="expiryDate">Expiry Date</label>
-                                                    <input type="date" name="expiry_date" class="form-control"
-                                                        id="expiryDate" required
-                                                        value="{{ old('expiry_date', $product->expiry_date) }}" />
-                                                </div>
+                                            <div class="form-group">
+                                                <label for="number_of_sales">Number of Sales</label>
+                                                <input type="number" name="number_of_sales" id="number_of_sales"
+                                                    class="form-control" required>
                                             </div>
-                                        </div>
-
-                                        <div class="row">
-                                            <div class="col-md-4">
-                                                <div class="form-group">
-                                                    <label for="batchNumber">Batch Number</label>
-                                                    <input type="text" name="batch_number" class="form-control"
-                                                        id="batchNumber" placeholder="Enter batch number" required
-                                                        value="{{ old('batch_number', $product->batch_number) }}" />
-                                                </div>
+                                            <div class="form-group">
+                                                <label for="average_sales_value">Average Sales Value</label>
+                                                <input type="number" step="0.01" name="average_sales_value"
+                                                    id="average_sales_value" class="form-control" required>
                                             </div>
-                                            <div class="col-md-4">
-                                                <div class="form-group">
-                                                    <label for="productPackaging">Product Packaging</label>
-                                                    <select name="packaging" class="form-select" id="productPackaging"
-                                                        required>
-                                                        <option value="Box"
-                                                            {{ $product->packaging == 'Box' ? 'selected' : '' }}>Box
-                                                        </option>
-                                                        <option value="Bottle"
-                                                            {{ $product->packaging == 'Bottle' ? 'selected' : '' }}>
-                                                            Bottle</option>
-                                                    </select>
-                                                </div>
-                                            </div>
-                                            <div class="col-md-4">
-                                                <div class="form-group">
-                                                    <label for="stockCount">Stock Count</label>
-                                                    <input type="number" name="stock_count" class="form-control"
-                                                        id="stockCount" placeholder="Enter stock count" required
-                                                        value="{{ old('stock_count', $product->stock_count) }}" />
-                                                </div>
+                                            <div class="form-group">
+                                                <label for="total_customer">Total Customer</label>
+                                                <input type="number" name="total_customer" id="total_customer"
+                                                    class="form-control" required>
                                             </div>
                                         </div>
 
-                                        <div class="row">
-                                            <div class="col-md-6">
-                                                <div class="form-group">
-                                                    <label for="productCategory">Product Category</label>
-                                                    <div class="custom-dropdown">
-                                                        <div class="dropdown-selected" onclick="toggleDropdown()">
-                                                            <span
-                                                                id="selectedCategory">{{ old('product_category', $product->category) ?: 'Select Product Category' }}</span>
-                                                            <i class="fa fa-caret-down"></i>
-                                                        </div>
-                                                        <div class="dropdown-options" id="categoryOptions">
-                                                            <div class="dropdown-option"
-                                                                onclick="selectCategory('Gynecology')">
-                                                                Gynecology
-                                                                <i class="fa fa-edit" title="Edit"
-                                                                    onclick="editCategory('Gynecology', event)"></i>
-                                                                <i class="fa fa-trash" title="Delete"
-                                                                    onclick="deleteCategory('Gynecology', event)"></i>
-                                                            </div>
-                                                            <div class="dropdown-option"
-                                                                onclick="selectCategory('General Medicine')">
-                                                                General Medicine
-                                                                <i class="fa fa-edit" title="Edit"
-                                                                    onclick="editCategory('General Medicine', event)"></i>
-                                                                <i class="fa fa-trash" title="Delete"
-                                                                    onclick="deleteCategory('General Medicine', event)"></i>
-                                                            </div>
-                                                            <div class="dropdown-option"
-                                                                onclick="selectCategory('Dermatology')">
-                                                                Dermatology
-                                                                <i class="fa fa-edit" title="Edit"
-                                                                    onclick="editCategory('Dermatology', event)"></i>
-                                                                <i class="fa fa-trash" title="Delete"
-                                                                    onclick="deleteCategory('Dermatology', event)"></i>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                    <!-- Hidden input to store selected category -->
-                                                    <input type="hidden" name="product_category"
-                                                        id="productCategoryInput"
-                                                        value="{{ old('product_category', $product->category) }}" />
-                                                </div>
-                                            </div>
-                                            <div class="col-md-6">
-                                                <div class="form-group">
-                                                    <label for="productQuantity">Product Quantity</label>
-                                                    <div class="input-group">
-                                                        <input type="number" name="product_quantity"
-                                                            class="form-control" id="productQuantity"
-                                                            placeholder="Enter quantity" required
-                                                            value="{{ old('product_quantity', $product->quantity) }}" />
-                                                        <select name="quantity_unit" class="form-control"
-                                                            id="quantityUnit" style="width: auto;" required>
-                                                            <option value="Unit"
-                                                                {{ $product->quantity_unit == 'Unit' ? 'selected' : '' }}>
-                                                                Unit</option>
-                                                            <option value="ML"
-                                                                {{ $product->quantity_unit == 'ML' ? 'selected' : '' }}>
-                                                                ML</option>
-                                                            <option value="L"
-                                                                {{ $product->quantity_unit == 'L' ? 'selected' : '' }}>L
-                                                            </option>
-                                                            <option value="Pack"
-                                                                {{ $product->quantity_unit == 'Pack' ? 'selected' : '' }}>
-                                                                Pack</option>
-                                                        </select>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-
-                                        <div class="row">
-                                            <div class="col-md-6">
-                                                <div class="form-group">
-                                                    <label for="mrp">MRP of a Box/Bottles</label>
-                                                    <input type="number" name="mrp" class="form-control" id="mrp"
-                                                        placeholder="Enter MRP" required
-                                                        value="{{ old('mrp', $product->mrp) }}" />
-                                                </div>
-                                            </div>
-                                        </div>
-
-                                        <div class="row">
-                                            <div class="col-md-12">
-                                                <div class="form-group">
-                                                    <label for="description">Description</label>
-                                                    <textarea name="description" class="form-control" id="description"
-                                                        rows="5"
-                                                        placeholder="Enter product description">{{ old('description', $product->description) }}</textarea>
-                                                </div>
-                                            </div>
-                                        </div>
-
-                                        <div class="form-group">
-                                            <button type="submit" class="btn btn-primary">Update Product</button>
-                                            <a href="{{ route('products.index') }}" class="btn btn-secondary">Cancel</a>
+                                        <div class="modal-footer">
+                                            <button type="button" class="btn btn-secondary"
+                                                data-bs-dismiss="modal">Close</button>
+                                            <button type="submit" class="btn btn-primary">Save OverSale</button>
                                         </div>
                                     </form>
                                 </div>
+                            </div>
+                        </div>
+
+                        <div class="col-md-12">
+                            <div class="card">
+                                <div class="card-header">
+                                    <div class="d-flex align-items-center">
+                                        <h4 class="card-title">OverSales Management</h4>
+                                        <!-- Trigger Modal Button -->
+                                        @if(Auth::check() && Auth::user()->role_id == 1 )
+                                        <a class="btn btn-primary btn-round ms-auto" href="#" data-bs-toggle="modal"
+                                            data-bs-target="#addOverSaleModal">
+                                            <i class="fa fa-plus"></i> Add OverSale
+                                        </a>
+                                        @endif
+                                    </div>
+                                </div>
+
+                                <div class="table-responsive">
+                                    <table id="add-row" class="display table table-striped table-hover">
+                                        <thead>
+                                            <tr>
+                                                <th>Salesman ID</th>
+                                                <th>Total Sales</th>
+                                                <th>Number of Sales</th>
+                                                <th>Average Sales Value</th>
+                                                <th>Total Customer</th>
+                                                @if(Auth::check() && Auth::user()->role_id == 1 )
+                                                <th style="width: 10%">Action</th>
+                                                @endif
+                                            </tr>
+                                        </thead>
+
+                                        <tbody>
+                                            @foreach($oversales as $oversale)
+                                            <tr>
+                                                <td>{{ $oversale->salesman_name }}</td>
+                                                <td>{{ $oversale->total_sales }}</td>
+                                                <td>{{ $oversale->number_of_sales }}</td>
+                                                <td>{{ $oversale->average_sales_value }}</td>
+                                                <td>{{ $oversale->total_customer }}</td>
+                                                @if(Auth::check() && Auth::user()->role_id == 1 )
+                                                <td>
+                                                    <div class="form-button-action">
+                                                        <a href="#" data-id="{{ $oversale->id }}" data-bs-toggle="modal"
+                                                            data-bs-target="#editOverSaleModal" title="Edit"
+                                                            class="btn btn-link btn-primary btn-lg edit-btn">
+                                                            <i class="fa fa-edit"></i>
+                                                        </a>
+
+                                                        <form action="{{ route('oversales.destroy', $oversale->id) }}"
+                                                            method="POST" style="display:inline;" class="delete-form">
+                                                            @csrf
+                                                            @method('DELETE')
+                                                            <button type="submit" class="btn btn-link btn-danger"
+                                                                data-bs-toggle="tooltip" title="Delete">
+                                                                <i class="fa fa-times"></i>
+                                                            </button>
+                                                        </form>
+                                                    </div>
+                                                </td>
+                                                @endif
+                                            </tr>
+                                            @endforeach
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="modal fade" id="editOverSaleModal" tabindex="-1" aria-labelledby="editOverSaleLabel"
+                        aria-hidden="true" data-bs-backdrop="false">
+                        <div class="modal-dialog" role="document">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title" id="editOverSaleLabel">Edit OverSale</h5>
+                                    <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+                                        <span aria-hidden="true">&times;</span>
+                                    </button>
+                                </div>
+
+
+                                <form action="/oversales/{{ $oversale->id }}" method="POST">
+                                    @csrf
+                                    @method('PUT')
+
+                                    <!-- Salesman Dropdown -->
+                                    <div class="form-group">
+                                        <label for="salesman_id">Salesman</label>
+                                        <select name="salesman_id" id="salesman_id" class="form-control" required>
+                                            <option value="" disabled>Select Salesman</option>
+                                            @foreach($salesmen as $salesman)
+                                            <option value="{{ $salesman->id }}"
+                                                {{ $salesman->id == $oversale->salesman_name ? 'selected' : '' }}>
+                                                {{ $salesman->salesman_id }}
+                                            </option>
+                                            @endforeach
+                                        </select>
+                                    </div>
+
+                                    <!-- Total Sales -->
+                                    <div class="form-group">
+                                        <label for="total_sales">Total Sales</label>
+                                        <input type="number" name="total_sales" id="total_sales" class="form-control"
+                                            value="{{ $oversale->total_sales }}" required>
+                                    </div>
+
+                                    <!-- Number of Sales -->
+                                    <div class="form-group">
+                                        <label for="number_of_sales">Number of Sales</label>
+                                        <input type="number" name="number_of_sales" id="number_of_sales"
+                                            class="form-control" value="{{ $oversale->number_of_sales }}" required>
+                                    </div>
+
+                                    <!-- Average Sales Value -->
+                                    <div class="form-group">
+                                        <label for="average_sales_value">Average Sales Value</label>
+                                        <input type="number" step="0.01" name="average_sales_value"
+                                            id="average_sales_value" class="form-control"
+                                            value="{{ $oversale->average_sales_value }}" required>
+                                    </div>
+
+                                    <!-- Total Customer -->
+                                    <div class="form-group">
+                                        <label for="total_customer">Total Customer</label>
+                                        <input type="number" name="total_customer" id="total_customer"
+                                            class="form-control" value="{{ $oversale->total_customer }}" required>
+                                    </div>
+
+                                    <button type="submit" class="btn btn-primary">Update OverSale</button>
+                                    <a href="{{ route('oversales.index') }}" class="btn btn-secondary">Cancel</a>
+                                </form>
                             </div>
                         </div>
                     </div>
@@ -612,84 +575,142 @@
             </div>
 
 
+
+
         </div>
+
+
     </div>
 
-    <!-- Core JS Files -->
-    <script src="{{ asset('assets/js/core/jquery-3.7.1.min.js') }}"></script>
-    <script src="{{ asset('assets/js/core/popper.min.js') }}"></script>
-    <script src="{{ asset('assets/js/core/bootstrap.min.js') }}"></script>
-    <script src="{{ asset('assets/js/plugin/jquery-scrollbar/jquery.scrollbar.min.js') }}"></script>
-    <script src="{{ asset('assets/js/plugin/jquery-ui/jquery-ui.min.js') }}"></script>
-    <script src="{{ asset('assets/js/plugin/jquery-ui/jquery-ui.touch-punch.min.js') }}"></script>
-    <script src="{{ asset('assets/js/plugin/jquery.mask/jquery.mask.min.js') }}"></script>
-    <script src="{{ asset('assets/js/kaiadmin.min.js') }}"></script>
-    <script src="{{ asset('assets/js/plugin/chart.js/chart.min.js') }}"></script>
-    <script src="{{ asset('assets/js/plugin/printThis/printThis.js') }}"></script>
+
+    </div>
+
+    <!-- Add OverSale Modal -->
+
+
+
+
+
+    <!--   Core JS Files   -->
+    <script src="../assets/js/core/jquery-3.7.1.min.js"></script>
+    <script src="../assets/js/core/popper.min.js"></script>
+    <script src="../assets/js/core/bootstrap.min.js"></script>
+
+    <!-- jQuery Scrollbar -->
+    <script src="../assets/js/plugin/jquery-scrollbar/jquery.scrollbar.min.js"></script>
+    <!-- Datatables -->
+    <script src="../assets/js/plugin/datatables/datatables.min.js"></script>
+    <!-- Kaiadmin JS -->
+    <script src="../assets/js/kaiadmin.min.js"></script>
+    <!-- Kaiadmin DEMO methods, don't include it in your project! -->
+    <script src="../assets/js/setting-demo2.js"></script>
+    <!-- jQuery -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+    <!-- Bootstrap JS -->
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.bundle.min.js"></script>
 
     <script>
-    // Dropdown toggle function
-    function toggleDropdown() {
-        const dropdownOptions = document.getElementById("categoryOptions");
-        dropdownOptions.style.display = dropdownOptions.style.display === "block" ? "none" : "block";
-    }
-
-    function selectCategory(category) {
-        document.getElementById("selectedCategory").innerText = category;
-        document.getElementById("productCategoryInput").value = category; // Set the hidden input value
-        document.getElementById("categoryOptions").style.display = "none";
-    }
-    // Select category function
+    $(document).ready(function() {
+        $("#basic-datatables").DataTable({});
+        $('.delete-form').on('submit', function(e) {
+            e.preventDefault();
 
 
-    // Edit category function (placeholder)
-    function editCategory(category, event) {
-        event.stopPropagation();
-        alert("Editing " + category);
-    }
+            var confirmed = confirm("Are you sure you want to delete this record?");
 
-    // Delete category function (placeholder)
-    function deleteCategory(category, event) {
-        event.stopPropagation();
-        if (confirm("Are you sure you want to delete " + category + "?")) {
-            alert(category + " deleted");
-        }
-    }
+            if (confirmed) {
+                this.submit();
+            }
+        });
+        $("#multi-filter-select").DataTable({
+            pageLength: 5,
+            initComplete: function() {
+                this.api()
+                    .columns()
+                    .every(function() {
+                        var column = this;
+                        var select = $(
+                                '<select class="form-select"><option value=""></option></select>'
+                            )
+                            .appendTo($(column.footer()).empty())
+                            .on("change", function() {
+                                var val = $.fn.dataTable.util.escapeRegex($(this).val());
 
-    // Close dropdown on click outside
-    document.addEventListener('click', function(event) {
-        const dropdown = document.getElementById("categoryOptions");
-        if (!event.target.closest('.custom-dropdown')) {
-            dropdown.style.display = 'none';
-        }
-    });
-    document.addEventListener('DOMContentLoaded', function() {
-        const manufacturingInput = document.getElementById('manufacturingDate');
-        const expiryInput = document.getElementById('expiryDate');
+                                column
+                                    .search(val ? "^" + val + "$" : "", true, false)
+                                    .draw();
+                            });
 
-        manufacturingInput.addEventListener('change', function() {
-            const manufacturingDate = new Date(this.value);
-            const expiryDate = new Date(manufacturingDate);
-
-            // Set expiry date to the next day
-            expiryDate.setDate(manufacturingDate.getDate() + 1);
-
-            // Format the date to YYYY-MM-DD
-            const year = expiryDate.getFullYear();
-            const month = String(expiryDate.getMonth() + 1).padStart(2, '0'); // Months are 0-indexed
-            const day = String(expiryDate.getDate()).padStart(2, '0');
-
-            // Set the expiry date input value
-            expiryInput.value = `${year}-${month}-${day}`;
-
-            // Set minimum date for expiry date to the next day of manufacturing date
-            expiryInput.setAttribute('min', `${year}-${month}-${day}`);
+                        column
+                            .data()
+                            .unique()
+                            .sort()
+                            .each(function(d, j) {
+                                select.append(
+                                    '<option value="' + d + '">' + d + "</option>"
+                                );
+                            });
+                    });
+            },
         });
 
-        // Set min attribute for expiry date when the page loads
-        expiryInput.setAttribute('min', expiryInput.value);
+        // Add Row
+        $("#add-row").DataTable({
+            pageLength: 5,
+        });
+
+        var action =
+            '<td> <div class="form-button-action"> <button type="button" data-bs-toggle="tooltip" title="" class="btn btn-link btn-primary btn-lg" data-original-title="Edit Task"> <i class="fa fa-edit"></i> </button> <button type="button" data-bs-toggle="tooltip" title="" class="btn btn-link btn-danger" data-original-title="Remove"> <i class="fa fa-times"></i> </button> </div> </td>';
+
+        $("#addRowButton").click(function() {
+            $("#add-row")
+                .dataTable()
+                .fnAddData([
+                    $("#addName").val(),
+                    $("#addPosition").val(),
+                    $("#addOffice").val(),
+                    action,
+                ]);
+            $("#addRowModal").modal("hide");
+        });
+        $('[data-bs-toggle="tooltip"]').tooltip();
+
+        // Modify the click event to prevent default opening
+        $('.edit-btn').on('click', function(event) {
+            event.preventDefault(); // Prevent immediate opening of the modal
+            let id = $(this).data('id');
+
+            // AJAX request to fetch data
+            $.ajax({
+                url: `/oversales/${id}/edit`, // Adjust the URL as necessary
+                method: 'GET',
+                success: function(data) {
+                    // Populate modal form fields with fetched data
+                    $('#edit_salesman_id').val(data.salesman_id);
+                    $('#edit_total_sales').val(data.total_sales);
+                    $('#edit_number_of_sales').val(data.number_of_sales);
+                    $('#edit_average_sales_value').val(data.average_sales_value);
+                    $('#edit_total_customer').val(data.total_customer);
+
+                    // Update form action attribute for submission
+                    $('#editOverSaleForm').attr('action', `/oversales/${id}`);
+
+                    // Manually trigger the modal after data load
+                    $('#editOverSaleModal').modal('show');
+                },
+                error: function() {
+                    alert('Error fetching data');
+                }
+            });
+        });
+
+
+
+
     });
     </script>
+
 </body>
 
 </html>

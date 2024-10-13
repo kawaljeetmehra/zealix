@@ -46,8 +46,7 @@
                 <!-- Logo Header -->
                 <div class="logo-header" data-background-color="dark">
                     <a href="#" class="logo">
-                        <img src="../assets/img/zealx logo.png" alt="navbar brand" class="navbar-brand"
-                            height="80" />
+                        <img src="../assets/img/zealx logo.png" alt="navbar brand" class="navbar-brand" height="80" />
                     </a>
                     <div class="nav-toggle">
                         <button class="btn btn-toggle toggle-sidebar">
@@ -63,100 +62,7 @@
                 </div>
                 <!-- End Logo Header -->
             </div>
-            <div class="sidebar-wrapper scrollbar scrollbar-inner">
-    <div class="sidebar-content">
-        <ul class="nav nav-secondary">
-
-            <!-- Inventory Management Section -->
-            <li class="nav-item submenu">
-                <a data-bs-toggle="collapse" href="#inventory" aria-expanded="{{ request()->routeIs('products.*') ? 'true' : 'false' }}">
-                    <i class="fas fa-boxes"></i>
-                    <p>Inventory Management</p>
-                    <span class="caret"></span>
-                </a>
-                <div class="collapse {{ request()->routeIs('products.*') ? 'show' : '' }}" id="inventory">
-                    <ul class="nav nav-collapse">
-                        <!-- Product Sub-section -->
-                        <li class="{{ request()->routeIs('products.index') ? 'active' : '' }}">
-                            <a href="{{ route('products.index') }}">
-                            <i class="fas fa-box"></i>
-                        
-                            <p>Product</p>
-                            </a>
-                        </li>
-                        <!-- Stock Assign Sub-section -->
-        <li class="{{ request()->routeIs('products.stockAssign') ? 'active' : '' }}">
-            <a href="{{ route('products.stockAssign') }}">
-                <i class="fas fa-clipboard-list"></i>
-                <p>Stock Assign</p>
-            </a>
-        </li>
-
-        <!-- Stock Admin Sub-section -->
-        <li class="{{ request()->routeIs('stockAdmin') ? 'active' : '' }}">
-            <a href="{{ route('stockAdmin') }}">
-                <i class="fas fa-user-shield"></i>
-                <p>Stock Admin</p>
-            </a>
-        </li>
-
-        <!-- Stock Distributor Sub-section -->
-        <li class="{{ request()->routeIs('stockDistributor') ? 'active' : '' }}">
-            <a href="{{ route('stockDistributor') }}">
-                <i class="fas fa-truck"></i>
-                <p>Stock Distributor</p>
-            </a>
-        </li>
-
-        <!-- Expired Stock Admin Sub-section -->
-        <li class="{{ request()->routeIs('expirestockAdmin') ? 'active' : '' }}">
-            <a href="{{ route('expirestockAdmin') }}">
-                <i class="fas fa-times-circle"></i>
-                <p>Expired Stock Admin</p>
-            </a>
-        </li>
-
-        <!-- Expired Stock Distributor Sub-section -->
-        <li class="{{ request()->routeIs('expirestockDistributor') ? 'active' : '' }}">
-            <a href="{{ route('expirestockDistributor') }}">
-                <i class="fas fa-exclamation-triangle"></i>
-                <p>Expired Stock Distributor</p>
-            </a>
-        </li>
-                    </ul>
-                </div>
-            </li>
-
-            <!-- Orders Management Section -->
-            <li class="nav-item submenu">
-                <a data-bs-toggle="collapse" href="#orders" aria-expanded="{{ request()->routeIs('orders.*') ? 'true' : 'false' }}">
-                    <i class="fas fa-shopping-cart"></i>
-                    <p>Orders Management</p>
-                    <span class="caret"></span>
-                </a>
-                <div class="collapse {{ request()->routeIs('orders.*') ? 'show' : '' }}" id="orders">
-                    <ul class="nav nav-collapse">
-                        <!-- Order Sub-section -->
-                        <li class="{{ request()->routeIs('orders.index') ? 'active' : '' }}">
-                            <a href="{{ route('orders.index') }}">
-                            <i class="fas fa-receipt"></i>
-                            <p>Order</p>
-                               
-                            </a>
-                        </li>
-                        <li class="{{ request()->routeIs('orderstatus.index') ? 'active' : '' }}">
-    <a href="{{ route('orderstatus.index') }}">
-        <i class="fas fa-list-alt"></i>
-        <p>Order Status</p>
-    </a>
-</li>
-                    </ul>
-                </div>
-            </li>
-
-        </ul>
-    </div>
-</div>
+            @include('partials.sidebar')
 
         </div>
         <!-- End Sidebar -->
@@ -448,7 +354,14 @@
                                             <div class="dropdown-divider"></div>
                                             <a class="dropdown-item" href="#">Account Setting</a>
                                             <div class="dropdown-divider"></div>
-                                            <a class="dropdown-item" href="/">Logout</a>
+                                            <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
+    @csrf
+</form>
+
+<!-- Logout Link -->
+<a class="dropdown-item" href="#" onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
+    Logout
+</a>
                                         </li>
                                     </div>
                                 </ul>
@@ -472,7 +385,7 @@
                                 <div class="card-header">
                                     <div class="d-flex align-items-center">
                                         <h4 class="card-title">Stock Expire-Distributor</h4>
-                                        
+
                                     </div>
                                 </div>
 
@@ -489,7 +402,7 @@
                                                 <th>Stock Count</th>
                                                 <th>MFG</th>
                                                 <th>Exp</th>
-                                                
+
                                             </tr>
                                         </thead>
 
@@ -504,22 +417,22 @@
                                                 <td>{{$product->stock_count}}</td>
                                                 <td>{{$product->manufacturing_date}}</td>
                                                 <td>{{$product->expiry_date}}</td>
-                                               
+
                                             </tr>
                                             @endforeach
-                                            </tbody>
+                                        </tbody>
                                     </table>
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
-                
+
             </div>
             @include('partials.footer')
         </div>
 
-       
+
     </div>
 
 

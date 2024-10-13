@@ -5,10 +5,16 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <title>Zealix</title>
     <meta content="width=device-width, initial-scale=1.0, shrink-to-fit=no" name="viewport" />
-    <link rel="icon" href="{{asset('assets/img/kaiadmin/favicon.ico')}}" type="image/x-icon" />
+    <link rel="icon" href="{{ asset('assets/img/kaiadmin/favicon.ico') }}" type="image/x-icon" />
 
-    <!-- Fonts and icons -->
+    <!-- CSS Files -->
+    <link rel="stylesheet" href="{{ asset('assets/css/bootstrap.min.css') }}" />
+    <link rel="stylesheet" href="{{ asset('assets/css/plugins.min.css') }}" />
+    <link rel="stylesheet" href="{{ asset('assets/css/kaiadmin.min.css') }}" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+
     <script src="{{asset('assets/js/plugin/webfont/webfont.min.js')}}"></script>
+
     <script>
     WebFont.load({
         google: {
@@ -28,64 +34,6 @@
         },
     });
     </script>
-
-
-
-    <!-- CSS Just for demo purpose, don't include it in your project -->
-    <link rel="stylesheet" href="{{asset('assets/css/demo.css')}}" />
-
-    <!-- CSS Files -->
-    <link rel="stylesheet" href="{{ asset('assets/css/bootstrap.min.css') }}" />
-    <link rel="stylesheet" href="{{ asset('assets/css/plugins.min.css') }}" />
-    <link rel="stylesheet" href="{{ asset('assets/css/kaiadmin.min.css') }}" />
-    <style>
-    /* Custom CSS goes here */
-    .custom-dropdown {
-        position: relative;
-        display: inline-block;
-        width: 100%;
-    }
-
-    .dropdown-selected {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        background: #fff;
-        border: 1px solid #ced4da;
-        padding: 10px;
-        cursor: pointer;
-    }
-
-    .dropdown-options {
-        display: none;
-        /* Initially hidden */
-        position: absolute;
-        z-index: 1;
-        background: #fff;
-        border: 1px solid #ced4da;
-        width: 100%;
-        max-height: 200px;
-        overflow-y: auto;
-    }
-
-    .dropdown-option {
-        padding: 10px;
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        cursor: pointer;
-    }
-
-    /* Adjusting icon spacing */
-    .dropdown-option i {
-        margin-left: 5px;
-        margin-right: 5px;
-    }
-
-    .dropdown-option:hover {
-        background: #f1f1f1;
-    }
-    </style>
 </head>
 
 <body>
@@ -114,8 +62,9 @@
                 <!-- End Logo Header -->
             </div>
             @include('partials.sidebar')
-        </div>
 
+        </div>
+        <!-- End Sidebar -->
 
         <div class="main-panel">
             <div class="main-header">
@@ -140,7 +89,6 @@
                     </div>
                     <!-- End Logo Header -->
                 </div>
-                <!-- Navbar Header -->
                 <nav class="navbar navbar-header navbar-header-transparent navbar-expand-lg border-bottom">
                     <div class="container-fluid">
                         <nav
@@ -385,7 +333,7 @@
                                         <li>
                                             <div class="user-box">
                                                 <div class="avatar-lg">
-                                                    <img src="{{asset('assets/img/profile.jpg')}}" alt="image profile"
+                                                    <img src="../assets/img/profile.jpg" alt="image profile"
                                                         class="avatar-img rounded" />
                                                 </div>
                                                 <div class="u-text">
@@ -421,201 +369,148 @@
                 </nav>
                 <!-- End Navbar -->
             </div>
+
+
             <div class="container">
                 <div class="page-inner">
                     <div class="row">
                         <div class="col-md-12">
-                            <div class="card">
-                                <div class="card-header">
-                                    <div class="card-title">Edit Product</div>
+                            <div class="card shadow-lg rounded">
+                                <div class="card-header  text-white d-flex justify-content-between">
+                                    <h4 class="card-title mb-0">Edit Task Report</h4>
+                                    <a class="btn btn-secondary btn-round me-4 " href="{{ url('tasks') }}">Back</a>
                                 </div>
-                                <div class="card-body">
-                                    <!-- Form Content -->
-                                    <form action="{{ route('products.update', $product->id) }}" method="POST">
-
-                                        @csrf
-                                        @method('PUT')
-                                        @if ($errors->any())
-                                        <div class="alert alert-danger">
-                                            <ul>
-                                                @foreach ($errors->all() as $error)
-                                                <li>{{ $error }}</li>
-                                                @endforeach
-                                            </ul>
-                                        </div>
-                                        @endif
-                                        <div class="row">
-                                            <div class="col-md-4">
-                                                <div class="form-group">
-                                                    <label for="productName">Product Name</label>
-                                                    <input type="text" name="product_name" class="form-control"
-                                                        id="productName" placeholder="Enter product name" required
-                                                        value="{{ old('product_name', $product->product_name) }}" />
+                                <div class="row p-4">
+                                    <div class="col-md-6">
+                                        <form action="{{ route('tasks.update', $task->Report_id) }}" method="POST">
+                                            @csrf
+                                            @method('PUT')
+                                            <div class="bg-light p-4 rounded shadow-sm">
+                                                <!-- Added background, padding, and shadow -->
+                                                <h4 class="mt-0 mb-3">Task Information</h4> <!-- Adjusted margins -->
+                                                <div class="form-group mb-3">
+                                                    <!-- Added margin bottom for spacing -->
+                                                    <span class="h5"><strong>Task ID:</strong>
+                                                        {{ $task->Task_id }}</span>
                                                 </div>
-                                            </div>
-                                            <div class="col-md-4">
-                                                <div class="form-group">
-                                                    <label for="manufacturingDate">Manufacturing Date</label>
-                                                    <input type="date" name="manufacturing_date" class="form-control"
-                                                        id="manufacturingDate" required
-                                                        value="{{ old('manufacturing_date', $product->manufacturing_date) }}" />
-                                                </div>
-                                            </div>
-                                            <div class="col-md-4">
-                                                <div class="form-group">
-                                                    <label for="expiryDate">Expiry Date</label>
-                                                    <input type="date" name="expiry_date" class="form-control"
-                                                        id="expiryDate" required
-                                                        value="{{ old('expiry_date', $product->expiry_date) }}" />
-                                                </div>
-                                            </div>
-                                        </div>
-
-                                        <div class="row">
-                                            <div class="col-md-4">
-                                                <div class="form-group">
-                                                    <label for="batchNumber">Batch Number</label>
-                                                    <input type="text" name="batch_number" class="form-control"
-                                                        id="batchNumber" placeholder="Enter batch number" required
-                                                        value="{{ old('batch_number', $product->batch_number) }}" />
-                                                </div>
-                                            </div>
-                                            <div class="col-md-4">
-                                                <div class="form-group">
-                                                    <label for="productPackaging">Product Packaging</label>
-                                                    <select name="packaging" class="form-select" id="productPackaging"
-                                                        required>
-                                                        <option value="Box"
-                                                            {{ $product->packaging == 'Box' ? 'selected' : '' }}>Box
-                                                        </option>
-                                                        <option value="Bottle"
-                                                            {{ $product->packaging == 'Bottle' ? 'selected' : '' }}>
-                                                            Bottle</option>
+                                                <div class="form-group mb-3">
+                                                    <!-- Added margin bottom for spacing -->
+                                                    <label for="taskstatus"><strong>Task Status:</strong></label>
+                                                    <select name="taskstatus" id="taskstatus" class="form-select">
+                                                        <option value="not started"
+                                                            {{ $task->Task_Status == 'not started' ? 'selected' : '' }}>
+                                                            Not
+                                                            Started</option>
+                                                        <option value="in-progress"
+                                                            {{ $task->Task_Status == 'in-progress' ? 'selected' : '' }}>
+                                                            In
+                                                            Progress</option>
+                                                        <option value="completed"
+                                                            {{ $task->Task_Status == 'completed' ? 'selected' : '' }}>
+                                                            Completed</option>
                                                     </select>
                                                 </div>
-                                            </div>
-                                            <div class="col-md-4">
-                                                <div class="form-group">
-                                                    <label for="stockCount">Stock Count</label>
-                                                    <input type="number" name="stock_count" class="form-control"
-                                                        id="stockCount" placeholder="Enter stock count" required
-                                                        value="{{ old('stock_count', $product->stock_count) }}" />
-                                                </div>
-                                            </div>
-                                        </div>
-
-                                        <div class="row">
-                                            <div class="col-md-6">
-                                                <div class="form-group">
-                                                    <label for="productCategory">Product Category</label>
-                                                    <div class="custom-dropdown">
-                                                        <div class="dropdown-selected" onclick="toggleDropdown()">
-                                                            <span
-                                                                id="selectedCategory">{{ old('product_category', $product->category) ?: 'Select Product Category' }}</span>
-                                                            <i class="fa fa-caret-down"></i>
-                                                        </div>
-                                                        <div class="dropdown-options" id="categoryOptions">
-                                                            <div class="dropdown-option"
-                                                                onclick="selectCategory('Gynecology')">
-                                                                Gynecology
-                                                                <i class="fa fa-edit" title="Edit"
-                                                                    onclick="editCategory('Gynecology', event)"></i>
-                                                                <i class="fa fa-trash" title="Delete"
-                                                                    onclick="deleteCategory('Gynecology', event)"></i>
-                                                            </div>
-                                                            <div class="dropdown-option"
-                                                                onclick="selectCategory('General Medicine')">
-                                                                General Medicine
-                                                                <i class="fa fa-edit" title="Edit"
-                                                                    onclick="editCategory('General Medicine', event)"></i>
-                                                                <i class="fa fa-trash" title="Delete"
-                                                                    onclick="deleteCategory('General Medicine', event)"></i>
-                                                            </div>
-                                                            <div class="dropdown-option"
-                                                                onclick="selectCategory('Dermatology')">
-                                                                Dermatology
-                                                                <i class="fa fa-edit" title="Edit"
-                                                                    onclick="editCategory('Dermatology', event)"></i>
-                                                                <i class="fa fa-trash" title="Delete"
-                                                                    onclick="deleteCategory('Dermatology', event)"></i>
-                                                            </div>
+                                                <div class="row">
+                                                    <div class="col-md-6 mb-3">
+                                                        <!-- Added margin bottom for spacing -->
+                                                        <div class="form-group">
+                                                            <label for="assign_date">Assign Date</label>
+                                                            <input type="date" class="form-control" id="assign_date"
+                                                                name="assign_date"
+                                                                value="{{ \Carbon\Carbon::parse($task->Assign_Date)->format('Y-m-d') }}"
+                                                                required>
                                                         </div>
                                                     </div>
-                                                    <!-- Hidden input to store selected category -->
-                                                    <input type="hidden" name="product_category"
-                                                        id="productCategoryInput"
-                                                        value="{{ old('product_category', $product->category) }}" />
-                                                </div>
-                                            </div>
-                                            <div class="col-md-6">
-                                                <div class="form-group">
-                                                    <label for="productQuantity">Product Quantity</label>
-                                                    <div class="input-group">
-                                                        <input type="number" name="product_quantity"
-                                                            class="form-control" id="productQuantity"
-                                                            placeholder="Enter quantity" required
-                                                            value="{{ old('product_quantity', $product->quantity) }}" />
-                                                        <select name="quantity_unit" class="form-control"
-                                                            id="quantityUnit" style="width: auto;" required>
-                                                            <option value="Unit"
-                                                                {{ $product->quantity_unit == 'Unit' ? 'selected' : '' }}>
-                                                                Unit</option>
-                                                            <option value="ML"
-                                                                {{ $product->quantity_unit == 'ML' ? 'selected' : '' }}>
-                                                                ML</option>
-                                                            <option value="L"
-                                                                {{ $product->quantity_unit == 'L' ? 'selected' : '' }}>L
-                                                            </option>
-                                                            <option value="Pack"
-                                                                {{ $product->quantity_unit == 'Pack' ? 'selected' : '' }}>
-                                                                Pack</option>
-                                                        </select>
+                                                    <div class="col-md-6 mb-3">
+                                                        <!-- Added margin bottom for spacing -->
+                                                        <div class="form-group">
+                                                            <label for="due_date">Due Date</label>
+                                                            <input type="date" class="form-control" id="due_date"
+                                                                name="due_date"
+                                                                value="{{ \Carbon\Carbon::parse($task->Due_Date)->format('Y-m-d') }}"
+                                                                required>
+                                                        </div>
                                                     </div>
                                                 </div>
+                                                <button type="submit"
+                                                    class="btn btn-primary mt-2 btn-round  ">Update</button>
                                             </div>
-                                        </div>
-
-                                        <div class="row">
-                                            <div class="col-md-6">
-                                                <div class="form-group">
-                                                    <label for="mrp">MRP of a Box/Bottles</label>
-                                                    <input type="number" name="mrp" class="form-control" id="mrp"
-                                                        placeholder="Enter MRP" required
-                                                        value="{{ old('mrp', $product->mrp) }}" />
-                                                </div>
-                                            </div>
-                                        </div>
-
-                                        <div class="row">
-                                            <div class="col-md-12">
-                                                <div class="form-group">
-                                                    <label for="description">Description</label>
-                                                    <textarea name="description" class="form-control" id="description"
-                                                        rows="5"
-                                                        placeholder="Enter product description">{{ old('description', $product->description) }}</textarea>
-                                                </div>
-                                            </div>
-                                        </div>
-
-                                        <div class="form-group">
-                                            <button type="submit" class="btn btn-primary">Update Product</button>
-                                            <a href="{{ route('products.index') }}" class="btn btn-secondary">Cancel</a>
-                                        </div>
+                                    </div>
                                     </form>
+
+                                    <div class="col-md-6">
+                                        <div class="bg-light p-4 rounded shadow-sm">
+                                            <!-- Added background, padding, and shadow -->
+                                            <h4 class="mt-0 mb-3">Salesman Information</h5> <!-- Adjusted margins -->
+                                                <div class="form-group mb-3">
+                                                    <!-- Added margin bottom for spacing -->
+                                                    <span class="h6"><strong>Name:</strong> {{ $task->name }}</span><br>
+                                                    <span class="h6"><strong>Location:</strong>
+                                                        {{ $task->address }}</span>
+                                                </div>
+                                                <div class="form-group mb-3">
+                                                    <!-- Added margin bottom for spacing -->
+                                                    <span class="h6"><strong>Contact Number:</strong>
+                                                        {{ $task->contact }}</span><br>
+                                                    <span class="h6"><strong>Email:</strong> {{ $task->email }}</span>
+                                                </div>
+                                        </div>
+                                    </div>
+
                                 </div>
+
+                                <div class="col-md-12 p-4">
+                                    <h5>Order Products</h5>
+                                    <div class="table-responsive">
+                                        <table id="add-row" class="table table-striped table-hover">
+                                            <thead class="table-dark">
+                                                <tr>
+                                                    <th class="col-1">S.No</th> <!-- Small column -->
+                                                    <th class="col-8 text-center">Task</th> <!-- Larger column -->
+                                                    <th class="col-3">Task Priority</th> <!-- Small column -->
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <tr>
+                                                    <td>{{ $task->id }}</td>
+                                                    <td>{{ $task->description }}</td>
+                                                    <td>
+                                                        <button class="btn 
+                            {{ strtolower($task->priority) == 'high' ? 'btn-danger' : 
+                               (strtolower($task->priority) == 'medium' ? 'btn-warning' : 
+                               'btn-success') }} 
+                            btn-sm">
+                                                            {{ ucfirst($task->priority) }}
+                                                        </button>
+                                                    </td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+
+
                             </div>
                         </div>
                     </div>
-
                 </div>
-                @include('partials.footer')
             </div>
 
 
         </div>
+
     </div>
 
-    <!-- Core JS Files -->
+
+    </div>
+
+    </div>
+
+
+    </div>
+
+
+    </div>
     <script src="{{ asset('assets/js/core/jquery-3.7.1.min.js') }}"></script>
     <script src="{{ asset('assets/js/core/popper.min.js') }}"></script>
     <script src="{{ asset('assets/js/core/bootstrap.min.js') }}"></script>
@@ -626,68 +521,74 @@
     <script src="{{ asset('assets/js/kaiadmin.min.js') }}"></script>
     <script src="{{ asset('assets/js/plugin/chart.js/chart.min.js') }}"></script>
     <script src="{{ asset('assets/js/plugin/printThis/printThis.js') }}"></script>
-
+    <script src="{{ asset('assets/js/plugin/datatables/datatables.min.js')}}"></script>
     <script>
-    // Dropdown toggle function
-    function toggleDropdown() {
-        const dropdownOptions = document.getElementById("categoryOptions");
-        dropdownOptions.style.display = dropdownOptions.style.display === "block" ? "none" : "block";
-    }
-
-    function selectCategory(category) {
-        document.getElementById("selectedCategory").innerText = category;
-        document.getElementById("productCategoryInput").value = category; // Set the hidden input value
-        document.getElementById("categoryOptions").style.display = "none";
-    }
-    // Select category function
+    $(document).ready(function() {
+        $("#basic-datatables").DataTable({});
+        $('.delete-form').on('submit', function(e) {
+            e.preventDefault();
 
 
-    // Edit category function (placeholder)
-    function editCategory(category, event) {
-        event.stopPropagation();
-        alert("Editing " + category);
-    }
+            var confirmed = confirm("Are you sure you want to delete this record?");
 
-    // Delete category function (placeholder)
-    function deleteCategory(category, event) {
-        event.stopPropagation();
-        if (confirm("Are you sure you want to delete " + category + "?")) {
-            alert(category + " deleted");
-        }
-    }
+            if (confirmed) {
+                this.submit();
+            }
+        });
+        $("#multi-filter-select").DataTable({
+            pageLength: 5,
+            initComplete: function() {
+                this.api()
+                    .columns()
+                    .every(function() {
+                        var column = this;
+                        var select = $(
+                                '<select class="form-select"><option value=""></option></select>'
+                            )
+                            .appendTo($(column.footer()).empty())
+                            .on("change", function() {
+                                var val = $.fn.dataTable.util.escapeRegex($(this).val());
 
-    // Close dropdown on click outside
-    document.addEventListener('click', function(event) {
-        const dropdown = document.getElementById("categoryOptions");
-        if (!event.target.closest('.custom-dropdown')) {
-            dropdown.style.display = 'none';
-        }
-    });
-    document.addEventListener('DOMContentLoaded', function() {
-        const manufacturingInput = document.getElementById('manufacturingDate');
-        const expiryInput = document.getElementById('expiryDate');
+                                column
+                                    .search(val ? "^" + val + "$" : "", true, false)
+                                    .draw();
+                            });
 
-        manufacturingInput.addEventListener('change', function() {
-            const manufacturingDate = new Date(this.value);
-            const expiryDate = new Date(manufacturingDate);
-
-            // Set expiry date to the next day
-            expiryDate.setDate(manufacturingDate.getDate() + 1);
-
-            // Format the date to YYYY-MM-DD
-            const year = expiryDate.getFullYear();
-            const month = String(expiryDate.getMonth() + 1).padStart(2, '0'); // Months are 0-indexed
-            const day = String(expiryDate.getDate()).padStart(2, '0');
-
-            // Set the expiry date input value
-            expiryInput.value = `${year}-${month}-${day}`;
-
-            // Set minimum date for expiry date to the next day of manufacturing date
-            expiryInput.setAttribute('min', `${year}-${month}-${day}`);
+                        column
+                            .data()
+                            .unique()
+                            .sort()
+                            .each(function(d, j) {
+                                select.append(
+                                    '<option value="' + d + '">' + d + "</option>"
+                                );
+                            });
+                    });
+            },
         });
 
-        // Set min attribute for expiry date when the page loads
-        expiryInput.setAttribute('min', expiryInput.value);
+        // Add Row
+        $("#add-row").DataTable({
+            pageLength: 5,
+        });
+
+        var action =
+            '<td> <div class="form-button-action"> <button type="button" data-bs-toggle="tooltip" title="" class="btn btn-link btn-primary btn-lg" data-original-title="Edit Task"> <i class="fa fa-edit"></i> </button> <button type="button" data-bs-toggle="tooltip" title="" class="btn btn-link btn-danger" data-original-title="Remove"> <i class="fa fa-times"></i> </button> </div> </td>';
+
+        $("#addRowButton").click(function() {
+            $("#add-row")
+                .dataTable()
+                .fnAddData([
+                    $("#addName").val(),
+                    $("#addPosition").val(),
+                    $("#addOffice").val(),
+                    action,
+                ]);
+            $("#addRowModal").modal("hide");
+        });
+
+
+
     });
     </script>
 </body>

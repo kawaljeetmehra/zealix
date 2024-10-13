@@ -41,14 +41,13 @@
 
 <body>
     <div class="wrapper">
-       <!-- Sidebar -->
-       <div class="sidebar" data-background-color="dark">
+        <!-- Sidebar -->
+        <div class="sidebar" data-background-color="dark">
             <div class="sidebar-logo">
                 <!-- Logo Header -->
                 <div class="logo-header" data-background-color="dark">
                     <a href="#" class="logo">
-                        <img src="../assets/img/zealx logo.png" alt="navbar brand" class="navbar-brand"
-                            height="80" />
+                        <img src="../assets/img/zealx logo.png" alt="navbar brand" class="navbar-brand" height="80" />
                     </a>
                     <div class="nav-toggle">
                         <button class="btn btn-toggle toggle-sidebar">
@@ -64,100 +63,7 @@
                 </div>
                 <!-- End Logo Header -->
             </div>
-            <div class="sidebar-wrapper scrollbar scrollbar-inner">
-                <div class="sidebar-content">
-                <ul class="nav nav-secondary">
-
-<!-- Inventory Management Section -->
-<li class="nav-item submenu">
-    <a data-bs-toggle="collapse" href="#inventory" aria-expanded="{{ request()->routeIs('products.*') ? 'true' : 'false' }}">
-        <i class="fas fa-boxes"></i>
-        <p>Inventory Management</p>
-        <span class="caret"></span>
-    </a>
-    <div class="collapse {{ request()->routeIs('products.*') ? 'show' : '' }}" id="inventory">
-        <ul class="nav nav-collapse">
-            <!-- Product Sub-section -->
-            <li class="{{ request()->routeIs('products.index') ? 'active' : '' }}">
-                <a href="{{ route('products.index') }}">
-                <i class="fas fa-box"></i>
-            
-                <p>Product</p>
-                </a>
-            </li>
-            <!-- Stock Assign Sub-section -->
-        <li class="{{ request()->routeIs('products.stockAssign') ? 'active' : '' }}">
-            <a href="{{ route('products.stockAssign') }}">
-                <i class="fas fa-clipboard-list"></i>
-                <p>Stock Assign</p>
-            </a>
-        </li>
-
-        <!-- Stock Admin Sub-section -->
-        <li class="{{ request()->routeIs('stockAdmin') ? 'active' : '' }}">
-            <a href="{{ route('stockAdmin') }}">
-                <i class="fas fa-user-shield"></i>
-                <p>Stock Admin</p>
-            </a>
-        </li>
-
-        <!-- Stock Distributor Sub-section -->
-        <li class="{{ request()->routeIs('stockDistributor') ? 'active' : '' }}">
-            <a href="{{ route('stockDistributor') }}">
-                <i class="fas fa-truck"></i>
-                <p>Stock Distributor</p>
-            </a>
-        </li>
-
-        <!-- Expired Stock Admin Sub-section -->
-        <li class="{{ request()->routeIs('expirestockAdmin') ? 'active' : '' }}">
-            <a href="{{ route('expirestockAdmin') }}">
-                <i class="fas fa-times-circle"></i>
-                <p>Expired Stock Admin</p>
-            </a>
-        </li>
-
-        <!-- Expired Stock Distributor Sub-section -->
-        <li class="{{ request()->routeIs('expirestockDistributor') ? 'active' : '' }}">
-            <a href="{{ route('expirestockDistributor') }}">
-                <i class="fas fa-exclamation-triangle"></i>
-                <p>Expired Stock Distributor</p>
-            </a>
-        </li>
-        </ul>
-    </div>
-</li>
-
-<!-- Orders Management Section -->
-<li class="nav-item submenu">
-    <a data-bs-toggle="collapse" href="#orders" aria-expanded="{{ request()->routeIs('orders.*') ? 'true' : 'false' }}">
-        <i class="fas fa-shopping-cart"></i>
-        <p>Orders Management</p>
-        <span class="caret"></span>
-    </a>
-    <div class="collapse {{ request()->routeIs('orders.*') ? 'show' : '' }}" id="orders">
-        <ul class="nav nav-collapse">
-            <!-- Order Sub-section -->
-            <li class="{{ request()->routeIs('orders.index') ? 'active' : '' }}">
-                <a href="{{ route('orders.index') }}">
-                <i class="fas fa-receipt"></i>
-                <p>Order</p>
-                   
-                </a>
-            </li>
-            <li class="{{ request()->routeIs('orderstatus.index') ? 'active' : '' }}">
-    <a href="{{ route('orderstatus.index') }}">
-        <i class="fas fa-list-alt"></i>
-        <p>Order Status</p>
-    </a>
-</li>
-        </ul>
-    </div>
-</li>
-
-</ul>
-                </div>
-            </div>
+            @include('partials.sidebar')
         </div>
         <!-- End Sidebar -->
 
@@ -448,7 +354,14 @@
                                             <div class="dropdown-divider"></div>
                                             <a class="dropdown-item" href="#">Account Setting</a>
                                             <div class="dropdown-divider"></div>
-                                            <a class="dropdown-item" href="/">Logout</a>
+                                            <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
+    @csrf
+</form>
+
+<!-- Logout Link -->
+<a class="dropdown-item" href="#" onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
+    Logout
+</a>
                                         </li>
                                     </div>
                                 </ul>
@@ -472,10 +385,12 @@
                                 <div class="card-header">
                                     <div class="d-flex align-items-center">
                                         <h4 class="card-title">Orders List</h4>
+                                        @if(Auth::check() && Auth::user()->role_id == 1 || Auth::user()->role_id == 3 )
                                         <a class="btn btn-primary btn-round ms-auto" href="/orders/create">
                                             <i class="fa fa-plus"></i>
                                             Add Order
                                         </a>
+                                        @endif
                                     </div>
                                 </div>
 
@@ -490,7 +405,9 @@
                                                 <th>Location</th>
                                                 <th>Distributor Name</th>
                                                 <th>Order By</th>
+                                                @if(Auth::check() && Auth::user()->role_id == 1 || Auth::user()->role_id == 3 )
                                                 <th>Order Status</th>
+                                                @endif
                                                 <th style="width: 10%">Action</th>
                                             </tr>
                                         </thead>
@@ -504,38 +421,50 @@
                                                 <td>{{ $order->location }}</td>
                                                 <td>{{ $order->distributor_name }}</td>
                                                 <td>{{ $order->order_by }}</td>
-                                            
+                                                @if(Auth::check() && Auth::user()->role_id == 1 || Auth::user()->role_id == 3)
                                                 <td>
-    @if ($order->order_status == 'Accept')
-        
-        <button class="btn btn-primary btn-round btn-sm ms-auto btn-accept" data-order-id="{{ $order->id }}">Accept</button>
-        <button class="btn btn-danger btn-round btn-sm ms-auto btn-decline" data-order-id="{{ $order->id }}"  style="opacity: 0.5;">Decline</button>
-    @elseif ($order->order_status == 'Decline')
-      
-        <button class="btn btn-primary btn-round btn-sm ms-auto btn-accept" data-order-id="{{ $order->id }}"  style="opacity: 0.5;">Accept</button>
-        <button class="btn btn-danger btn-round btn-sm ms-auto btn-decline" data-order-id="{{ $order->id }}" >Decline</button>
-    @else
-       
-        <button class="btn btn-primary btn-round btn-sm ms-auto btn-accept" data-order-id="{{ $order->id }}">Accept</button>
-        <button class="btn btn-danger btn-round btn-sm ms-auto btn-decline" data-order-id="{{ $order->id }}">Decline</button>
-    @endif
-</td>
+                                                    @if ($order->order_status == 'Accept')
 
-                                                    
-                                              
+                                                    <button class="btn btn-primary btn-round btn-sm ms-auto btn-accept"
+                                                        data-order-id="{{ $order->id }}">Accept</button>
+                                                    <button class="btn btn-danger btn-round btn-sm ms-auto btn-decline"
+                                                        data-order-id="{{ $order->id }}"
+                                                        style="opacity: 0.5;">Decline</button>
+                                                    @elseif ($order->order_status == 'Decline')
+
+                                                    <button class="btn btn-primary btn-round btn-sm ms-auto btn-accept"
+                                                        data-order-id="{{ $order->id }}"
+                                                        style="opacity: 0.5;">Accept</button>
+                                                    <button class="btn btn-danger btn-round btn-sm ms-auto btn-decline"
+                                                        data-order-id="{{ $order->id }}">Decline</button>
+                                                    @else
+
+                                                    <button class="btn btn-primary btn-round btn-sm ms-auto btn-accept"
+                                                        data-order-id="{{ $order->id }}">Accept</button>
+                                                    <button class="btn btn-danger btn-round btn-sm ms-auto btn-decline"
+                                                        data-order-id="{{ $order->id }}">Decline</button>
+                                                    @endif
+                                                </td>
 
 
+                                                 @endif
 
+
+                                                
                                                 <td>
                                                     <div class="form-button-action">
+                                                    @if(Auth::check() && Auth::user()->role_id == 1 || Auth::user()->role_id == 3 )
                                                         <a href="{{ route('orders.edit', $order->id) }}"
                                                             data-toggle="tooltip" title="Edit"
                                                             class="btn btn-link btn-primary btn-lg">
                                                             <i class="fa fa-edit"></i>
                                                         </a>
-                                                        <a href="{{ route('orders.show', $order->id) }}"  class="btn btn-link btn-primary btn-lg">
-                    <i class="fa fa-eye" ></i> 
-                </a>
+                                                        @endif
+                                                        <a href="{{ route('orders.show', $order->id) }}"
+                                                            class="btn btn-link btn-primary btn-lg">
+                                                            <i class="fa fa-eye"></i>
+                                                        </a>
+                                                        @if(Auth::check() && Auth::user()->role_id == 1 || Auth::user()->role_id == 3 )
                                                         <form action="{{ route('orders.destroy', $order->id) }}"
                                                             method="POST" style="display:inline;" class="delete-form">
                                                             @csrf
@@ -545,6 +474,7 @@
                                                                 <i class="fa fa-times"></i>
                                                             </button>
                                                         </form>
+                                                        @endif
 
                                                     </div>
                                                 </td>
@@ -560,10 +490,10 @@
                 </div>
                 @include('partials.footer')
             </div>
-            
+
         </div>
 
-       
+
     </div>
 
 
@@ -649,48 +579,48 @@
 
         });
 
-       
-            // Bind click events
-            $('.btn-accept').click(function() {
-                var orderId = $(this).data('order-id');
-                var declineButton = $(this).closest('td').find('.btn-decline');
-        declineButton.prop('disabled', true).css('opacity', '0.5'); // Disable and fade
-        $(this).css('opacity', '1');
-                $.ajax({
-                    url: "{{ route('orders.updateStatus') }}", // Ensure no trailing space
-                    method: 'POST',
-                    data: {
-                        _token: "{{ csrf_token() }}",
-                        order_id: orderId,
-                        status: 'Accept'
-                    },
-                    success: function(response) {
-                        alert('Order accepted');
-                        location.reload(); // Refresh the table
-                    }
-                });
-            });
 
-            $('.btn-decline').click(function() {
-                var orderId = $(this).data('order-id');
-                var acceptButton = $(this).closest('td').find('.btn-accept');
-        acceptButton.prop('disabled', true).css('opacity', '0.5'); // Disable and fade
-        $(this).css('opacity', '1');
-                $.ajax({
-                    url: "{{ route('orders.updateStatus') }}", // Ensure no trailing space
-                    method: 'POST',
-                    data: {
-                        _token: "{{ csrf_token() }}",
-                        order_id: orderId,
-                        status: 'Decline'
-                    },
-                    success: function(response) {
-                        alert('Order declined');
-                        location.reload(); // Refresh the table
-                    }
-                });
+        // Bind click events
+        $('.btn-accept').click(function() {
+            var orderId = $(this).data('order-id');
+            var declineButton = $(this).closest('td').find('.btn-decline');
+            declineButton.prop('disabled', true).css('opacity', '0.5'); // Disable and fade
+            $(this).css('opacity', '1');
+            $.ajax({
+                url: "{{ route('orders.updateStatus') }}", // Ensure no trailing space
+                method: 'POST',
+                data: {
+                    _token: "{{ csrf_token() }}",
+                    order_id: orderId,
+                    status: 'Accept'
+                },
+                success: function(response) {
+                    alert('Order accepted');
+                    location.reload(); // Refresh the table
+                }
             });
-       
+        });
+
+        $('.btn-decline').click(function() {
+            var orderId = $(this).data('order-id');
+            var acceptButton = $(this).closest('td').find('.btn-accept');
+            acceptButton.prop('disabled', true).css('opacity', '0.5'); // Disable and fade
+            $(this).css('opacity', '1');
+            $.ajax({
+                url: "{{ route('orders.updateStatus') }}", // Ensure no trailing space
+                method: 'POST',
+                data: {
+                    _token: "{{ csrf_token() }}",
+                    order_id: orderId,
+                    status: 'Decline'
+                },
+                success: function(response) {
+                    alert('Order declined');
+                    location.reload(); // Refresh the table
+                }
+            });
+        });
+
     });
     </script>
 </body>

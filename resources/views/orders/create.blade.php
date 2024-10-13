@@ -12,9 +12,9 @@
     <link rel="stylesheet" href="{{ asset('assets/css/plugins.min.css') }}" />
     <link rel="stylesheet" href="{{ asset('assets/css/kaiadmin.min.css') }}" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-    
+
     <script src="{{asset('assets/js/plugin/webfont/webfont.min.js')}}"></script>
-    
+
     <script>
     WebFont.load({
         google: {
@@ -44,8 +44,7 @@
                 <!-- Logo Header -->
                 <div class="logo-header" data-background-color="dark">
                     <a href="#" class="logo">
-                        <img src="../assets/img/zealx logo.png" alt="navbar brand" class="navbar-brand"
-                            height="80" />
+                        <img src="../assets/img/zealx logo.png" alt="navbar brand" class="navbar-brand" height="80" />
                     </a>
                     <div class="nav-toggle">
                         <button class="btn btn-toggle toggle-sidebar">
@@ -61,104 +60,11 @@
                 </div>
                 <!-- End Logo Header -->
             </div>
-            <div class="sidebar-wrapper scrollbar scrollbar-inner">
-                <div class="sidebar-content">
-                <ul class="nav nav-secondary">
-
-<!-- Inventory Management Section -->
-<li class="nav-item submenu">
-    <a data-bs-toggle="collapse" href="#inventory" aria-expanded="{{ request()->routeIs('products.*') ? 'true' : 'false' }}">
-        <i class="fas fa-boxes"></i>
-        <p>Inventory Management</p>
-        <span class="caret"></span>
-    </a>
-    <div class="collapse {{ request()->routeIs('products.*') ? 'show' : '' }}" id="inventory">
-        <ul class="nav nav-collapse">
-            <!-- Product Sub-section -->
-            <li class="{{ request()->routeIs('products.index') ? 'active' : '' }}">
-                <a href="{{ route('products.index') }}">
-                <i class="fas fa-box"></i>
-            
-                <p>Product</p>
-                </a>
-            </li>
-            <!-- Stock Assign Sub-section -->
-        <li class="{{ request()->routeIs('products.stockAssign') ? 'active' : '' }}">
-            <a href="{{ route('products.stockAssign') }}">
-                <i class="fas fa-clipboard-list"></i>
-                <p>Stock Assign</p>
-            </a>
-        </li>
-
-        <!-- Stock Admin Sub-section -->
-        <li class="{{ request()->routeIs('stockAdmin') ? 'active' : '' }}">
-            <a href="{{ route('stockAdmin') }}">
-                <i class="fas fa-user-shield"></i>
-                <p>Stock Admin</p>
-            </a>
-        </li>
-
-        <!-- Stock Distributor Sub-section -->
-        <li class="{{ request()->routeIs('stockDistributor') ? 'active' : '' }}">
-            <a href="{{ route('stockDistributor') }}">
-                <i class="fas fa-truck"></i>
-                <p>Stock Distributor</p>
-            </a>
-        </li>
-
-        <!-- Expired Stock Admin Sub-section -->
-        <li class="{{ request()->routeIs('expirestockAdmin') ? 'active' : '' }}">
-            <a href="{{ route('expirestockAdmin') }}">
-                <i class="fas fa-times-circle"></i>
-                <p>Expired Stock Admin</p>
-            </a>
-        </li>
-
-        <!-- Expired Stock Distributor Sub-section -->
-        <li class="{{ request()->routeIs('expirestockDistributor') ? 'active' : '' }}">
-            <a href="{{ route('expirestockDistributor') }}">
-                <i class="fas fa-exclamation-triangle"></i>
-                <p>Expired Stock Distributor</p>
-            </a>
-        </li>
-        </ul>
-    </div>
-</li>
-
-<!-- Orders Management Section -->
-<li class="nav-item submenu">
-    <a data-bs-toggle="collapse" href="#orders" aria-expanded="{{ request()->routeIs('orders.*') ? 'true' : 'false' }}">
-        <i class="fas fa-shopping-cart"></i>
-        <p>Orders Management</p>
-        <span class="caret"></span>
-    </a>
-    <div class="collapse {{ request()->routeIs('orders.*') ? 'show' : '' }}" id="orders">
-        <ul class="nav nav-collapse">
-            <!-- Order Sub-section -->
-            <li class="{{ request()->routeIs('orders.index') ? 'active' : '' }}">
-                <a href="{{ route('orders.index') }}">
-                <i class="fas fa-receipt"></i>
-                <p>Order</p>
-                   
-                </a>
-            </li>
-            <li class="{{ request()->routeIs('orderstatus.index') ? 'active' : '' }}">
-    <a href="{{ route('orderstatus.index') }}">
-        <i class="fas fa-list-alt"></i>
-        <p>Order Status</p>
-    </a>
-</li>
-        </ul>
-    </div>
-</li>
-
-</ul>
-                </div>
-            </div>
+            @include('partials.sidebar')
         </div>
         <!-- End Sidebar -->
         <div class="main-panel">
-        <div class="main-header">
+            <div class="main-header">
                 <div class="main-header-logo">
                     <!-- Logo Header -->
                     <div class="logo-header" data-background-color="dark">
@@ -444,7 +350,14 @@
                                             <div class="dropdown-divider"></div>
                                             <a class="dropdown-item" href="#">Account Setting</a>
                                             <div class="dropdown-divider"></div>
-                                            <a class="dropdown-item" href="/">Logout</a>
+                                            <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
+    @csrf
+</form>
+
+<!-- Logout Link -->
+<a class="dropdown-item" href="#" onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
+    Logout
+</a>
                                         </li>
                                     </div>
                                 </ul>
@@ -466,8 +379,8 @@
                                 <div class="card-body">
                                     <!-- Form Content -->
                                     <form action="{{ route('orders.store') }}" id="orderForm" method="POST">
-                                    <div id="hidden-product-inputs"></div>
-                                   <h6>Customer Information</h6>
+                                        <div id="hidden-product-inputs"></div>
+                                        <h6>Customer Information</h6>
                                         @csrf
                                         @if ($errors->any())
                                         <div class="alert alert-danger">
@@ -482,8 +395,8 @@
                                             <div class="col-md-4">
                                                 <div class="form-group">
                                                     <label for="name">Name</label>
-                                                    <input type="text" name="name" class="form-control"
-                                                        id="name" placeholder="Enter Name" required />
+                                                    <input type="text" name="name" class="form-control" id="name"
+                                                        placeholder="Enter Name" required />
                                                 </div>
                                             </div>
                                             <div class="col-md-4">
@@ -497,89 +410,97 @@
                                                 <div class="form-group">
                                                     <label for="contact">Contact Number</label>
                                                     <input type="number" name="contact" class="form-control"
-                                                    placeholder="Enter Contact Number" id="contact" required />
+                                                        placeholder="Enter Contact Number" id="contact" required />
                                                 </div>
                                             </div>
-                                           
+
 
                                         </div>
-                                        
+
 
 
                                         <div class="row">
-                                           
-                                        <div class="col-md-4">
-                                                <div class="form-group">
-                                                    <label for="email">Email</label>
-                                                    <input type="email" name="email" class="form-control"
-                                                        id="email" placeholder="Enter Email"required />
-                                                </div>
-                                        </div>
+
                                             <div class="col-md-4">
                                                 <div class="form-group">
-                                                <label for="distributor" class="mr-2 ">Select Distributor:</label>
-        <select id="distributor" name="distributor_id" class="form-control d-inline-block" style="width: auto;">
-            <option value="">-- Select Distributor --</option>
-            @foreach($distributors as $distributor)
-                <option value="{{ $distributor->id }}">{{ $distributor->name }}</option>
-            @endforeach
-        </select>
+                                                    <label for="email">Email</label>
+                                                    <input type="email" name="email" class="form-control" id="email"
+                                                        placeholder="Enter Email" required />
                                                 </div>
                                             </div>
-                                           
-                                            
+                                            <div class="col-md-4">
+                                                <div class="form-group">
+                                                    <label for="distributor" class="mr-2 ">Select Distributor:</label>
+                                                    <select id="distributor" name="distributor_id"
+                                                        class="form-control d-inline-block" style="width: auto;">
+                                                        <option value="">-- Select Distributor --</option>
+                                                        @foreach($distributors as $distributor)
+                                                        <option value="{{ $distributor->id }}">{{ $distributor->name }}
+                                                        </option>
+                                                        @endforeach
+                                                    </select>
+                                                </div>
+                                            </div>
+
+
                                         </div>
 
-                                    
-                                        
-                                       
-                                        
+
+
+
+
                                 </div>
                                 <div class="row">
-    <div class="col-md-12">
-        <div class="d-flex align-items-center">
-            <!-- Select Product Label -->
-            <span class="select-text p-2">Select Product</span>
-<a href="#" class="ms-2" data-toggle="modal" data-target="#productModal">
-    <i class="fa-solid fa-circle-plus" style="color: #74C0FC; font-size: 24px;"></i>
-</a>
-        </div>
-    </div>
-</div>
-<!-- Modal Structure -->
-<div class="modal fade" id="productModal" tabindex="-1" role="dialog" aria-labelledby="productModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-lg" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="productModalLabel">Select Products</h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-            </div>
-            <div class="modal-body">
-                <table class="table table-striped">
-                    <thead>
-                        <tr>
-                            <th>Select</th>
-                            <th>Batch Number</th>
-                            <th>Product Category</th>
-                            <th>Product Name</th>
-                            <th>Stock Count</th>
-                            <th>MRP</th>
-                        </tr>
-                    </thead>
-                    <tbody id="product-list">
-                        <!-- Product list will be populated here -->
-                    </tbody>
-                </table>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary btn-round" data-dismiss="modal">Close</button>
-                <button type="button" class="btn btn-primary btn-round" id="add-selected-products"  data-dismiss="modal">Add Selected</button>
-            </div>
-        </div>
-    </div>
-</div>
+                                    <div class="col-md-12">
+                                        <div class="d-flex align-items-center">
+                                            <!-- Select Product Label -->
+                                            <span class="select-text p-2">Select Product</span>
+                                            <a href="#" class="ms-2" data-toggle="modal" data-target="#productModal">
+                                                <i class="fa-solid fa-circle-plus"
+                                                    style="color: #74C0FC; font-size: 24px;"></i>
+                                            </a>
+                                        </div>
+                                    </div>
+                                </div>
+                                <!-- Modal Structure -->
+                                <div class="modal fade" id="productModal" tabindex="-1" role="dialog"
+                                    aria-labelledby="productModalLabel" aria-hidden="true">
+                                    <div class="modal-dialog modal-lg" role="document">
+                                        <div class="modal-content">
+                                            <div class="modal-header">
+                                                <h5 class="modal-title" id="productModalLabel">Select Products</h5>
+                                                <button type="button" class="close" data-dismiss="modal"
+                                                    aria-label="Close">
+                                                    <span aria-hidden="true">&times;</span>
+                                                </button>
+                                            </div>
+                                            <div class="modal-body">
+                                                <table class="table table-striped">
+                                                    <thead>
+                                                        <tr>
+                                                            <th>Select</th>
+                                                            <th>Batch Number</th>
+                                                            <th>Product Category</th>
+                                                            <th>Product Name</th>
+                                                            <th>Stock Count</th>
+                                                            <th>MRP</th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody id="product-list">
+                                                        <!-- Product list will be populated here -->
+                                                    </tbody>
+                                                </table>
+                                            </div>
+                                            <div class="modal-footer">
+                                                <button type="button" class="btn btn-secondary btn-round"
+                                                    data-dismiss="modal">Close</button>
+                                                <button type="button" class="btn btn-primary btn-round"
+                                                    id="add-selected-products" data-dismiss="modal">Add
+                                                    Selected</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
                                 <div class="table-responsive">
                                     <table id="add-row" class="display table table-striped table-hover">
                                         <thead>
@@ -588,55 +509,59 @@
                                                 <th>Batch Number</th>
                                                 <th>Product Category</th>
                                                 <th>Product Name</th>
-                                                
+
                                                 <th>Stock Count</th>
-                                              <th>MRP</th>
+                                                <th>MRP</th>
                                             </tr>
                                         </thead>
 
                                         <tbody id="selected-products">
-        <!-- Selected products will be populated here -->
-    </tbody>
+                                            <!-- Selected products will be populated here -->
+                                        </tbody>
 
-                                          
-                                           
+
+
                                     </table>
-                                 
-                                    
-</div>
-<div class="row p-3">
-    <div class="col-md-6">
-        <div class="mb-3">
-            <label for="total-stock">Total Products</label>
-            <input type="number" name="total_stock" class="form-control col-md-4 w-25" id="total-stock"  readonly/>
-        </div>
 
-        <div class="mb-3">
-            <label for="total-cost">Total Cost</label>
-            <input type="number" name="total_cost"  class="form-control col-md-4 w-25" id="total-cost" readonly />
-        </div>
-    </div>
 
-    <div class="col-md-6 d-flex justify-content-end align-items-center">
-        <div>
-            <button type="submit" id="submitOrder" class="btn btn-success btn-round me-2">Submit</button>
-            <button type="button" class="btn btn-danger btn-round" onclick="window.history.back();">Cancel</button>
-        </div>
-    </div>
-    </form>
+                                </div>
+                                <div class="row p-3">
+                                    <div class="col-md-6">
+                                        <div class="mb-3">
+                                            <label for="total-stock">Total Products</label>
+                                            <input type="number" name="total_stock" class="form-control col-md-4 w-25"
+                                                id="total-stock" readonly />
+                                        </div>
 
-</div>
+                                        <div class="mb-3">
+                                            <label for="total-cost">Total Cost</label>
+                                            <input type="number" name="total_cost" class="form-control col-md-4 w-25"
+                                                id="total-cost" readonly />
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md-6 d-flex justify-content-end align-items-center">
+                                        <div>
+                                            <button type="submit" id="submitOrder"
+                                                class="btn btn-success btn-round me-2">Submit</button>
+                                            <button type="button" class="btn btn-danger btn-round"
+                                                onclick="window.history.back();">Cancel</button>
+                                        </div>
+                                    </div>
+                                    </form>
+
+                                </div>
 
                             </div>
-                           
+
                         </div>
                     </div>
-                    
+
                 </div>
                 @include('partials.footer')
             </div>
 
-            
+
         </div>
     </div>
 
@@ -721,16 +646,16 @@
     });
     </script>
     <script>
-        $(document).ready(function() {
-    // Fetch products and populate the modal when it's opened
-    $('#productModal').on('show.bs.modal', function() {
-    $.ajax({
-        url: '/your-product-route', // Replace with your route to fetch products
-        method: 'GET',
-        success: function(response) {
-            $('#product-list').empty(); // Clear the existing list
-            response.products.forEach(function(product) {
-                $('#product-list').append(`
+    $(document).ready(function() {
+        // Fetch products and populate the modal when it's opened
+        $('#productModal').on('show.bs.modal', function() {
+            $.ajax({
+                url: '/your-product-route', // Replace with your route to fetch products
+                method: 'GET',
+                success: function(response) {
+                    $('#product-list').empty(); // Clear the existing list
+                    response.products.forEach(function(product) {
+                        $('#product-list').append(`
                     <tr>
                         <td><input type="checkbox" class="product-checkbox" value="${product.id}"></td>
                         <td>${product.batch_number}</td>
@@ -740,35 +665,36 @@
                    <td>${product.mrp}</td>
                         </tr>
                 `);
+                    });
+                },
+                error: function(xhr) {
+                    console.error(xhr.responseText); // Handle errors if necessary
+                }
             });
-        },
-        error: function(xhr) {
-            console.error(xhr.responseText); // Handle errors if necessary
-        }
-    });
-});
+        });
 
-// Handle adding selected products to the main table
-$('#add-selected-products').click(function() {
-    let totalCost = 0; // Initialize total cost
-    let totalStock = 0;
-    $('#product-list .product-checkbox:checked').each(function() {
-        let productId = $(this).val();
-        let productRow = $(this).closest('tr');
-        let batchNumber = productRow.find('td:nth-child(2)').text();
-        let category = productRow.find('td:nth-child(3)').text();
-        let productName = productRow.find('td:nth-child(4)').text();
-        
-        // Retrieve the stock count from the input field
-        let stockCount = parseInt(productRow.find('td:nth-child(5)').find('input').val()) || 0; // Get stock count
-        let mrp = parseFloat(productRow.find('td:nth-child(6)').text()) || 0; // Get MRP
-        console.log(mrp,"data2")
-        // Calculate total stock and total cost
-      
-        totalCost += stockCount * mrp; // Calculate total cost for this product
-        totalStock ++;
+        // Handle adding selected products to the main table
+        $('#add-selected-products').click(function() {
+            let totalCost = 0; // Initialize total cost
+            let totalStock = 0;
+            $('#product-list .product-checkbox:checked').each(function() {
+                let productId = $(this).val();
+                let productRow = $(this).closest('tr');
+                let batchNumber = productRow.find('td:nth-child(2)').text();
+                let category = productRow.find('td:nth-child(3)').text();
+                let productName = productRow.find('td:nth-child(4)').text();
 
-        $('#selected-products').append(`
+                // Retrieve the stock count from the input field
+                let stockCount = parseInt(productRow.find('td:nth-child(5)').find('input')
+                .val()) || 0; // Get stock count
+                let mrp = parseFloat(productRow.find('td:nth-child(6)').text()) || 0; // Get MRP
+                console.log(mrp, "data2")
+                // Calculate total stock and total cost
+
+                totalCost += stockCount * mrp; // Calculate total cost for this product
+                totalStock++;
+
+                $('#selected-products').append(`
             <tr>
                 <td><i class="fa-solid fa-x" style="color: #f2071f; cursor: pointer;" onclick="removeRow(this)"></i></td>
                 <td>${batchNumber}</td>
@@ -779,7 +705,7 @@ $('#add-selected-products').click(function() {
             </tr>
         `);
 
-        $('#hidden-product-inputs').append(`
+                $('#hidden-product-inputs').append(`
             <input type="hidden" name="products[${productId}][batch_number]" value="${batchNumber}">
             <input type="hidden" name="products[${productId}][category]" value="${category}">
             <input type="hidden" name="products[${productId}][name]" value="${productName}">
@@ -787,43 +713,42 @@ $('#add-selected-products').click(function() {
             <input type="hidden" name="products[${productId}][mrp]" value="${mrp}">
         `);
 
+            });
+
+            $('#total-stock').val(totalStock); // Update total stock field
+            $('#total-cost').val(totalCost.toFixed(2));
+
+            $('#productModal').modal('hide'); // Close the modal after adding products
+        });
+
+        // Optional: Function to remove a row
+        window.removeRow = function(element) {
+            $(element).closest('tr').remove();
+        }
+        window.removeRow = function(element) {
+            let productRow = $(element).closest('tr');
+            let stockCount = parseInt(productRow.find('td:nth-child(5)').text()) || 0; // Get stock count
+
+            let mrp = parseFloat(productRow.find('td:nth-child(6)').text()) || 0; // Get MRP
+            console.log(mrp);
+            // Update total stock and total cost
+            let currentTotalStock = parseInt($('#total-stock').val()) || 0;
+            let currentTotalCost = parseFloat($('#total-cost').val()) || 0;
+
+
+            // Subtract stock count and update total fields
+
+            $('#total-cost').val((currentTotalCost - (stockCount * mrp)).toFixed(2)); // Subtract cost
+            $('#total-stock').val(currentTotalStock - 1); // Subtract stock count
+
+            // Remove the row from the table
+            $(element).closest('tr').remove();
+        };
+
+
     });
-    
-    $('#total-stock').val(totalStock); // Update total stock field
-    $('#total-cost').val(totalCost.toFixed(2));
+    </script>
 
-    $('#productModal').modal('hide'); // Close the modal after adding products
-});
-
-// Optional: Function to remove a row
-window.removeRow = function(element) {
-    $(element).closest('tr').remove();
-}
-window.removeRow = function(element) {
-    let productRow = $(element).closest('tr');
-    let stockCount = parseInt(productRow.find('td:nth-child(5)').text()) || 0; // Get stock count
-     
-      let mrp = parseFloat(productRow.find('td:nth-child(6)').text()) || 0; // Get MRP
-   console.log(mrp);
-    // Update total stock and total cost
-    let currentTotalStock = parseInt($('#total-stock').val()) || 0;
-    let currentTotalCost = parseFloat($('#total-cost').val()) || 0;
-  
-
-    // Subtract stock count and update total fields
-  
-    $('#total-cost').val((currentTotalCost - (stockCount * mrp)).toFixed(2));// Subtract cost
-    $('#total-stock').val(currentTotalStock - 1); // Subtract stock count
-
-    // Remove the row from the table
-    $(element).closest('tr').remove();
-};
-
-
-});
-
-        </script>
-   
 </body>
 
 </html>

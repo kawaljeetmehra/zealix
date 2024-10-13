@@ -5,10 +5,12 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <title>Zealix</title>
     <meta content="width=device-width, initial-scale=1.0, shrink-to-fit=no" name="viewport" />
-    <link rel="icon" href="{{asset('assets/img/kaiadmin/favicon.ico')}}" type="image/x-icon" />
+    <link rel="icon" href="../assets/img/kaiadmin/favicon.ico" type="image/x-icon" />
+    
+    <meta name="csrf-token" content="{{ csrf_token() }}">
 
     <!-- Fonts and icons -->
-    <script src="{{asset('assets/js/plugin/webfont/webfont.min.js')}}"></script>
+    <script src="../assets/js/plugin/webfont/webfont.min.js"></script>
     <script>
     WebFont.load({
         google: {
@@ -21,7 +23,7 @@
                 "Font Awesome 5 Brands",
                 "simple-line-icons",
             ],
-            urls: ["{{asset('/assets/css/fonts.min.css')}}"],
+            urls: ["../assets/css/fonts.min.css"],
         },
         active: function() {
             sessionStorage.fonts = true;
@@ -29,63 +31,13 @@
     });
     </script>
 
-
+    <!-- CSS Files -->
+    <link rel="stylesheet" href="../assets/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="../assets/css/plugins.min.css" />
+    <link rel="stylesheet" href="../assets/css/kaiadmin.min.css" />
 
     <!-- CSS Just for demo purpose, don't include it in your project -->
-    <link rel="stylesheet" href="{{asset('assets/css/demo.css')}}" />
-
-    <!-- CSS Files -->
-    <link rel="stylesheet" href="{{ asset('assets/css/bootstrap.min.css') }}" />
-    <link rel="stylesheet" href="{{ asset('assets/css/plugins.min.css') }}" />
-    <link rel="stylesheet" href="{{ asset('assets/css/kaiadmin.min.css') }}" />
-    <style>
-    /* Custom CSS goes here */
-    .custom-dropdown {
-        position: relative;
-        display: inline-block;
-        width: 100%;
-    }
-
-    .dropdown-selected {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        background: #fff;
-        border: 1px solid #ced4da;
-        padding: 10px;
-        cursor: pointer;
-    }
-
-    .dropdown-options {
-        display: none;
-        /* Initially hidden */
-        position: absolute;
-        z-index: 1;
-        background: #fff;
-        border: 1px solid #ced4da;
-        width: 100%;
-        max-height: 200px;
-        overflow-y: auto;
-    }
-
-    .dropdown-option {
-        padding: 10px;
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        cursor: pointer;
-    }
-
-    /* Adjusting icon spacing */
-    .dropdown-option i {
-        margin-left: 5px;
-        margin-right: 5px;
-    }
-
-    .dropdown-option:hover {
-        background: #f1f1f1;
-    }
-    </style>
+    <link rel="stylesheet" href="../assets/css/demo.css" />
 </head>
 
 <body>
@@ -96,8 +48,7 @@
                 <!-- Logo Header -->
                 <div class="logo-header" data-background-color="dark">
                     <a href="#" class="logo">
-                        <img src="{{asset('assets/img/zealx logo.png')}}" alt="navbar brand" class="navbar-brand"
-                            height="80" />
+                        <img src="../assets/img/zealx logo.png" alt="navbar brand" class="navbar-brand" height="80" />
                     </a>
                     <div class="nav-toggle">
                         <button class="btn btn-toggle toggle-sidebar">
@@ -114,8 +65,9 @@
                 <!-- End Logo Header -->
             </div>
             @include('partials.sidebar')
-        </div>
 
+        </div>
+        <!-- End Sidebar -->
 
         <div class="main-panel">
             <div class="main-header">
@@ -372,7 +324,7 @@
                                 <a class="dropdown-toggle profile-pic" data-bs-toggle="dropdown" href="#"
                                     aria-expanded="false">
                                     <div class="avatar-sm">
-                                        <img src="{{asset('assets/img/profile.jpg')}}" alt="..."
+                                        <img src="../assets/img/profile.jpg" alt="..."
                                             class="avatar-img rounded-circle" />
                                     </div>
                                     <span class="profile-username">
@@ -385,7 +337,7 @@
                                         <li>
                                             <div class="user-box">
                                                 <div class="avatar-lg">
-                                                    <img src="{{asset('assets/img/profile.jpg')}}" alt="image profile"
+                                                    <img src="../assets/img/profile.jpg" alt="image profile"
                                                         class="avatar-img rounded" />
                                                 </div>
                                                 <div class="u-text">
@@ -404,14 +356,16 @@
                                             <div class="dropdown-divider"></div>
                                             <a class="dropdown-item" href="#">Account Setting</a>
                                             <div class="dropdown-divider"></div>
-                                            <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
-    @csrf
-</form>
+                                            <form id="logout-form" action="{{ route('logout') }}" method="POST"
+                                                style="display: none;">
+                                                @csrf
+                                            </form>
 
-<!-- Logout Link -->
-<a class="dropdown-item" href="#" onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
-    Logout
-</a>
+                                            <!-- Logout Link -->
+                                            <a class="dropdown-item" href="#"
+                                                onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
+                                                Logout
+                                            </a>
                                         </li>
                                     </div>
                                 </ul>
@@ -424,272 +378,330 @@
             <div class="container">
                 <div class="page-inner">
                     <div class="row">
+                        <!-- User Management Table -->
                         <div class="col-md-12">
                             <div class="card">
                                 <div class="card-header">
-                                    <div class="card-title">Edit Product</div>
+                                    <div class="d-flex align-items-center">
+                                        <h4 class="card-title">User Management</h4>
+                                        <button class="btn btn-primary btn-round ms-auto" data-target="#addRecordModal"
+                                            data-toggle="modal">
+                                            <i class="fa fa-plus"></i> Add User
+                                        </button>
+                                    </div>
                                 </div>
-                                <div class="card-body">
-                                    <!-- Form Content -->
-                                    <form action="{{ route('products.update', $product->id) }}" method="POST">
+                                <div class="table-responsive">
+                                    <table id="add-row" class="display table table-striped table-hover">
+                                        <thead>
+                                            <tr>
+                                                <th>Role</th>
+                                                <th>Name</th>
+                                                <th>Contact</th>
+                                                <th>Email</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            @foreach($records as $record)
+                                            <tr>
+                                                <td>{{ $record->role }}</td>
+                                                <td>{{ $record->name }}</td>
+                                                <td>{{ $record->contact }}</td>
+                                                <td>{{ $record->email }}</td>
+                                            </tr>
+                                            @endforeach
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                           
+                        </div>
+                       
+                    </div>
+                   
+                </div>
+                @include('partials.footer')
+                <!-- Add User Modal -->
+                <div class="modal fade" id="addRecordModal" tabindex="-1" role="dialog"
+                    aria-labelledby="addRecordModalLabel" aria-hidden="true" data-backdrop="false">
+                    <div class="modal-dialog" role="document">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="addRecordModalLabel">Add Record</h5>
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                            <div class="modal-body">
+                                <form id="addRecordForm" onsubmit="addRecord(event)">
+                                    <div class="form-group">
+                                        <label for="roleSelect">Role</label>
+                                        <select id="roleSelect" class="form-control"
+                                            onchange="toggleAdditionalFields()">
+                                            <option value="distributor">Distributor</option>
+                                            <option value="salesman">Salesman</option>
+                                        </select>
+                                    </div>
 
-                                        @csrf
-                                        @method('PUT')
-                                        @if ($errors->any())
-                                        <div class="alert alert-danger">
-                                            <ul>
-                                                @foreach ($errors->all() as $error)
-                                                <li>{{ $error }}</li>
-                                                @endforeach
-                                            </ul>
-                                        </div>
-                                        @endif
-                                        <div class="row">
-                                            <div class="col-md-4">
-                                                <div class="form-group">
-                                                    <label for="productName">Product Name</label>
-                                                    <input type="text" name="product_name" class="form-control"
-                                                        id="productName" placeholder="Enter product name" required
-                                                        value="{{ old('product_name', $product->product_name) }}" />
-                                                </div>
-                                            </div>
-                                            <div class="col-md-4">
-                                                <div class="form-group">
-                                                    <label for="manufacturingDate">Manufacturing Date</label>
-                                                    <input type="date" name="manufacturing_date" class="form-control"
-                                                        id="manufacturingDate" required
-                                                        value="{{ old('manufacturing_date', $product->manufacturing_date) }}" />
-                                                </div>
-                                            </div>
-                                            <div class="col-md-4">
-                                                <div class="form-group">
-                                                    <label for="expiryDate">Expiry Date</label>
-                                                    <input type="date" name="expiry_date" class="form-control"
-                                                        id="expiryDate" required
-                                                        value="{{ old('expiry_date', $product->expiry_date) }}" />
-                                                </div>
-                                            </div>
-                                        </div>
-
-                                        <div class="row">
-                                            <div class="col-md-4">
-                                                <div class="form-group">
-                                                    <label for="batchNumber">Batch Number</label>
-                                                    <input type="text" name="batch_number" class="form-control"
-                                                        id="batchNumber" placeholder="Enter batch number" required
-                                                        value="{{ old('batch_number', $product->batch_number) }}" />
-                                                </div>
-                                            </div>
-                                            <div class="col-md-4">
-                                                <div class="form-group">
-                                                    <label for="productPackaging">Product Packaging</label>
-                                                    <select name="packaging" class="form-select" id="productPackaging"
-                                                        required>
-                                                        <option value="Box"
-                                                            {{ $product->packaging == 'Box' ? 'selected' : '' }}>Box
-                                                        </option>
-                                                        <option value="Bottle"
-                                                            {{ $product->packaging == 'Bottle' ? 'selected' : '' }}>
-                                                            Bottle</option>
-                                                    </select>
-                                                </div>
-                                            </div>
-                                            <div class="col-md-4">
-                                                <div class="form-group">
-                                                    <label for="stockCount">Stock Count</label>
-                                                    <input type="number" name="stock_count" class="form-control"
-                                                        id="stockCount" placeholder="Enter stock count" required
-                                                        value="{{ old('stock_count', $product->stock_count) }}" />
-                                                </div>
-                                            </div>
-                                        </div>
-
-                                        <div class="row">
-                                            <div class="col-md-6">
-                                                <div class="form-group">
-                                                    <label for="productCategory">Product Category</label>
-                                                    <div class="custom-dropdown">
-                                                        <div class="dropdown-selected" onclick="toggleDropdown()">
-                                                            <span
-                                                                id="selectedCategory">{{ old('product_category', $product->category) ?: 'Select Product Category' }}</span>
-                                                            <i class="fa fa-caret-down"></i>
-                                                        </div>
-                                                        <div class="dropdown-options" id="categoryOptions">
-                                                            <div class="dropdown-option"
-                                                                onclick="selectCategory('Gynecology')">
-                                                                Gynecology
-                                                                <i class="fa fa-edit" title="Edit"
-                                                                    onclick="editCategory('Gynecology', event)"></i>
-                                                                <i class="fa fa-trash" title="Delete"
-                                                                    onclick="deleteCategory('Gynecology', event)"></i>
-                                                            </div>
-                                                            <div class="dropdown-option"
-                                                                onclick="selectCategory('General Medicine')">
-                                                                General Medicine
-                                                                <i class="fa fa-edit" title="Edit"
-                                                                    onclick="editCategory('General Medicine', event)"></i>
-                                                                <i class="fa fa-trash" title="Delete"
-                                                                    onclick="deleteCategory('General Medicine', event)"></i>
-                                                            </div>
-                                                            <div class="dropdown-option"
-                                                                onclick="selectCategory('Dermatology')">
-                                                                Dermatology
-                                                                <i class="fa fa-edit" title="Edit"
-                                                                    onclick="editCategory('Dermatology', event)"></i>
-                                                                <i class="fa fa-trash" title="Delete"
-                                                                    onclick="deleteCategory('Dermatology', event)"></i>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                    <!-- Hidden input to store selected category -->
-                                                    <input type="hidden" name="product_category"
-                                                        id="productCategoryInput"
-                                                        value="{{ old('product_category', $product->category) }}" />
-                                                </div>
-                                            </div>
-                                            <div class="col-md-6">
-                                                <div class="form-group">
-                                                    <label for="productQuantity">Product Quantity</label>
-                                                    <div class="input-group">
-                                                        <input type="number" name="product_quantity"
-                                                            class="form-control" id="productQuantity"
-                                                            placeholder="Enter quantity" required
-                                                            value="{{ old('product_quantity', $product->quantity) }}" />
-                                                        <select name="quantity_unit" class="form-control"
-                                                            id="quantityUnit" style="width: auto;" required>
-                                                            <option value="Unit"
-                                                                {{ $product->quantity_unit == 'Unit' ? 'selected' : '' }}>
-                                                                Unit</option>
-                                                            <option value="ML"
-                                                                {{ $product->quantity_unit == 'ML' ? 'selected' : '' }}>
-                                                                ML</option>
-                                                            <option value="L"
-                                                                {{ $product->quantity_unit == 'L' ? 'selected' : '' }}>L
-                                                            </option>
-                                                            <option value="Pack"
-                                                                {{ $product->quantity_unit == 'Pack' ? 'selected' : '' }}>
-                                                                Pack</option>
-                                                        </select>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-
-                                        <div class="row">
-                                            <div class="col-md-6">
-                                                <div class="form-group">
-                                                    <label for="mrp">MRP of a Box/Bottles</label>
-                                                    <input type="number" name="mrp" class="form-control" id="mrp"
-                                                        placeholder="Enter MRP" required
-                                                        value="{{ old('mrp', $product->mrp) }}" />
-                                                </div>
-                                            </div>
-                                        </div>
-
-                                        <div class="row">
-                                            <div class="col-md-12">
-                                                <div class="form-group">
-                                                    <label for="description">Description</label>
-                                                    <textarea name="description" class="form-control" id="description"
-                                                        rows="5"
-                                                        placeholder="Enter product description">{{ old('description', $product->description) }}</textarea>
-                                                </div>
-                                            </div>
-                                        </div>
-
+                                    <!-- Distributor Fields -->
+                                    <div id="distributorFields">
                                         <div class="form-group">
-                                            <button type="submit" class="btn btn-primary">Update Product</button>
-                                            <a href="{{ route('products.index') }}" class="btn btn-secondary">Cancel</a>
+                                            <label for="name">Name</label>
+                                            <input type="text" id="name" name="name" class="form-control" required>
                                         </div>
-                                    </form>
-                                </div>
+                                        <div class="form-group">
+                                            <label for="contact_name">Contact Name</label>
+                                            <input type="text" id="contact_name" name="contact_name"
+                                                class="form-control" required>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="contact">Contact</label>
+                                            <input type="text" id="contact" name="contact" class="form-control"
+                                                maxlength="15" required>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="email">Email</label>
+                                            <input type="email" id="email" name="email" class="form-control" required>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="password">Password</label>
+                                            <input type="password" id="password" name="password" class="form-control"
+                                                required>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="confirm_password">Confirm Password</label>
+                                            <input type="password" id="confirm_password" name="confirm_password"
+                                                class="form-control" required>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="geographic_coverage">Geographic Coverage</label>
+                                            <input type="text" id="geographic_coverage" name="geographic_coverage"
+                                                class="form-control">
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="location">Location</label>
+                                            <input type="text" id="location" name="location" class="form-control">
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="shipping_location">Shipping Location</label>
+                                            <input type="text" id="shipping_location" name="shipping_location"
+                                                class="form-control">
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="terms_of_agreement">Terms of Agreement</label>
+                                            <textarea id="terms_of_agreement" name="terms_of_agreement"
+                                                class="form-control"></textarea>
+                                        </div>
+                                    </div>
+
+                                    <!-- Salesman Fields -->
+                                    <div id="salesmanFields" style="display: none;">
+                                        <div class="form-group">
+                                            <label for="salesman_id">Salesman ID</label>
+                                            <input type="text" id="salesman_id" name="salesman_id" class="form-control">
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="salesman_name">Name</label>
+                                            <input type="text" id="salesman_name" name="salesman_name"
+                                                class="form-control" required>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="salesman_contact">Contact</label>
+                                            <input type="text" id="salesman_contact" name="salesman_contact"
+                                                class="form-control" maxlength="15">
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="salesman_email">Email</label>
+                                            <input type="email" id="salesman_email" name="salesman_email"
+                                                class="form-control">
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="salesman_password">Password</label>
+                                            <input type="password" id="salesman_password" name="salesman_password"
+                                                class="form-control" required>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="salesman_confirm_password">Confirm Password</label>
+                                            <input type="password" id="salesman_confirm_password"
+                                                name="salesman_confirm_password" class="form-control" required>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="salary">Salary</label>
+                                            <input type="number" id="salary" name="salary" class="form-control"
+                                                step="0.01">
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="salesman_address">Address</label>
+                                            <input type="text" id="salesman_address" name="salesman_address"
+                                                class="form-control">
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                                <button type="submit" class="btn btn-primary" form="addRecordForm">Save</button>
                             </div>
                         </div>
                     </div>
-
                 </div>
-                @include('partials.footer')
+
             </div>
-
-
         </div>
     </div>
+    <!--   Core JS Files   -->
+    <script src="../assets/js/core/jquery-3.7.1.min.js"></script>
+    <script src="../assets/js/core/popper.min.js"></script>
+    <script src="../assets/js/core/bootstrap.min.js"></script>
 
-    <!-- Core JS Files -->
-    <script src="{{ asset('assets/js/core/jquery-3.7.1.min.js') }}"></script>
-    <script src="{{ asset('assets/js/core/popper.min.js') }}"></script>
-    <script src="{{ asset('assets/js/core/bootstrap.min.js') }}"></script>
-    <script src="{{ asset('assets/js/plugin/jquery-scrollbar/jquery.scrollbar.min.js') }}"></script>
-    <script src="{{ asset('assets/js/plugin/jquery-ui/jquery-ui.min.js') }}"></script>
-    <script src="{{ asset('assets/js/plugin/jquery-ui/jquery-ui.touch-punch.min.js') }}"></script>
-    <script src="{{ asset('assets/js/plugin/jquery.mask/jquery.mask.min.js') }}"></script>
-    <script src="{{ asset('assets/js/kaiadmin.min.js') }}"></script>
-    <script src="{{ asset('assets/js/plugin/chart.js/chart.min.js') }}"></script>
-    <script src="{{ asset('assets/js/plugin/printThis/printThis.js') }}"></script>
-
+    <!-- jQuery Scrollbar -->
+    <script src="../assets/js/plugin/jquery-scrollbar/jquery.scrollbar.min.js"></script>
+    <!-- Datatables -->
+    <script src="../assets/js/plugin/datatables/datatables.min.js"></script>
+    <!-- Kaiadmin JS -->
+    <script src="../assets/js/kaiadmin.min.js"></script>
+    <!-- Kaiadmin DEMO methods, don't include it in your project! -->
+    <script src="../assets/js/setting-demo2.js"></script>
+    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.2/dist/js/bootstrap.bundle.min.js"></script>
     <script>
-    // Dropdown toggle function
-    function toggleDropdown() {
-        const dropdownOptions = document.getElementById("categoryOptions");
-        dropdownOptions.style.display = dropdownOptions.style.display === "block" ? "none" : "block";
+    function toggleAdditionalFields() {
+        const role = document.getElementById('roleSelect').value;
+        const distributorFields = document.getElementById('distributorFields');
+        const salesmanFields = document.getElementById('salesmanFields');
+
+        if (role === 'distributor') {
+            distributorFields.style.display = 'block';
+            salesmanFields.style.display = 'none';
+        } else if (role === 'salesman') {
+            distributorFields.style.display = 'none';
+            salesmanFields.style.display = 'block';
+        }
+
+        // Clear and set 'required' attribute based on the role
+        clearRequiredAttributes();
+        setRequiredAttributes(role);
     }
 
-    function selectCategory(category) {
-        document.getElementById("selectedCategory").innerText = category;
-        document.getElementById("productCategoryInput").value = category; // Set the hidden input value
-        document.getElementById("categoryOptions").style.display = "none";
-    }
-    // Select category function
-
-
-    // Edit category function (placeholder)
-    function editCategory(category, event) {
-        event.stopPropagation();
-        alert("Editing " + category);
+    function clearRequiredAttributes() {
+        const allFields = document.querySelectorAll("#addRecordForm [required]");
+        allFields.forEach(field => field.removeAttribute('required'));
     }
 
-    // Delete category function (placeholder)
-    function deleteCategory(category, event) {
-        event.stopPropagation();
-        if (confirm("Are you sure you want to delete " + category + "?")) {
-            alert(category + " deleted");
+    function setRequiredAttributes(role) {
+        if (role === 'distributor') {
+            document.getElementById('name').setAttribute('required', true);
+            document.getElementById('contact_name').setAttribute('required', true);
+            document.getElementById('contact').setAttribute('required', true);
+            document.getElementById('email').setAttribute('required', true);
+            document.getElementById('password').setAttribute('required', true);
+            document.getElementById('confirm_password').setAttribute('required', true);
+        } else if (role === 'salesman') {
+            document.getElementById('salesman_name').setAttribute('required', true);
+            document.getElementById('salesman_contact').setAttribute('required', true);
+            document.getElementById('salesman_email').setAttribute('required', true);
+            document.getElementById('salesman_password').setAttribute('required', true);
+            document.getElementById('salesman_confirm_password').setAttribute('required', true);
         }
     }
 
-    // Close dropdown on click outside
-    document.addEventListener('click', function(event) {
-        const dropdown = document.getElementById("categoryOptions");
-        if (!event.target.closest('.custom-dropdown')) {
-            dropdown.style.display = 'none';
+    $.ajaxSetup({
+        headers: {
+            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
         }
     });
-    document.addEventListener('DOMContentLoaded', function() {
-        const manufacturingInput = document.getElementById('manufacturingDate');
-        const expiryInput = document.getElementById('expiryDate');
 
-        manufacturingInput.addEventListener('change', function() {
-            const manufacturingDate = new Date(this.value);
-            const expiryDate = new Date(manufacturingDate);
+    function addRecord(event) {
+        event.preventDefault(); // Prevent form submission
+        const role = document.getElementById('roleSelect').value;
 
-            // Set expiry date to the next day
-            expiryDate.setDate(manufacturingDate.getDate() + 1);
+        // Clear and set 'required' attribute based on the role
+        clearRequiredAttributes();
+        setRequiredAttributes(role);
 
-            // Format the date to YYYY-MM-DD
-            const year = expiryDate.getFullYear();
-            const month = String(expiryDate.getMonth() + 1).padStart(2, '0'); // Months are 0-indexed
-            const day = String(expiryDate.getDate()).padStart(2, '0');
+        let data = {
+            role: role,
+            name: role === 'distributor' ? document.getElementById('name').value : document.getElementById('salesman_name').value,
+            contact_name: role === 'distributor' ? document.getElementById('contact_name').value : null,
+            contact: role === 'distributor' ? document.getElementById('contact').value : document.getElementById('salesman_contact').value,
+            email: role === 'distributor' ? document.getElementById('email').value : document.getElementById('salesman_email').value,
+            password: role === 'distributor' ? document.getElementById('password').value : document.getElementById('salesman_password').value,
+            password_confirmation: role === 'distributor' ? document.getElementById('confirm_password').value : document.getElementById('salesman_confirm_password').value,
+            geographic_coverage: role === 'distributor' ? document.getElementById('geographic_coverage').value : null,
+            location: role === 'distributor' ? document.getElementById('location').value : null,
+            shipping_location: role === 'distributor' ? document.getElementById('shipping_location').value : null,
+            terms_of_agreement: role === 'distributor' ? document.getElementById('terms_of_agreement').value : null,
+            salesman_id: role === 'salesman' ? document.getElementById('salesman_id').value : null,
+            salary: role === 'salesman' ? document.getElementById('salary').value : null,
+            salesman_address: role === 'salesman' ? document.getElementById('salesman_address').value : null
+        };
 
-            // Set the expiry date input value
-            expiryInput.value = `${year}-${month}-${day}`;
-
-            // Set minimum date for expiry date to the next day of manufacturing date
-            expiryInput.setAttribute('min', `${year}-${month}-${day}`);
+        // Send data to the server
+        $.ajax({
+            url: "{{ route('records.store') }}", // Update with your store route
+            method: "POST",
+            data: data,
+            success: function(response) {
+                location.reload(); // Reload to see new data
+            },
+            error: function(jqXHR, textStatus, errorThrown) {
+                console.error('Error adding record:', textStatus, errorThrown);
+            }
         });
 
-        // Set min attribute for expiry date when the page loads
-        expiryInput.setAttribute('min', expiryInput.value);
+        $('#addRecordModal').modal('hide'); // Hide modal after submission
+    }
+
+    $(document).ready(function() {
+        // Initialize DataTable
+        $("#basic-datatables").DataTable({});
+
+        // Confirmation on delete
+        $('.delete-form').on('submit', function(e) {
+            e.preventDefault();
+            var confirmed = confirm("Are you sure you want to delete this record?");
+            if (confirmed) {
+                this.submit();
+            }
+        });
+
+        // Multi-filter select initialization
+        $("#multi-filter-select").DataTable({
+            pageLength: 5,
+            initComplete: function() {
+                this.api().columns().every(function() {
+                    var column = this;
+                    var select = $('<select class="form-select"><option value=""></option></select>')
+                        .appendTo($(column.footer()).empty())
+                        .on("change", function() {
+                            var val = $.fn.dataTable.util.escapeRegex($(this).val());
+                            column.search(val ? "^" + val + "$" : "", true, false).draw();
+                        });
+
+                    column.data().unique().sort().each(function(d, j) {
+                        select.append('<option value="' + d + '">' + d + "</option>");
+                    });
+                });
+            }
+        });
+
+        // Add Row
+        $("#add-row").DataTable({
+            pageLength: 5,
+        });
+
+        var action = '<td><div class="form-button-action"><button type="button" data-bs-toggle="tooltip" title="" class="btn btn-link btn-primary btn-lg" data-original-title="Edit Task"><i class="fa fa-edit"></i></button><button type="button" data-bs-toggle="tooltip" title="" class="btn btn-link btn-danger" data-original-title="Remove"><i class="fa fa-times"></i></button></div></td>';
+
+        $("#addRowButton").click(function() {
+            $("#add-row").dataTable().fnAddData([
+                $("#addName").val(),
+                $("#addPosition").val(),
+                $("#addOffice").val(),
+                action,
+            ]);
+            $("#addRowModal").modal("hide");
+        });
     });
-    </script>
+</script>
 </body>
 
 </html>
