@@ -6,7 +6,7 @@
     <title>Zealix</title>
     <meta content="width=device-width, initial-scale=1.0, shrink-to-fit=no" name="viewport" />
     <link rel="icon" href="../assets/img/kaiadmin/favicon.ico" type="image/x-icon" />
-
+    <meta name="csrf-token" content="{{ csrf_token() }}">
     <!-- Fonts and icons -->
     <script src="../assets/js/plugin/webfont/webfont.min.js"></script>
     <script>
@@ -37,52 +37,44 @@
     <!-- CSS Just for demo purpose, don't include it in your project -->
     <link rel="stylesheet" href="../assets/css/demo.css" />
     <style>
-    /* Custom CSS goes here */
     .custom-dropdown {
-        position: relative;
-        display: inline-block;
-        width: 100%;
-    }
-
-    .dropdown-selected {
         display: flex;
-        justify-content: space-between;
         align-items: center;
-        background: #fff;
-        border: 1px solid #ced4da;
+        justify-content: space-between;
         padding: 10px;
+        border: 1px solid #ced4da;
+        border-radius: 4px;
         cursor: pointer;
+        width: 100%;
     }
 
     .dropdown-options {
-        display: none;
-        /* Initially hidden */
         position: absolute;
-        z-index: 1;
-        background: #fff;
+        width: 42%;
         border: 1px solid #ced4da;
-        width: 100%;
-        max-height: 200px;
+        border-top: none;
+        max-height: 150px;
         overflow-y: auto;
+        background-color: white;
+        z-index: 1000;
     }
 
-    .dropdown-option {
+    .dropdown-options div {
         padding: 10px;
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
         cursor: pointer;
     }
 
-    /* Adjusting icon spacing */
-    .dropdown-option i {
-        margin-left: 5px;
-        margin-right: 5px;
+    .dropdown-options div:hover {
+        background-color: #f1f1f1;
     }
 
-    .dropdown-option:hover {
-        background: #f1f1f1;
+    .btn-success.rounded-circle {
+        padding: 0;
+        border-radius: 50%;
     }
+    .modal-backdrop {
+            display: none !important; /* Hides the backdrop */
+        }
     </style>
 </head>
 
@@ -400,14 +392,16 @@
                                             <div class="dropdown-divider"></div>
                                             <a class="dropdown-item" href="#">Account Setting</a>
                                             <div class="dropdown-divider"></div>
-                                            <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
-    @csrf
-</form>
+                                            <form id="logout-form" action="{{ route('logout') }}" method="POST"
+                                                style="display: none;">
+                                                @csrf
+                                            </form>
 
-<!-- Logout Link -->
-<a class="dropdown-item" href="#" onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
-    Logout
-</a>
+                                            <!-- Logout Link -->
+                                            <a class="dropdown-item" href="#"
+                                                onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
+                                                Logout
+                                            </a>
                                         </li>
                                     </div>
                                 </ul>
@@ -493,44 +487,69 @@
 
                                         <div class="row">
                                             <div class="col-md-6">
+
                                                 <div class="form-group">
                                                     <label for="productCategory">Product Category</label>
-                                                    <div class="custom-dropdown">
-                                                        <div class="dropdown-selected" onclick="toggleDropdown()">
-                                                            <span id="selectedCategory">Select Product Category</span>
+                                                    <div class="d-flex align-items-center">
+                                                        <div class="custom-dropdown" onclick="toggleDropdown()"
+                                                            style="flex: 1;">
+                                                            <div class="dropdown-selected" id="selectedCategory">
+                                                                Select Product Category Here
+                                                            </div>
                                                             <i class="fa fa-caret-down"></i>
                                                         </div>
-                                                        <div class="dropdown-options" id="categoryOptions">
-                                                            <div class="dropdown-option"
-                                                                onclick="selectCategory('Gynecology')">
-                                                                Gynecology
-                                                                <i class="fa fa-edit" title="Edit"
-                                                                    onclick="editCategory('Gynecology', event)"></i>
-                                                                <i class="fa fa-trash" title="Delete"
-                                                                    onclick="deleteCategory('Gynecology', event)"></i>
-                                                            </div>
-                                                            <div class="dropdown-option"
-                                                                onclick="selectCategory('General Medicine')">
-                                                                General Medicine
-                                                                <i class="fa fa-edit" title="Edit"
-                                                                    onclick="editCategory('General Medicine', event)"></i>
-                                                                <i class="fa fa-trash" title="Delete"
-                                                                    onclick="deleteCategory('General Medicine', event)"></i>
-                                                            </div>
-                                                            <div class="dropdown-option"
-                                                                onclick="selectCategory('Dermatology')">
-                                                                Dermatology
-                                                                <i class="fa fa-edit" title="Edit"
-                                                                    onclick="editCategory('Dermatology', event)"></i>
-                                                                <i class="fa fa-trash" title="Delete"
-                                                                    onclick="deleteCategory('Dermatology', event)"></i>
-                                                            </div>
-                                                        </div>
+                                                        <button class="btn btn-success rounded-circle ms-2"
+                                                            type="button" onclick="openAddEditModal()"
+                                                            style="width: 36px; height: 36px;">
+                                                            <i class="fa fa-plus text-white"></i>
+                                                        </button>
                                                     </div>
-                                                    <!-- Hidden input to store selected category -->
+                                                    <div class="dropdown-options" id="categoryOptions"
+                                                        style="display: none; ">
+                                                        <!-- Category options will be dynamically loaded here -->
+                                                    </div>
                                                     <input type="hidden" name="product_category"
                                                         id="productCategoryInput" />
                                                 </div>
+
+
+                                                <!-- Add/Edit Modal -->
+                                                <div class="modal fade" id="addEditModal" tabindex="-1"
+                                                    aria-labelledby="modalLabel" aria-hidden="true"  data-backdrop="false">
+                                                    <div class="modal-dialog">
+                                                        <div class="modal-content">
+                                                            <div class="modal-header">
+                                                                <h5 class="modal-title" id="modalLabel">Add/Edit
+                                                                    Category</h5>
+                                                                <button type="button" class="btn-close"
+                                                                    data-bs-dismiss="modal" aria-label="Close"></button>
+                                                            </div>
+                                                            <div class="modal-body">
+                                                                <input type="text" id="categoryInput"
+                                                                    class="form-control"
+                                                                    placeholder="Enter Category Name">
+                                                            </div>
+                                                            <div class="modal-footer">
+                                                                <button type="button" class="btn btn-secondary"
+                                                                    data-bs-dismiss="modal">Close</button>
+                                                                <button type="button" class="btn btn-primary"
+                                                                    onclick="saveCategory()">Save</button>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+
+
+
+
+
+
+
+
+
+
+
                                             </div>
                                             <div class="col-md-6">
                                                 <div class="form-group">
@@ -605,41 +624,123 @@
     <script src="{{ asset('assets/js/plugin/printThis/printThis.js') }}"></script>
 
     <script>
-    // Dropdown toggle function
+    let categories = [];
+    let isEditing = false;
+    let editingIndex = null;
+
     function toggleDropdown() {
-        const dropdownOptions = document.getElementById("categoryOptions");
-        dropdownOptions.style.display = dropdownOptions.style.display === "block" ? "none" : "block";
+        const options = document.getElementById("categoryOptions");
+        options.style.display = options.style.display === "none" ? "block" : "none";
     }
 
     function selectCategory(category) {
-        document.getElementById("selectedCategory").innerText = category;
-        document.getElementById("productCategoryInput").value = category; // Set the hidden input value
-        document.getElementById("categoryOptions").style.display = "none";
-    }
-    // Select category function
-
-
-    // Edit category function (placeholder)
-    function editCategory(category, event) {
-        event.stopPropagation();
-        alert("Editing " + category);
+        document.getElementById("selectedCategory").textContent = category;
+        document.getElementById("productCategoryInput").value = category;
+        toggleDropdown(); // Close dropdown after selection
     }
 
-    // Delete category function (placeholder)
-    function deleteCategory(category, event) {
-        event.stopPropagation();
-        if (confirm("Are you sure you want to delete " + category + "?")) {
-            alert(category + " deleted");
+    function loadCategories() {
+        fetch('/categories') // Fetch categories from the database
+            .then(response => response.json())
+            .then(data => {
+                categories = data; // Store fetched categories
+                displayCategories(); // Display categories in the dropdown
+
+            })
+            .catch(error => console.error('Error fetching categories:', error));
+    }
+
+    function displayCategories() {
+        const optionsContainer = document.getElementById("categoryOptions");
+        optionsContainer.innerHTML = ''; // Clear existing options
+        categories.forEach((category, index) => {
+            const item = document.createElement("div");
+            item.className = "dropdown-item d-flex justify-content-between align-items-center";
+            item.innerHTML = `
+            ${category.name}
+            <span>
+                <i class="fa fa-edit text-warning me-4" onclick="openAddEditModal('${category.name}', ${index}, event)"></i>
+                <i class="fa fa-trash text-danger" onclick="deleteCategory(${category.id}, event)"></i>
+            </span>
+        `;
+            item.onclick = () => selectCategory(category.name);
+            optionsContainer.appendChild(item);
+        });
+    }
+
+    function openAddEditModal(category = "", index = null, event = null) {
+        if (event) event.stopPropagation();
+        isEditing = index !== null;
+        editingIndex = index;
+        document.getElementById("modalLabel").innerText = isEditing ? "Edit Category" : "Add Category";
+        document.getElementById("categoryInput").value = category;
+        const addEditModal = new bootstrap.Modal(document.getElementById("addEditModal"));
+        addEditModal.show();
+    }
+
+    function saveCategory() {
+        const category = document.getElementById("categoryInput").value.trim();
+        if (category) {
+            const url = isEditing ? `/categories/${categories[editingIndex].id}` : '/categories/save';
+            const method = isEditing ? 'PUT' : 'POST';
+
+            fetch(url, {
+                    method: method,
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+                    },
+                    body: JSON.stringify({
+                        category
+                    }) // Send the category data
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        if (isEditing) {
+                            categories[editingIndex].name = category; // Update existing category
+                        } else {
+                            categories.push({
+                                id: data.category.id,
+                                name: data.category.name
+                            }); // Append new category
+                        }
+                        displayCategories(); // Refresh the dropdown
+                    }
+                })
+                .catch(error => console.error('Error saving category:', error));
+
+            const addEditModal = bootstrap.Modal.getInstance(document.getElementById("addEditModal"));
+            addEditModal.hide();
         }
     }
 
-    // Close dropdown on click outside
-    document.addEventListener('click', function(event) {
-        const dropdown = document.getElementById("categoryOptions");
-        if (!event.target.closest('.custom-dropdown')) {
-            dropdown.style.display = 'none';
+    function deleteCategory(id, event) {
+        event.stopPropagation();
+        if (confirm("Are you sure you want to delete this category?")) {
+            fetch(`/categories/${id}`, {
+                    method: 'DELETE',
+                    headers: {
+                        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+                    }
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        categories = categories.filter(category => category.id !==
+                        id); // Remove category from array
+                        displayCategories(); // Refresh the dropdown
+                    }
+                })
+                .catch(error => console.error('Error deleting category:', error));
         }
-    });
+    }
+
+    // Initialize categories on page load
+    window.onload = loadCategories;
+
+
+
     document.addEventListener('DOMContentLoaded', function() {
         const manufacturingInput = document.getElementById('manufacturingDate');
         const expiryInput = document.getElementById('expiryDate');

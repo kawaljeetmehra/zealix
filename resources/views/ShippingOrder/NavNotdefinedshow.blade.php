@@ -5,11 +5,16 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <title>Zealix</title>
     <meta content="width=device-width, initial-scale=1.0, shrink-to-fit=no" name="viewport" />
-    <meta name="csrf-token" content="{{ csrf_token() }}">
-    <link rel="icon" href="../assets/img/kaiadmin/favicon.ico" type="image/x-icon" />
+    <link rel="icon" href="{{ asset('assets/img/kaiadmin/favicon.ico') }}" type="image/x-icon" />
 
-    <!-- Fonts and icons -->
-    <script src="../assets/js/plugin/webfont/webfont.min.js"></script>
+    <!-- CSS Files -->
+    <link rel="stylesheet" href="{{ asset('assets/css/bootstrap.min.css') }}" />
+    <link rel="stylesheet" href="{{ asset('assets/css/plugins.min.css') }}" />
+    <link rel="stylesheet" href="{{ asset('assets/css/kaiadmin.min.css') }}" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+
+    <script src="{{asset('assets/js/plugin/webfont/webfont.min.js')}}"></script>
+
     <script>
     WebFont.load({
         google: {
@@ -22,21 +27,13 @@
                 "Font Awesome 5 Brands",
                 "simple-line-icons",
             ],
-            urls: ["../assets/css/fonts.min.css"],
+            urls: ["{{asset('/assets/css/fonts.min.css')}}"],
         },
         active: function() {
             sessionStorage.fonts = true;
         },
     });
     </script>
-
-    <!-- CSS Files -->
-    <link rel="stylesheet" href="../assets/css/bootstrap.min.css" />
-    <link rel="stylesheet" href="../assets/css/plugins.min.css" />
-    <link rel="stylesheet" href="../assets/css/kaiadmin.min.css" />
-
-    <!-- CSS Just for demo purpose, don't include it in your project -->
-    <link rel="stylesheet" href="../assets/css/demo.css" />
 </head>
 
 <body>
@@ -47,7 +44,8 @@
                 <!-- Logo Header -->
                 <div class="logo-header" data-background-color="dark">
                     <a href="#" class="logo">
-                        <img src="../assets/img/zealx logo.png" alt="navbar brand" class="navbar-brand" height="80" />
+                        <img src="{{asset('assets/img/zealx logo.png')}}" alt="navbar brand" class="navbar-brand"
+                            height="80" />
                     </a>
                     <div class="nav-toggle">
                         <button class="btn btn-toggle toggle-sidebar">
@@ -64,10 +62,8 @@
                 <!-- End Logo Header -->
             </div>
             @include('partials.sidebar')
-
         </div>
         <!-- End Sidebar -->
-
         <div class="main-panel">
             <div class="main-header">
                 <div class="main-header-logo">
@@ -323,7 +319,7 @@
                                 <a class="dropdown-toggle profile-pic" data-bs-toggle="dropdown" href="#"
                                     aria-expanded="false">
                                     <div class="avatar-sm">
-                                        <img src="../assets/img/profile.jpg" alt="..."
+                                        <img src="{{asset('assets/img/profile.jpg')}}" alt="..."
                                             class="avatar-img rounded-circle" />
                                     </div>
                                     <span class="profile-username">
@@ -355,14 +351,16 @@
                                             <div class="dropdown-divider"></div>
                                             <a class="dropdown-item" href="#">Account Setting</a>
                                             <div class="dropdown-divider"></div>
-                                            <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
-    @csrf
-</form>
+                                            <form id="logout-form" action="{{ route('logout') }}" method="POST"
+                                                style="display: none;">
+                                                @csrf
+                                            </form>
 
-<!-- Logout Link -->
-<a class="dropdown-item" href="#" onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
-    Logout
-</a>
+                                            <!-- Logout Link -->
+                                            <a class="dropdown-item" href="#"
+                                                onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
+                                                Logout
+                                            </a>
                                         </li>
                                     </div>
                                 </ul>
@@ -372,76 +370,117 @@
                 </nav>
                 <!-- End Navbar -->
             </div>
-
             <div class="container">
                 <div class="page-inner">
                     <div class="row">
                         <div class="col-md-12">
-                            <div class="card shadow-sm">
-                                <div class="card-header text-white">
-                                    <h4 class="card-title mb-0">Assign Task</h4>
-                                </div>
-                                <div class="card-body">
-                                    <form id="assignTaskForm">
-                                        <div class="row mb-3 align-items-end">
-                                            <div class="col-md-4"> <label for="taskId">Task ID:</label> <input
-                                                    type="text" id="taskId" class="form-control" value="" readonly>
-                                            </div>
-                                            <div class="col-md-4"> <label for="taskPriority">Task Priority:</label>
-                                                <select id="taskPriority" class="form-control" required>
-                                                    <option value="" disabled selected>Select Priority</option>
-                                                    <option value="high">High</option>
-                                                    <option value="medium">Medium</option>
-                                                    <option value="low">Low</option>
-                                                </select> </div>
-                                            <div class="col-md-4 text-end"> <button type="button" id="doneButton"
-                                                    class="btn btn-success btn-rounded">Done</button> </div>
-                                        </div>
-                                        <div class="form-group mb-3"> <label for="description">Description:</label>
-                                            <textarea id="description" class="form-control" rows="3"
-                                                placeholder="Enter Task Description" required></textarea> </div>
-                                    </form>
-                                    <div class="d-flex justify-content-between align-items-center mb-3">
-                                        <div class="flex-fill">
-                                            <h2 class="mt-4">Task List</h2>
-                                        </div>
-                                        <div class="d-flex align-items-center flex-grow-3"> <label for="salesmanSelect"
-                                                class="me-2">Select Salesman:</label> <select id="salesmanSelect"
-                                                class="form-control" required style="width: 200px;">
-                                                <option value="" disabled selected>Select Salesman</option>
-                                                @foreach($salesmans as $salesman) <option
-                                                    value="{{ $salesman->salesman_id }}">{{ $salesman->name }} </option>
-                                                @endforeach
-                                            </select> </div>
+                            <div class="card">
+                                <div class="card-header">
+                                    <div class="d-flex justify-content-between align-items-center">
+                                    <div class="d-flex align-items-center">
+            <!-- Back arrow -->
+            <a href="javascript:history.back()" class="text-dark me-2" >
+                <i class="fas fa-arrow-left"></i>
+            </a>
+            <!-- Heading -->
+            <h4 class="card-title mb-0">Add Shipping Details</h4>
+        </div>
+                                        <h5><strong>Order Date:</strong> {{$order->order_date}}</h5>
                                     </div>
-                                    <div class="table-responsive d-flex justify-content-between"
-                                        style="overflow-x: auto;">
-                                        <div class="flex-grow-1">
-                                            <table id="add-row" class="display table table-striped table-hover">
-                                                <thead class="table-dark">
-                                                    <tr>
-                                                        <th style="width: 5%; text-align: center;">Select</th>
-                                                        <!-- Checkbox Column -->
-                                                        <th style="width: 15%; text-align: center;">S.No</th>
-                                                        <th style="width: 50%; text-align: center;">Task</th>
-                                                        <th style="width: 30%; text-align: center;">Task Priority</th>
-                                                    </tr>
-                                                </thead>
-                                                <tbody> @foreach ($tasks as $task) <tr
-                                                        data-task-id="{{ $task->task_id }}">
-                                                        <td style="text-align: center;"> <input type="checkbox"
-                                                                class="task-checkbox"
-                                                                data-task-id="{{ $task->task_id }}"
-                                                                value="{{ $task->task_id }}"> </td>
-                                                        <td style="text-align: center;">{{ $loop->iteration }}</td>
-                                                        <td>{{ $task->description }}</td>
-                                                        <td style="text-align: center;">{{ $task->priority }}</td>
-                                                    </tr> @endforeach </tbody>
-                                            </table>
+                                </div>
+
+                                <div class="row">
+                                    <!-- Shipping Information Section -->
+                                    <div class="col-md-6">
+                                        <div class="card shadow-sm mb-4">
+                                            <div class="card-body">
+                                                <h4 class="mt-3 mb-3">Shipping Information</h4>
+                                                <div class="form-group ps-3 pe-3">
+                                                    <p><strong>Order Number:</strong> {{ $order->order_id }}</p>
+                                                </div>
+                                                <div class="form-group ps-3 pe-3">
+                                                    <label for="shippingAddress"><strong>Shipping
+                                                            Address:</strong></label>
+                                                    <textarea id="shippingAddress" name="shipping_address"
+                                                        class="form-control" rows="3"
+                                                        placeholder="Enter Shipping Address">{{ $order->shipping_address }}</textarea>
+                                                        
+                                                
+                                                    </div>
+
+                                            </div>
                                         </div>
-                                        <div class="d-flex align-items-end ms-3">
-                                            <!-- Added a wrapper for the button --> <button type="button"
-                                                class="btn btn-primary btn-rounded">Assign</button>
+                                    </div>
+
+                                    <!-- Customer Information Section -->
+                                    <div class="col-md-6">
+                                        <div class="card shadow-sm mb-4">
+                                            <div class="card-body">
+                                                <h4 class="mt-3 mb-3">Customer Information</h4>
+                                                <div class="form-group ps-3 pe-3">
+                                                    <p class="mb-1"><strong>Name:</strong> {{ $order->order_by }}</p>
+                                                    <p class="mb-1"><strong>Location:</strong> {{ $order->location }}
+                                                    </p>
+                                                </div>
+                                                <div class="form-group ps-3 pe-3">
+                                                    <p class="mb-1"><strong>Contact Number:</strong>
+                                                        {{ $order->contact }}</p>
+                                                    <p class="mb-1"><strong>Distributor:</strong>
+                                                        {{ $order->distributor_name }}</p>
+                                                        <p class="mb-1"><strong>Email:</strong> {{ $order->email }}</p>
+                                                </div>
+                                                
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="col-md-12">
+                                    <h4 class="p-2">Order Products</h4>
+                                    <div class="table-responsive mb-4">
+                                        <!-- Added mb-4 for bottom margin -->
+                                        <table id="add-row" class="display table table-striped table-hover w-100">
+                                            <!-- Ensure full width -->
+                                            <thead class="table-dark">
+                                                <tr>
+                                                    <th>Batch Number</th>
+                                                    <th>Product Category</th>
+                                                    <th>Product Name</th>
+                                                    <th>Stock Count</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                @foreach($orderDetails as $detail)
+                                                <tr>
+                                                    <td>{{ $detail->batch_number }}</td>
+                                                    <td>{{ $detail->category }}</td>
+                                                    <td>{{ $detail->name }}</td>
+                                                    <td>{{ $detail->stock_count }}</td>
+                                                </tr>
+                                                @endforeach
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+
+                                <div class="col-md-12 mb-4">
+                                    <!-- Changed col-md-11 to col-md-12 -->
+                                    <div class="d-flex justify-content-between align-items-center">
+                                        <div class="d-flex">
+                                            <div class="form-group me-3">
+                                                <label for="totalProducts"><strong>Total Items:</strong></label>
+                                                <input type="text" id="totalProducts" class="form-control"
+                                                    value="{{$orderDetails->count()}}" readonly>
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="totalCost"><strong>Total Cost:</strong></label>
+                                                <input type="text" id="totalCost" class="form-control"
+                                                    value="{{$order->total_cost}}" readonly>
+                                            </div>
+                                        </div>
+                                        <div>
+                                            <button type="submit" id="updateAddressBtn"
+                                                class="btn btn-primary me-3">Add</button>
                                         </div>
                                     </div>
                                 </div>
@@ -449,28 +488,25 @@
                         </div>
                     </div>
                 </div>
+
             </div>
 
+            @include('partials.footer')
+
         </div>
-
-
     </div>
 
-
-    </div>
-    <!--   Core JS Files   -->
-    <script src="../assets/js/core/jquery-3.7.1.min.js"></script>
-    <script src="../assets/js/core/popper.min.js"></script>
-    <script src="../assets/js/core/bootstrap.min.js"></script>
-
-    <!-- jQuery Scrollbar -->
-    <script src="../assets/js/plugin/jquery-scrollbar/jquery.scrollbar.min.js"></script>
-    <!-- Datatables -->
-    <script src="../assets/js/plugin/datatables/datatables.min.js"></script>
-    <!-- Kaiadmin JS -->
-    <script src="../assets/js/kaiadmin.min.js"></script>
-    <!-- Kaiadmin DEMO methods, don't include it in your project! -->
-    <script src="../assets/js/setting-demo2.js"></script>
+    <script src="{{ asset('assets/js/core/jquery-3.7.1.min.js') }}"></script>
+    <script src="{{ asset('assets/js/core/popper.min.js') }}"></script>
+    <script src="{{ asset('assets/js/core/bootstrap.min.js') }}"></script>
+    <script src="{{ asset('assets/js/plugin/jquery-scrollbar/jquery.scrollbar.min.js') }}"></script>
+    <script src="{{ asset('assets/js/plugin/jquery-ui/jquery-ui.min.js') }}"></script>
+    <script src="{{ asset('assets/js/plugin/jquery-ui/jquery-ui.touch-punch.min.js') }}"></script>
+    <script src="{{ asset('assets/js/plugin/jquery.mask/jquery.mask.min.js') }}"></script>
+    <script src="{{ asset('assets/js/kaiadmin.min.js') }}"></script>
+    <script src="{{ asset('assets/js/plugin/chart.js/chart.min.js') }}"></script>
+    <script src="{{ asset('assets/js/plugin/printThis/printThis.js') }}"></script>
+    <script src="{{ asset('assets/js/plugin/datatables/datatables.min.js')}}"></script>
     <script>
     $(document).ready(function() {
         $("#basic-datatables").DataTable({});
@@ -535,121 +571,43 @@
                 ]);
             $("#addRowModal").modal("hide");
         });
+
+
+        $('#updateAddressBtn').on('click', function(event) {
+            event.preventDefault();
+
+            // Fetch the updated shipping address value
+            let shippingAddress = $('#shippingAddress').val();
+            let orderId = "{{ $order->id }}"; // Use the order ID dynamically
+            console.log(shippingAddress);
+            console.log(orderId);
+            $.ajax({
+                url: `/shipping-orders/${orderId}`, // Your route for updating the shipping address
+                type: 'PUT',
+                data: {
+                    _token: '{{ csrf_token() }}', // CSRF token for Laravel
+                    shipping_address: shippingAddress
+                },
+                success: function(response) {
+                    alert(response.message);
+                    // Optionally, update the UI or show a success message
+                    window.location.href = '/shipping-orders';
+                },
+                error: function(xhr) {
+                    // Check if it’s a validation error (422 status code)
+                    if (xhr.status === 422) {
+                        var errors = xhr.responseJSON.errors;
+                        // Display the error message from the server
+                        alert(errors.shipping_address[0]);
+                    } else {
+                        // Display a general error message
+                        alert('An error occurred. Please try again.');
+                    }
+                }
+            });
+        });
     });
     </script>
-
-<script>
-$(document).ready(function() {
-    // Function to get the maximum task ID from the existing tasks in the table
-    function getMaxTaskIdFromTable() {
-    // Get lastTaskId from your PHP variable
-    const lastTaskId = "{{ $lastTaskId }}"; // Use double quotes for proper interpolation
-
-    // Extract numeric part of lastTaskId
-    const lastNumericId = lastTaskId ? parseInt(lastTaskId.split('-')[1], 10) : 0;
-
-    // Return the numeric ID of the last task
-    return lastNumericId; // Only returns the last task ID as numeric
-}
-
-
-    // Function to generate a new task ID
-    function generateTaskId() {
-        const currentMaxId = getMaxTaskIdFromTable(); // Get the maximum task ID from the table
-        const newTaskId = currentMaxId + 1; // Increment the max task ID
-        return 'Task-' + String(newTaskId).padStart(3, '0'); // Format new task ID
-    }
-
-    // Display the initial task ID in the input field when the page loads
-    $('#taskId').val(generateTaskId());
-
-    // Get the CSRF token from the meta tag
-    const csrfToken = $('meta[name="csrf-token"]').attr('content');
-
-    // Handle the 'Done' button click for task creation
-    $('#doneButton').click(function() {
-        const taskId = $('#taskId').val();
-        const taskPriority = $('#taskPriority').val();
-        const description = $('#description').val();
-
-        // Validate the inputs
-        if (!taskPriority || !description) {
-            alert('Please fill in all fields except Salesman.');
-            return;
-        }
-
-        // Create an object to hold the task data
-        const taskData = {
-            task_id: taskId,
-            priority: taskPriority,
-            description: description
-        };
-
-        // AJAX request to store the task in the database
-        $.ajax({
-            url: '/assign/store', // Update with your API endpoint
-            type: 'POST',
-            headers: { 'X-CSRF-TOKEN': csrfToken }, // Set the CSRF token in the headers
-            contentType: 'application/json',
-            data: JSON.stringify(taskData),
-            success: function(response) {
-                alert('Task added successfully!');
-                $('#assignTaskForm')[0].reset(); // Clear the form inputs
-                $('#taskId').val(generateTaskId()); // Generate and show the next task ID
-                window.location.reload(); // Reload the page to reflect changes
-            },
-            error: function(xhr, status, error) {
-                alert('Error saving task: ' + error);
-            }
-        });
-    });
-
-    // Handle salesman assignment to tasks
-    $('.btn-primary').click(function() {
-        const selectedTasks = [];
-        $('.task-checkbox:checked').each(function() {
-            selectedTasks.push($(this).data('task-id')); // Collect task IDs from checked checkboxes
-        });
-
-        const salesmanId = $('#salesmanSelect').val();
-
-        // Validate the inputs
-        if (selectedTasks.length === 0) {
-            alert('Please select at least one task.');
-            return;
-        }
-        if (!salesmanId) {
-            alert('Please select a salesman.');
-            return;
-        }
-
-        // Create an object to hold the task-salesman data
-        const assignmentData = {
-            task_ids: selectedTasks, // Send an array of task IDs
-            salesman_id: salesmanId
-        };
-
-        // AJAX request to store the task-salesman assignment in the database
-        $.ajax({
-            url: '/assign/store-salesman', // Update with your new API endpoint
-            type: 'POST',
-            headers: { 'X-CSRF-TOKEN': csrfToken }, // Set the CSRF token in the headers
-            contentType: 'application/json',
-            data: JSON.stringify(assignmentData),
-            success: function(response) {
-                console.log(response.success);
-                alert(response.success);
-                window.location.reload(); // Refresh the page to reflect changes
-            },
-            error: function(xhr, status, error) {
-                alert('Error assigning salesman: ' + error);
-            }
-        });
-    });
-});
-</script>
-
-
 </body>
 
 </html>

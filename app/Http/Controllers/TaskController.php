@@ -12,10 +12,13 @@ class TaskController extends Controller
 {
     // Display the task assignment page with salesmen and tasks data
     public function index()
-    {
+    { // Fetch assigned task IDs from the task_salesman table
+        $assignedTaskIds = TaskSalesman::pluck('task_id')->toArray();
         $salesmans = Salesman::all();
-        $tasks = Task::all();
-        return view('AssignTask.index', compact('salesmans', 'tasks'));
+        $tasks = Task::whereNotIn('task_id', $assignedTaskIds)->get();
+        $lastTask = Task::orderBy('created_at', 'desc')->first(); // Get the last created task
+        $lastTaskId = $lastTask ? $lastTask->task_id : null;
+        return view('AssignTask.index', compact('salesmans', 'tasks','lastTaskId'));
     }
 
     // Store a new task

@@ -32,7 +32,7 @@
                             </a>
                         </li>
                         @endif
-                        @if(Auth::check() && Auth::user()->role_id == 1 || Auth::user()->role_id == 3 )
+                        @if(Auth::check() && Auth::user()->role_id == 1 || Auth::user()->role_id == 2 || Auth::user()->role_id == 3 )
                         <!-- Stock Admin Sub-section -->
                         <li class="{{ request()->routeIs('stockAdmin') ? 'active' : '' }}">
                             <a href="{{ route('stockAdmin') }}">
@@ -51,15 +51,7 @@
                         @endif
 
 
-                        @if(Auth::check() && Auth::user()->role_id == 1 || Auth::user()->role_id == 2 )
-                        <!-- Stock Distributor Sub-section -->
-                        <li class="{{ request()->routeIs('stockDistributor') ? 'active' : '' }}">
-                            <a href="{{ route('stockDistributor') }}">
-                                <i class="fas fa-truck"></i>
-                                <p>Stock Distributor</p>
-                            </a>
-                        </li>
-                        @endif
+                       
                         @if(Auth::check() && Auth::user()->role_id == 1  )
                         <!-- Expired Stock Admin Sub-section -->
                         <li class="{{ request()->routeIs('expirestockAdmin') ? 'active' : '' }}">

@@ -6,6 +6,8 @@ use Illuminate\Http\Request;
 use App\Models\Order;
 use App\Models\OrderDetail;
 use App\Models\Distributor;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 class OrderStatusController extends Controller
 {
     //
@@ -59,5 +61,81 @@ class OrderStatusController extends Controller
         // Return a success response
            return response()->json(['message' => 'Order status updated successfully.']);
     }
+
+
+    public function orderReturn(){
+        return view('OrderStatus.orderReturn');
+    }
+
+    public function orderEditReturn(){
+        return view('OrderStatus.orderEditReturn');
+    }
+
+
+//for shipping
+
+public function shippingDetails()
+{
+    $shippingorders = Order::all(); // Fetches all shipping orders
+    return view('ShippingOrder.index', compact('shippingorders'));
+}
+
+
+
+    public function show($id)
+{
+  
+   $order = DB::table('orders')->where('id', $id)->first();
+
+   
+   if (!$order) {
+       abort(404); 
+   }
+
+   
+   $orderDetails = DB::table('order_details')
+       ->where('order_id', $id)
+       ->get();
+
+  
+   return view('ShippingOrder.show', compact('order', 'orderDetails'));
+}
+
+public function shippingupdate(Request $request, $id)
+{
+    // Validate the request with custom error messages
+    $validator = \Validator::make($request->all(), [
+        'shipping_address' => 'required',
+    ], [
+        'shipping_address.required' => 'Please fill in the Shipping Address.',
+    ]);
+
+    // Check if the validation fails
+    if ($validator->fails()) {
+        // Return a JSON response with the validation errors
+        return response()->json(['errors' => $validator->errors()], 422);
+    }
+
+    try {
+        // Fetch the order by id
+        $order = Order::where('id', $id)->firstOrFail();
+
+        // Update the shipping address
+        $order->shipping_address = $request->input('shipping_address');
+        $order->save();
+
+        // Return a success response
+        return response()->json(['message' => 'Shipping Address updated successfully!']);
+
+    } catch (\Exception $e) {
+        // Log the error and return a 500 response
+        \Log::error('Error updating shipping address: ' . $e->getMessage());
+        return response()->json(['message' => 'An error occurred while updating the shipping address.'], 500);
+    }
+}
+
+
+
+
  
 }

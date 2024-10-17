@@ -406,7 +406,7 @@
 
                                         <tbody>
     @foreach($attendances as $attendance)
-        @if (Auth::user()->role_id == 1 || $attendance->id == Auth::user()->salesman_id)
+        @if (Auth::user()->role_id == 1)
             <tr>
                 <td>{{ $attendance->salesman_id }}</td>
                 @for ($day = 1; $day <= 30; $day++)

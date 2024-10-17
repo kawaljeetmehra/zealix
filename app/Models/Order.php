@@ -11,6 +11,6 @@ class Order extends Model
 
     protected $fillable = [
         'order_date', 'order_id', 'total_cost', 'location', 'distributor_name', 'order_by', 'order_status','email','contact',
-    ];
+       'shipping_address'    ];
     protected $table = 'orders';
 }

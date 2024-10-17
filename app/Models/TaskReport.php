@@ -13,7 +13,7 @@ class TaskReport extends Model
         'Task_id','Salesman_id','Assign_Date','Due_Date',
     ];
     protected $primaryKey = 'Report_id';
-    protected $table = 'Task_Report';
+    protected $table = 'task_report';
 
 
 }

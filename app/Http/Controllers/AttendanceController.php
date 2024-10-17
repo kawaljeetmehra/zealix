@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 use App\Models\Attendance;
 use Illuminate\Http\Request;
 use App\Models\Salesman;
+use Illuminate\Support\Facades\Auth;
+
 use Carbon\Carbon;
 class AttendanceController extends Controller
 {
@@ -107,4 +109,57 @@ class AttendanceController extends Controller
 
         return redirect()->back()->with('success', 'Attendance updated successfully!');
     }
+
+    public function showAttendance()
+    {
+        $salesmanId = Auth::id(); // Get the logged-in salesman ID
+    $attendances = Attendance::where('salesman_id', $salesmanId)
+                             ->orderBy('day')
+                             ->get();
+
+    // Initialize the yearly attendance array
+    $yearlyAttendance = [];
+
+    foreach ($attendances as $attendance) {
+        // Extract month and day from the 'day' field
+        $month = date('n', strtotime($attendance->day)); // Numeric representation of a month (1 to 12)
+        $day = date('j', strtotime($attendance->day));   // Day of the month without leading zeros
+
+        // Initialize the month array if not set
+        if (!isset($yearlyAttendance[$month])) {
+            $yearlyAttendance[$month] = [];
+        }
+
+        // Store attendance status
+        $yearlyAttendance[$month][$day] = $attendance->status;
+    }
+    
+        return view('Attendance.salesmanAttendence', compact('yearlyAttendance'));
+    }
+    
+protected function getAttendanceForYear($salesmanId)
+{
+    $attendance = []; // Initialize array to hold yearly attendance data
+
+    // Loop through each month (1 to 12) to get attendance data
+    for ($month = 1; $month <= 12; $month++) {
+        $attendance[$month] = $this->getMonthlyAttendance($salesmanId, $month);
+    }
+
+    return $attendance;
 }
+
+protected function getMonthlyAttendance($salesmanId, $month)
+{
+    // Fetch attendance data for the given salesman and month
+    // This would depend on your database structure; adjust as needed
+    // Example:
+    return Attendance::where('salesman_id', $salesmanId)
+                     ->whereMonth('day', $month)
+                     ->pluck('status', 'day')
+                     ->toArray();
+}
+}
+
+
+

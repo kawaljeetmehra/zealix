@@ -5,7 +5,6 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <title>Zealix</title>
     <meta content="width=device-width, initial-scale=1.0, shrink-to-fit=no" name="viewport" />
-    <meta name="csrf-token" content="{{ csrf_token() }}">
     <link rel="icon" href="../assets/img/kaiadmin/favicon.ico" type="image/x-icon" />
 
     <!-- Fonts and icons -->
@@ -355,14 +354,18 @@
                                             <div class="dropdown-divider"></div>
                                             <a class="dropdown-item" href="#">Account Setting</a>
                                             <div class="dropdown-divider"></div>
-                                            <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
-    @csrf
-</form>
+                                            <!-- Logout Form -->
+                                            <form id="logout-form" action="{{ route('logout') }}" method="POST"
+                                                style="display: none;">
+                                                @csrf
+                                            </form>
 
-<!-- Logout Link -->
-<a class="dropdown-item" href="#" onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
-    Logout
-</a>
+                                            <!-- Logout Link -->
+                                            <a class="dropdown-item" href="#"
+                                                onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
+                                                Logout
+                                            </a>
+
                                         </li>
                                     </div>
                                 </ul>
@@ -374,82 +377,77 @@
             </div>
 
             <div class="container">
-                <div class="page-inner">
-                    <div class="row">
-                        <div class="col-md-12">
-                            <div class="card shadow-sm">
-                                <div class="card-header text-white">
-                                    <h4 class="card-title mb-0">Assign Task</h4>
-                                </div>
-                                <div class="card-body">
-                                    <form id="assignTaskForm">
-                                        <div class="row mb-3 align-items-end">
-                                            <div class="col-md-4"> <label for="taskId">Task ID:</label> <input
-                                                    type="text" id="taskId" class="form-control" value="" readonly>
-                                            </div>
-                                            <div class="col-md-4"> <label for="taskPriority">Task Priority:</label>
-                                                <select id="taskPriority" class="form-control" required>
-                                                    <option value="" disabled selected>Select Priority</option>
-                                                    <option value="high">High</option>
-                                                    <option value="medium">Medium</option>
-                                                    <option value="low">Low</option>
-                                                </select> </div>
-                                            <div class="col-md-4 text-end"> <button type="button" id="doneButton"
-                                                    class="btn btn-success btn-rounded">Done</button> </div>
-                                        </div>
-                                        <div class="form-group mb-3"> <label for="description">Description:</label>
-                                            <textarea id="description" class="form-control" rows="3"
-                                                placeholder="Enter Task Description" required></textarea> </div>
-                                    </form>
-                                    <div class="d-flex justify-content-between align-items-center mb-3">
-                                        <div class="flex-fill">
-                                            <h2 class="mt-4">Task List</h2>
-                                        </div>
-                                        <div class="d-flex align-items-center flex-grow-3"> <label for="salesmanSelect"
-                                                class="me-2">Select Salesman:</label> <select id="salesmanSelect"
-                                                class="form-control" required style="width: 200px;">
-                                                <option value="" disabled selected>Select Salesman</option>
-                                                @foreach($salesmans as $salesman) <option
-                                                    value="{{ $salesman->salesman_id }}">{{ $salesman->name }} </option>
-                                                @endforeach
-                                            </select> </div>
-                                    </div>
-                                    <div class="table-responsive d-flex justify-content-between"
-                                        style="overflow-x: auto;">
-                                        <div class="flex-grow-1">
-                                            <table id="add-row" class="display table table-striped table-hover">
-                                                <thead class="table-dark">
-                                                    <tr>
-                                                        <th style="width: 5%; text-align: center;">Select</th>
-                                                        <!-- Checkbox Column -->
-                                                        <th style="width: 15%; text-align: center;">S.No</th>
-                                                        <th style="width: 50%; text-align: center;">Task</th>
-                                                        <th style="width: 30%; text-align: center;">Task Priority</th>
-                                                    </tr>
-                                                </thead>
-                                                <tbody> @foreach ($tasks as $task) <tr
-                                                        data-task-id="{{ $task->task_id }}">
-                                                        <td style="text-align: center;"> <input type="checkbox"
-                                                                class="task-checkbox"
-                                                                data-task-id="{{ $task->task_id }}"
-                                                                value="{{ $task->task_id }}"> </td>
-                                                        <td style="text-align: center;">{{ $loop->iteration }}</td>
-                                                        <td>{{ $task->description }}</td>
-                                                        <td style="text-align: center;">{{ $task->priority }}</td>
-                                                    </tr> @endforeach </tbody>
-                                            </table>
-                                        </div>
-                                        <div class="d-flex align-items-end ms-3">
-                                            <!-- Added a wrapper for the button --> <button type="button"
-                                                class="btn btn-primary btn-rounded">Assign</button>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
+    <div class="page-inner">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="card">
+                    <div class="card-header">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <h4 class="card-title mb-0">Salesman Attendance</h4>
                         </div>
+                        <h4 class="date mb-0 text-center">Date:
+                            {{ \Carbon\Carbon::now()->setTimezone('Asia/Kolkata')->format('d-m-Y') }}</h4>
                     </div>
+                    @if (Auth::user()->role_id == 3)
+    @php
+        // Array of month names
+        $monthNames = [
+            1 => 'January',
+            2 => 'February',
+            3 => 'March',
+            4 => 'April',
+            5 => 'May',
+            6 => 'June',
+            7 => 'July',
+            8 => 'August',
+            9 => 'September',
+            10 => 'October',
+            11 => 'November',
+            12 => 'December',
+        ];
+    @endphp
+
+    <div class="table-responsive">
+        <table id="add-row" class="display table table-striped table-hover">
+            <thead>
+                <tr>
+                    <th>Month</th>
+                    @foreach(range(1, 31) as $day)
+                        <th>Day {{ $day }}</th>
+                    @endforeach
+                </tr>
+            </thead>
+            <tbody>
+                @foreach(range(1, 12) as $month)
+                    <tr>
+                        <td>{{ $monthNames[$month] }}</td> <!-- Display month name correctly -->
+                        @foreach(range(1, 31) as $day)
+                            <td style="background-color: 
+                                {{ isset($yearlyAttendance[$month][$day]) ? 
+                                    ($yearlyAttendance[$month][$day] === 'P' ? 'green' : 
+                                    ($yearlyAttendance[$month][$day] === 'A' ? 'red' : 
+                                    ($yearlyAttendance[$month][$day] === 'L' ? 'yellow' : 'white'))) 
+                                    : 'white' }}; 
+                                color: {{ isset($yearlyAttendance[$month][$day]) ? 'white' : 'black' }};">
+                                {{ $yearlyAttendance[$month][$day] ?? 'N/A' }}
+                            </td>
+                        @endforeach
+                    </tr>
+                @endforeach
+            </tbody>
+        </table>
+    </div>
+@endif
+
+
                 </div>
             </div>
+        </div>
+    </div>
+
+    @include('partials.footer')
+</div>
+
 
         </div>
 
@@ -473,182 +471,73 @@
     <script src="../assets/js/setting-demo2.js"></script>
     <script>
     $(document).ready(function() {
-        $("#basic-datatables").DataTable({});
+        // Initialize basic DataTable
+        $("#basic-datatables").DataTable();
+
+        // Confirm deletion on form submit
         $('.delete-form').on('submit', function(e) {
             e.preventDefault();
 
-
             var confirmed = confirm("Are you sure you want to delete this record?");
-
             if (confirmed) {
                 this.submit();
             }
         });
+
+        // Initialize multi-filter select DataTable
         $("#multi-filter-select").DataTable({
             pageLength: 5,
             initComplete: function() {
-                this.api()
-                    .columns()
-                    .every(function() {
-                        var column = this;
-                        var select = $(
-                                '<select class="form-select"><option value=""></option></select>'
+                this.api().columns().every(function() {
+                    var column = this;
+                    var select = $(
+                            '<select class="form-select"><option value=""></option></select>'
                             )
-                            .appendTo($(column.footer()).empty())
-                            .on("change", function() {
-                                var val = $.fn.dataTable.util.escapeRegex($(this).val());
+                        .appendTo($(column.footer()).empty())
+                        .on("change", function() {
+                            var val = $.fn.dataTable.util.escapeRegex($(this).val());
+                            column.search(val ? "^" + val + "$" : "", true, false)
+                            .draw();
+                        });
 
-                                column
-                                    .search(val ? "^" + val + "$" : "", true, false)
-                                    .draw();
-                            });
-
-                        column
-                            .data()
-                            .unique()
-                            .sort()
-                            .each(function(d, j) {
-                                select.append(
-                                    '<option value="' + d + '">' + d + "</option>"
-                                );
-                            });
+                    column.data().unique().sort().each(function(d) {
+                        select.append('<option value="' + d + '">' + d +
+                            '</option>');
                     });
+                });
             },
         });
 
-        // Add Row
+        // Initialize add row DataTable
         $("#add-row").DataTable({
             pageLength: 5,
         });
 
-        var action =
-            '<td> <div class="form-button-action"> <button type="button" data-bs-toggle="tooltip" title="" class="btn btn-link btn-primary btn-lg" data-original-title="Edit Task"> <i class="fa fa-edit"></i> </button> <button type="button" data-bs-toggle="tooltip" title="" class="btn btn-link btn-danger" data-original-title="Remove"> <i class="fa fa-times"></i> </button> </div> </td>';
+        // Action buttons for added rows
+        var action = `
+        <td>
+            <div class="form-button-action">
+                <button type="button" data-bs-toggle="tooltip" title="Edit Task" class="btn btn-link btn-primary btn-lg">
+                    <i class="fa fa-edit"></i>
+                </button>
+                <button type="button" data-bs-toggle="tooltip" title="Remove" class="btn btn-link btn-danger">
+                    <i class="fa fa-times"></i>
+                </button>
+            </div>
+        </td>`;
 
+        // Add row functionality
         $("#addRowButton").click(function() {
-            $("#add-row")
-                .dataTable()
-                .fnAddData([
-                    $("#addName").val(),
-                    $("#addPosition").val(),
-                    $("#addOffice").val(),
-                    action,
-                ]);
+            $("#add-row").dataTable().fnAddData([
+                $("#addName").val(),
+                $("#addPosition").val(),
+                $("#addOffice").val(),
+                action,
+            ]);
             $("#addRowModal").modal("hide");
         });
     });
     </script>
-
-<script>
-$(document).ready(function() {
-    // Function to get the maximum task ID from the existing tasks in the table
-    function getMaxTaskIdFromTable() {
-    // Get lastTaskId from your PHP variable
-    const lastTaskId = "{{ $lastTaskId }}"; // Use double quotes for proper interpolation
-
-    // Extract numeric part of lastTaskId
-    const lastNumericId = lastTaskId ? parseInt(lastTaskId.split('-')[1], 10) : 0;
-
-    // Return the numeric ID of the last task
-    return lastNumericId; // Only returns the last task ID as numeric
-}
-
-
-    // Function to generate a new task ID
-    function generateTaskId() {
-        const currentMaxId = getMaxTaskIdFromTable(); // Get the maximum task ID from the table
-        const newTaskId = currentMaxId + 1; // Increment the max task ID
-        return 'Task-' + String(newTaskId).padStart(3, '0'); // Format new task ID
-    }
-
-    // Display the initial task ID in the input field when the page loads
-    $('#taskId').val(generateTaskId());
-
-    // Get the CSRF token from the meta tag
-    const csrfToken = $('meta[name="csrf-token"]').attr('content');
-
-    // Handle the 'Done' button click for task creation
-    $('#doneButton').click(function() {
-        const taskId = $('#taskId').val();
-        const taskPriority = $('#taskPriority').val();
-        const description = $('#description').val();
-
-        // Validate the inputs
-        if (!taskPriority || !description) {
-            alert('Please fill in all fields except Salesman.');
-            return;
-        }
-
-        // Create an object to hold the task data
-        const taskData = {
-            task_id: taskId,
-            priority: taskPriority,
-            description: description
-        };
-
-        // AJAX request to store the task in the database
-        $.ajax({
-            url: '/assign/store', // Update with your API endpoint
-            type: 'POST',
-            headers: { 'X-CSRF-TOKEN': csrfToken }, // Set the CSRF token in the headers
-            contentType: 'application/json',
-            data: JSON.stringify(taskData),
-            success: function(response) {
-                alert('Task added successfully!');
-                $('#assignTaskForm')[0].reset(); // Clear the form inputs
-                $('#taskId').val(generateTaskId()); // Generate and show the next task ID
-                window.location.reload(); // Reload the page to reflect changes
-            },
-            error: function(xhr, status, error) {
-                alert('Error saving task: ' + error);
-            }
-        });
-    });
-
-    // Handle salesman assignment to tasks
-    $('.btn-primary').click(function() {
-        const selectedTasks = [];
-        $('.task-checkbox:checked').each(function() {
-            selectedTasks.push($(this).data('task-id')); // Collect task IDs from checked checkboxes
-        });
-
-        const salesmanId = $('#salesmanSelect').val();
-
-        // Validate the inputs
-        if (selectedTasks.length === 0) {
-            alert('Please select at least one task.');
-            return;
-        }
-        if (!salesmanId) {
-            alert('Please select a salesman.');
-            return;
-        }
-
-        // Create an object to hold the task-salesman data
-        const assignmentData = {
-            task_ids: selectedTasks, // Send an array of task IDs
-            salesman_id: salesmanId
-        };
-
-        // AJAX request to store the task-salesman assignment in the database
-        $.ajax({
-            url: '/assign/store-salesman', // Update with your new API endpoint
-            type: 'POST',
-            headers: { 'X-CSRF-TOKEN': csrfToken }, // Set the CSRF token in the headers
-            contentType: 'application/json',
-            data: JSON.stringify(assignmentData),
-            success: function(response) {
-                console.log(response.success);
-                alert(response.success);
-                window.location.reload(); // Refresh the page to reflect changes
-            },
-            error: function(xhr, status, error) {
-                alert('Error assigning salesman: ' + error);
-            }
-        });
-    });
-});
-</script>
-
 
 </body>
 

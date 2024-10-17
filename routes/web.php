@@ -15,6 +15,7 @@ use App\Http\Controllers\TaskReportController;
 use App\Http\Controllers\RouteTrackingController;
 
 use App\Http\Controllers\RecordController;
+use App\Http\Controllers\CategoryController;
 
 
 
@@ -50,6 +51,8 @@ Route::post('/assign-stock', [AssignStockController::class, 'assignStock'])->nam
 
 
 Route::get('/stockAdmin',[StockListAdminController::class,'index'])->name('stockAdmin');
+Route::get('/stockmanagementDistributor',[stockManagementDisributorController::class,'index'])->name('stockDistributor');
+   
 Route::post('/update-stock', [StockListAdminController::class, 'updateStock'])->name('update.stock');
 Route::get('/stockExpire',[StockListAdminController::class,'stockExipre'])->name('expirestockAdmin');
 Route::post('/update-stock-distributor', [stockManagementDisributorController::class, 'updateStock'])->name('update.stock.distributor');
@@ -78,8 +81,15 @@ Route::get('/stockAdmin',[StockListAdminController::class,'index'])->name('stock
 
 Route::get('/orderstatus/{id}/edit', [OrderStatusController::class, 'edit']);
 Route::put('/orderstatus/{id}',[OrderStatusController::class,'update']);
+Route::get('/orderreturn',[OrderStatusController::class,'orderReturn']);
+Route::get('/editorderreturn',[OrderStatusController::class,'orderEditReturn']);
 
 
+
+Route::get('/shipping-orders', [OrderStatusController::class, 'shippingDetails'])->name('ShippingOrders.shippingDetails');
+
+Route::get('/shipping-orders/{id}', [OrderStatusController::class, 'show'])->name('ShippingOrders.show');
+Route::put('/shipping-orders/{id}', [OrderStatusController::class, 'shippingupdate'])->name('ShippingOrders.shippingupdate');
 
 
 
@@ -91,7 +101,7 @@ Route::post("/assign/store-salesman",[TaskController::class,'storeSalesman']);
 
 
 
-
+Route::get('/salesman/attendance', [AttendanceController::class, 'showAttendance']);
 Route::post('/attendance', [AttendanceController::class, 'store'])->name('attendance.store'); // Route for adding attendance
 Route::put('/attendance/{id}', [AttendanceController::class, 'update'])->name('attendance.update'); // Route for updating attendance
 
@@ -111,7 +121,10 @@ Route::post('/route-planning/assign', [TaskController::class, 'assignTasks'])->n
 
 Route::resource('routeTracking', RouteTrackingController::class);
 
-
+Route::get('/categories', [CategoryController::class, 'getCategories'])->name('categories.get');
+Route::put('/categories/{id}', [CategoryController::class, 'update']);
+Route::post('/categories/save', [CategoryController::class, 'saveCategory'])->name('categories.save');
+Route::delete('/categories/{id}', [CategoryController::class, 'deleteCategory'])->name('categories.delete');
 
 
 
@@ -129,9 +142,8 @@ Route::post('/records', [RecordController::class, 'store'])->name('records.store
 });
 
 
-Route::group(['middleware'=>['auth','role:1,2,3']],function(){
-    Route::get('/stockmanagementDistributor',[stockManagementDisributorController::class,'index'])->name('stockDistributor');
+// Route::group(['middleware'=>['auth','role:1,2,3']],function(){
    
     
-});
+// });
 
