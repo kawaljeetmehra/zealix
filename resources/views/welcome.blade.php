@@ -213,6 +213,18 @@ input[type="submit"]:active{
                 <i></i>
             </div>
             <input type="submit" value="Login">
+
+<!-- Display error message if exists -->
+@if ($errors->any())
+    <div style="color: red; margin-top: 20px;">
+        <ul>
+            @foreach ($errors->all() as $error)
+                <li>{{ $error }}</li>
+            @endforeach
+        </ul>
+    </div>
+@endif
+
         </form>
     </div>
 </body>

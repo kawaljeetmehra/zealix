@@ -387,6 +387,22 @@
                                         <h4 class="card-title">Stock Management-Distributor</h4>
 
                                     </div>
+                                    <div class="col-md-2">
+                                    @if(Auth::user()->role_id == 1 || Auth::user()->role_id==3)
+    <form method="GET" action="{{ route('stockDistributor') }}">
+        <div class="form-group">
+            <label for="distributor">Select Distributor:</label>
+            <select id="distributor" name="distributor_id" class="form-control" onchange="this.form.submit()">
+                @foreach($distributors as $distributor)
+                    <option value="{{ $distributor->id }}" {{ $distributor->id == $selectedDistributorId ? 'selected' : '' }}>
+                        {{ $distributor->name }} <!-- Assuming 'name' is a field in distributors table -->
+                    </option>
+                @endforeach
+            </select>
+        </div>
+    </form>
+@endif
+</div>
                                     <div class="table-responsive">
                                         <table id="add-row" class="display table table-striped table-hover">
                                             <thead>
@@ -407,15 +423,13 @@
                                                 @foreach($products as $product)
                                                 <tr>
                                                     <td>{{$product->batch_number}}</td>
-                                                    <td>{{$product->category}}</td>
+                                                    <td>{{$product->product_category}}</td>
                                                     <td>{{$product->product_name}}</td>
-                                                    <td>{{$product->packaging}}</td>
+                                                    <td>{{$product->package}}</td>
                                                     <td>{{$product->quantity}}</td>
                                                     <td>
-                                                        <input type="number" name="stock_count[]"
-                                                            class="form-control stock-input"
-                                                            data-id="{{ $product->id }}"
-                                                            value="{{ $product->stock_count }}" min="0">
+                                                       
+                                                            {{ $product->stock_count }}
                                                     </td>
                                                     <td>
                                                         @if($product->stock_count == 0)

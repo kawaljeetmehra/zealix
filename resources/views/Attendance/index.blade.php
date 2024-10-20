@@ -355,14 +355,16 @@
                                             <div class="dropdown-divider"></div>
                                             <a class="dropdown-item" href="#">Account Setting</a>
                                             <div class="dropdown-divider"></div>
-                                            <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
-    @csrf
-</form>
+                                            <form id="logout-form" action="{{ route('logout') }}" method="POST"
+                                                style="display: none;">
+                                                @csrf
+                                            </form>
 
-<!-- Logout Link -->
-<a class="dropdown-item" href="#" onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
-    Logout
-</a>
+                                            <!-- Logout Link -->
+                                            <a class="dropdown-item" href="#"
+                                                onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
+                                                Logout
+                                            </a>
                                         </li>
                                     </div>
                                 </ul>
@@ -373,139 +375,152 @@
                 <!-- End Navbar -->
             </div>
             <div class="container">
-                <div class="page-inner">
-                    <div class="row">
-                        <div class="col-md-12">
-                            <div class="card">
-                                <div class="card-header">
-                                    <div class="d-flex justify-content-between align-items-center">
-                                        <h4 class="card-title mb-0">Salesman Attendance</h4>
-                                        @if (Auth::user()->role_id == 1 )
-                                        <button type="button" class="btn btn-primary btn-round" id="attendanceButton"
-                                            data-toggle="modal" data-target="#attendanceModal">
-                                            <i class="fa fa-plus"></i>
-                                            <span id="attendanceButtonText">Add Attendance</span>
+    <div class="page-inner">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="card">
+                    <div class="card-header">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <h4 class="card-title mb-0">Salesman Attendance</h4>
+                            @if (Auth::user()->role_id == 1 )
+                                <button type="button" class="btn btn-primary btn-round" id="attendanceButton"
+                                    data-toggle="modal" data-target="#attendanceModal">
+                                    <i class="fa fa-plus"></i>
+                                    <span id="attendanceButtonText">Add Attendance</span>
+                                </button>
+                            @endif
+                        </div>
+                        <h4 class="date mb-0 text-center">Date: 
+                            {{ \Carbon\Carbon::now()->setTimezone('Asia/Kolkata')->format('d-m-Y') }}
+                        </h4>
+                    </div>
+                    <form action="{{ route('attendance.filter') }}" method="GET" class="mb-3">
+    <div class="row mt-2 d-flex justify-content-center">
+        <div class="col-md-3">
+            @if (Auth::user()->role_id == 1)
+                <label for="salesman_id">Select Salesman</label>
+                <select class="form-control" id="salesman_id" name="salesman_id" onchange="this.form.submit()">
+                    @foreach ($salesmen as $salesman)
+                        <option value="{{ $salesman->id }}"
+                            {{ $selectedSalesmanId == $salesman->id ? 'selected' : '' }}>
+                            {{ $salesman->name }}
+                        </option>
+                    @endforeach
+                </select>
+            @else
+                <!-- Add an empty div to maintain layout if not an admin -->
+                <div style="height: 38px;"></div>
+            @endif
+        </div>
+        <div class="col-md-3">
+            <label for="status">Filter by Status</label>
+            <select class="form-control" id="status" name="status" onchange="this.form.submit()">
+                <option value="">All</option>
+                <option value="P" {{ $selectedStatus === 'P' ? 'selected' : '' }}>Present</option>
+                <option value="A" {{ $selectedStatus === 'A' ? 'selected' : '' }}>Absent</option>
+                <option value="L" {{ $selectedStatus === 'L' ? 'selected' : '' }}>Leave</option>
+            </select>
+        </div>
+    </div>
+</form>
+
+                    <div class="table-responsive">
+                        <table id="attendance-table" class="display table table-striped table-hover">
+                            <thead class="table-dark" >
+                                <tr>
+                                    <th>Month</th>
+                                    @for ($day = 1; $day <= 31; $day++)
+                                        <th>Day {{ $day }}</th>
+                                    @endfor
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @for ($month = 1; $month <= 12; $month++)
+                                    <tr>
+                                        <td>{{ \Carbon\Carbon::create()->month($month)->format('F') }}</td>
+                                        @for ($day = 1; $day <= 31; $day++)
+                                            <td style="background-color: 
+                                                {{ isset($monthlyAttendance[$month][$day]) ? 
+                                                    ($monthlyAttendance[$month][$day] === 'P' ? 'green' : 
+                                                    ($monthlyAttendance[$month][$day] === 'A' ? 'red' : 
+                                                    ($monthlyAttendance[$month][$day] === 'L' ? 'yellow' : 'white'))) 
+                                                    : 'white' }}; 
+                                                color: {{ isset($monthlyAttendance[$month][$day]) ? 'white' : 'black' }};">
+                                                {{ $monthlyAttendance[$month][$day] ?? 'N/A' }}
+                                            </td>
+                                        @endfor
+                                    </tr>
+                                @endfor
+                            </tbody>
+                        </table>
+
+                        <div class="modal fade" id="attendanceModal" tabindex="-1" role="dialog"
+                            aria-labelledby="attendanceModalLabel" aria-hidden="true" data-backdrop="false">
+                            <div class="modal-dialog" role="document">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h5 class="modal-title" id="attendanceModalLabel">Add Attendance</h5>
+                                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                            <span aria-hidden="true">&times;</span>
                                         </button>
-                                        @endif
                                     </div>
-
-                                    <h4 class="date mb-0 text-center">Date:
-                                        {{ \Carbon\Carbon::now()->setTimezone('Asia/Kolkata')->format('d-m-Y') }}</h4>
-                                </div>
-
-                                <div class="table-responsive">
-                                    <table id="attendance-table" class="display table table-striped table-hover">
-                                        <thead>
-                                            <tr>
-                                                <th>Salesman ID</th>
-                                                @for ($day = 1; $day <= 30; $day++) <th>Day {{ $day }}</th>
-                                                    @endfor
-
-                                            </tr>
-                                        </thead>
-
-                                        <tbody>
-    @foreach($attendances as $attendance)
-        @if (Auth::user()->role_id == 1)
-            <tr>
-                <td>{{ $attendance->salesman_id }}</td>
-                @for ($day = 1; $day <= 30; $day++)
-                    <td style="background-color: 
-                        {{ isset($attendance->attendance[$day]) ? 
-                            ($attendance->attendance[$day] === 'P' ? 'green' : 
-                            ($attendance->attendance[$day] === 'A' ? 'red' : 
-                            ($attendance->attendance[$day] === 'L' ? 'yellow' : 'white'))) 
-                            : 'white' }};
-                        color: {{ isset($attendance->attendance[$day]) ? 'white' : 'black' }};">
-                        
-                        @if(isset($attendance->attendance[$day]))
-                            {{ $attendance->attendance[$day] }}
-                        @else
-                            N/A
-                        @endif
-                    </td>
-                @endfor
-            </tr>
-        @endif
-    @endforeach
-</tbody>
-
-                                    </table>
-                                    <div class="modal fade" id="attendanceModal" tabindex="-1" role="dialog"
-                                        aria-labelledby="attendanceModalLabel" aria-hidden="true" data-backdrop="false">
-                                        <div class="modal-dialog" role="document">
-                                            <div class="modal-content">
-                                                <div class="modal-header">
-                                                    <h5 class="modal-title" id="attendanceModalLabel">Add Attendance
-                                                    </h5>
-                                                    <button type="button" class="close" data-dismiss="modal"
-                                                        aria-label="Close">
-                                                        <span aria-hidden="true">&times;</span>
-                                                    </button>
-                                                </div>
-                                                <div class="modal-body">
-                                                    <form id="attendanceForm" method="POST" action="/attendance">
-                                                        @csrf
-                                                        <input type="hidden" name="_method" id="formMethod"
-                                                            value="POST">
-                                                        <input type="hidden" name="attendance_id" id="attendanceId"
-                                                            value="">
-                                                        <div class="form-group">
-                                                            <label for="salesman_id">Salesman</label>
-                                                            <select class="form-control" id="salesman_id"
-                                                                name="salesman_id" required>
-                                                                <option value="">Select Salesman</option>
-                                                                @foreach ($salesmen as $salesman)
-                                                                <option value="{{ $salesman->id }}"
-                                                                    {{ isset($attendance) && $attendance->salesman_id == $salesman->id ? 'selected' : '' }}>
-                                                                    {{ $salesman->name }}
-                                                                </option>
-                                                                @endforeach
-                                                            </select>
-                                                        </div>
-
-                                                        @php
-                                                        use Carbon\Carbon;
-                                                        $currentDay = Carbon::now()->setTimezone('Asia/Kolkata')->day;
-                                                        @endphp
-
-
-                                                        <div class="form-group">
-                                                            <label for="day{{ $currentDay }}">Day
-                                                                {{ $currentDay }}</label>
-                                                            <select class="form-control" id="day{{ $currentDay }}"
-                                                                name="attendance[{{ $currentDay }}]">
-                                                                <option value="">Select Status</option>
-                                                                <option value="P"
-                                                                    {{ isset($attendance) && isset($attendance->attendance[$currentDay]) && $attendance->attendance[$currentDay] === 'P' ? 'selected' : '' }}>
-                                                                    Present
-                                                                </option>
-                                                                <option value="A"
-                                                                    {{ isset($attendance) && isset($attendance->attendance[$currentDay]) && $attendance->attendance[$currentDay] === 'A' ? 'selected' : '' }}>
-                                                                    Absent
-                                                                </option>
-                                                                <option value="L"
-                                                                    {{ isset($attendance) && isset($attendance->attendance[$currentDay]) && $attendance->attendance[$currentDay] === 'L' ? 'selected' : '' }}>
-                                                                    Leave
-                                                                </option>
-                                                            </select>
-                                                        </div>
-
-                                                        <button type="submit" class="btn btn-primary"
-                                                            id="submitBtn">Save Attendance</button>
-                                                    </form>
-                                                </div>
+                                    <div class="modal-body">
+                                        <form id="attendanceForm" method="POST" action="/attendance">
+                                            @csrf
+                                            <input type="hidden" name="_method" id="formMethod" value="POST">
+                                            <input type="hidden" name="attendance_id" id="attendanceId" value="">
+                                            <div class="form-group">
+                                                <label for="salesman_id">Salesman</label>
+                                                <select class="form-control" id="salesman_id" name="salesman_id" required>
+                                                    <option value="">Select Salesman</option>
+                                                    @foreach ($salesmen as $salesman)
+                                                        <option value="{{ $salesman->id }}"
+                                                            {{ isset($attendance) && $attendance->salesman_id == $salesman->id ? 'selected' : '' }}>
+                                                            {{ $salesman->name }}
+                                                        </option>
+                                                    @endforeach
+                                                </select>
                                             </div>
-                                        </div>
+
+                                            @php
+                                                use Carbon\Carbon;
+                                                $currentDay = Carbon::now()->setTimezone('Asia/Kolkata')->day;
+                                            @endphp
+
+                                            <div class="form-group">
+                                                <label for="day{{ $currentDay }}">Day {{ $currentDay }}</label>
+                                                <select class="form-control" id="day{{ $currentDay }}"
+                                                    name="attendance[{{ $currentDay }}]">
+                                                    <option value="">Select Status</option>
+                                                    <option value="P"
+                                                        {{ isset($attendance) && isset($attendance->attendance[$currentDay]) && $attendance->attendance[$currentDay] === 'P' ? 'selected' : '' }}>
+                                                        Present
+                                                    </option>
+                                                    <option value="A"
+                                                        {{ isset($attendance) && isset($attendance->attendance[$currentDay]) && $attendance->attendance[$currentDay] === 'A' ? 'selected' : '' }}>
+                                                        Absent
+                                                    </option>
+                                                    <option value="L"
+                                                        {{ isset($attendance) && isset($attendance->attendance[$currentDay]) && $attendance->attendance[$currentDay] === 'L' ? 'selected' : '' }}>
+                                                        Leave
+                                                    </option>
+                                                </select>
+                                            </div>
+
+                                            <button type="submit" class="btn btn-primary" id="submitBtn">Save Attendance</button>
+                                        </form>
                                     </div>
                                 </div>
-
                             </div>
                         </div>
-                    </div>
 
+                    </div>
                 </div>
             </div>
+        </div>
+    </div>
+</div>
+
 
             @include('partials.footer')
 

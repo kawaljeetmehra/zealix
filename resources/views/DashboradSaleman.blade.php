@@ -36,6 +36,36 @@
 
     <!-- CSS Just for demo purpose, don't include it in your project -->
     <link rel="stylesheet" href="../assets/css/demo.css" />
+    <style>
+    .dot {
+        height: 10px;
+        width: 10px;
+        border-radius: 50%;
+        display: inline-block;
+        margin-right: 5px;
+    }
+
+    .present {
+        background-color: green;
+    }
+
+    .leave {
+        background-color: yellow;
+    }
+
+    .absent {
+        background-color: red;
+    }
+
+    .current-month {
+        font-weight: bold;
+        /* Make it bold */
+        color: #007bff;
+        /* Change color if needed */
+        margin-left: 10px;
+        /* Add some space */
+    }
+    </style>
 </head>
 
 <body>
@@ -354,14 +384,18 @@
                                             <div class="dropdown-divider"></div>
                                             <a class="dropdown-item" href="#">Account Setting</a>
                                             <div class="dropdown-divider"></div>
-                                            <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
-    @csrf
-</form>
+                                            <!-- Logout Form -->
+                                            <form id="logout-form" action="{{ route('logout') }}" method="POST"
+                                                style="display: none;">
+                                                @csrf
+                                            </form>
 
-<!-- Logout Link -->
-<a class="dropdown-item" href="#" onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
-    Logout
-</a>
+                                            <!-- Logout Link -->
+                                            <a class="dropdown-item" href="#"
+                                                onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
+                                                Logout
+                                            </a>
+
                                         </li>
                                     </div>
                                 </ul>
@@ -371,93 +405,165 @@
                 </nav>
                 <!-- End Navbar -->
             </div>
-
             <div class="container">
-                <div class="page-inner">
+    <div class="page-inner">
+        <h4> Salesman Dashboard
+        </h4>
+        <!----------Dashboard Start ----->
 
-                    <div class="row">
+        <div class="row">
+        <div class="col-md-6 mb-3">
+    <div class="card">
+        <div class="card-header">Task Report</div>
+        <div class="card-body">
+            <table class="table table-striped">
+                <thead>
+                    <tr>
+                        <th>Task ID</th>
+                        <th>Due Date</th>
+                        <th>Completion (%)</th>
+                        <th>Status</th>
+                       
+                    </tr>
+                </thead>
+                <tbody>
+                    @forelse($taskReports as $taskReport)
+                        <tr>
+                            <td>{{ $taskReport->Task_id }}</td>
+                            <td>{{ \Carbon\Carbon::parse($taskReport->Due_Date)->format('Y-m-d') }}</td>
+                            <td>{{ $taskReport->Completion_Percentage }}%</td>
+                            <td>
+                                @if ($taskReport->Task_Status == 'in-progress')
+                                    <button class="btn btn-warning btn-sm">In Progress</button>
+                                @elseif ($taskReport->Task_Status == 'not started')
+                                    <button class="btn btn-secondary btn-sm">Not Started</button>
+                                @elseif ($taskReport->Task_Status == 'completed')
+                                    <button class="btn btn-success btn-sm">Completed</button>
+                                @endif
+                            </td>
+                           
+                        </tr>
+                    @empty
+                        <tr>
+                            <td colspan="5" class="text-center">No task reports available.</td>
+                        </tr>
+                    @endforelse
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
 
-
-
-
-                        <div class="col-md-12">
-                            <div class="card">
-                                <div class="card-header">
-                                    <div class="d-flex align-items-center">
-                                        <h4 class="card-title">Stock Management-Admin</h4>
-
-                                    </div>
-                                    <div class="table-responsive">
-                                        <table id="add-row" class="display table table-striped table-hover">
-                                            <thead>
-                                                <tr>
-                                                    <th>Batch Number</th>
-                                                    <th>Product Category</th>
-                                                    <th>Product Name</th>
-
-                                                    <th>Package</th>
-                                                    <th>Quantity</th>
-                                                    <th>Stock Count</th>
-                                                    <th>Stock Update</th>
-
-                                                </tr>
-                                            </thead>
-
-                                            <tbody>
-                                                @foreach($products as $product)
-                                                <tr>
-                                                    <td>{{$product->batch_number}}</td>
-                                                    <td>{{$product->category}}</td>
-                                                    <td>{{$product->product_name}}</td>
-                                                    <td>{{$product->packaging}}</td>
-                                                    <td>{{$product->quantity}}</td>
-                                                    <td>@if(Auth::check() && (Auth::user()->role_id == 2 || Auth::user()->role_id == 3))
-    <span>{{ $product->stock_count }}</span> <!-- Display as normal text -->
-@else
-                                                        <input type="number" name="stock_count[]"
-                                                            class="form-control stock-input"
-                                                            data-id="{{ $product->id }}"
-                                                            value="{{ $product->stock_count }}" min="0">
-                                                            @endif
-                                                    </td>
-                                                    <td>
-                                                        @if($product->stock_count == 0)
-                                                        <button
-                                                            class="btn btn-danger btn-round btn-sm ms-auto">Out-Stock</button>
-
-                                                        @elseif($product->stock_count < 7) <button
-                                                            class="btn btn-warning btn-round btn-sm ms-auto">
-                                                            Low-Stock</button>
-                                                            @else
-                                                            <button
-                                                                class="btn btn-success btn-round btn-sm ms-auto">In-Stock</button>
-                                                            @endif
-                                                    </td>
-
-
-                                                </tr>
-                                                @endforeach
-                                            </tbody>
-                                        </table>
-                                    </div>
-
-
-                                </div>
-                            </div>
+            <div class="col-md-6 mb-3">
+                <div class="card">
+                    <div class="card-header">Mark Attendance</div>
+                    <div class="card-body text-center">
+                        <div class="btn-group" role="group">
+                            <button type="button" class="btn btn-success">Present</button>
+                            <button type="button" class="btn btn-danger">Absent</button>
+                            <button type="button" class="btn btn-warning">Leave</button>
                         </div>
                     </div>
-
                 </div>
-
             </div>
-            @include('partials.footer')
-
         </div>
 
+        <div class="row">
+            <div class="col-md-6 mb-3">
+                <div class="card">
+                    <div class="card-header">Stock</div>
+                    <div class="card-body">
+                        <table class="table table-striped">
+                            <thead>
+                                <tr>
+                                    <th>Batch Number</th>
+                                    <th>Stock Count</th>
+                                    <th>MRP</th>
+                                    <th>Status</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @if(Auth::check() && (Auth::user()->role_id === 1 || Auth::user()->role_id === 3))
+                                    @foreach($latestStocks as $stock)
+                                        <tr>
+                                            <td>{{ $stock->batch_number }}</td>
+                                            <td>{{ $stock->stock_count }}</td>
+                                            <td>{{ $stock->mrp }}</td>
+                                            <td>
+                                                @if($stock->stock_count == 0)
+                                                    <button class="btn btn-danger btn-round btn-sm ms-auto">Out-Stock</button>
+                                                @elseif($stock->stock_count < 7)
+                                                    <button class="btn btn-warning btn-round btn-sm ms-auto">Low-Stock</button>
+                                                @else
+                                                    <button class="btn btn-success btn-round btn-sm ms-auto">In-Stock</button>
+                                                @endif
+                                            </td>
+                                        </tr>
+                                    @endforeach
+                                @endif
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- New Column for Attendance and Order Status -->
+            <div class="col-md-6 mb-3">
+                <div class="card">
+                    <div class="card-header">Salesmen Attendance <span class="current-month"> ({{ \Carbon\Carbon::now()->format('F') }})</span></div>
+                    <div class="card-body">
+                        <table class="table text-center">
+                            <tr>
+                                <th>Present</th>
+                                <th>On Leave</th>
+                                <th>Absent</th>
+                            </tr>
+                            <tr>
+                                <td><span class="dot present"></span>{{ $presentCount }}</td>
+                                <td><span class="dot leave"></span>{{ $onLeaveCount }}</td>
+                                <td><span class="dot absent"></span>{{ $absentCount }}</td>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+                <div class="card mt-3">
+                    <div class="card-header">Order Status</div>
+                    <div class="card-body">
+                        <table class="table text-center">
+                            <tr>
+                                <th>Processing</th>
+                                <th>Delivered</th>
+                                <th>In-Transit</th>
+                                <th>Dispatched</th>
+                            </tr>
+                            <tr>
+                                <td>{{ $statusCounts['Processing'] ?? 0 }}</td>
+                                <td>{{ $statusCounts['Delivered'] ?? 0 }}</td>
+                                <td>{{ $statusCounts['In-Transit'] ?? 0 }}</td>
+                                <td>{{ $statusCounts['Dispatched'] ?? 0 }}</td>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!------------Dashboard End-------------->
+
+    </div>
+</div>
+
+
+            @include('partials.footer')
+        </div>
+
+    </div>
 
 
     </div>
 
+
+    </div>
     <!--   Core JS Files   -->
     <script src="../assets/js/core/jquery-3.7.1.min.js"></script>
     <script src="../assets/js/core/popper.min.js"></script>
@@ -535,49 +641,6 @@
                 ]);
             $("#addRowModal").modal("hide");
         });
-
-
-        function updateStockAndRefresh(inputElement) {
-            var stockCount = inputElement.val(); // Get the updated stock count
-            var productId = inputElement.data('id'); // Get the product ID from data-id
-
-            // Send AJAX request to update stock count
-            $.ajax({
-                url: '/update-stock', // Replace with the route URL that handles stock update
-                method: 'POST',
-                data: {
-                    _token: '{{ csrf_token() }}', // Laravel CSRF token for security
-                    id: productId,
-                    stock_count: stockCount
-                },
-                success: function(response) {
-                    if (response.success) {
-                        // Refresh the page after the stock is updated successfully
-                        location.reload(); // This refreshes the page
-                    } else {
-                        alert('Failed to update stock. Please try again.');
-                    }
-                },
-                error: function() {
-                    alert('Error while updating stock.');
-                }
-            });
-        }
-
-        // Event listener for when input box loses focus (blur event)
-        $('.stock-input').on('blur', function() {
-            updateStockAndRefresh($(this));
-        });
-
-        // Event listener for pressing "Enter" key inside input field
-        $('.stock-input').on('keypress', function(e) {
-            if (e.which == 13) { // 13 is the keycode for the "Enter" key
-                updateStockAndRefresh($(this));
-            }
-        });
-
-
-
     });
     </script>
 </body>

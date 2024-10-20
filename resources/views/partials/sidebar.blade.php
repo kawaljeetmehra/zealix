@@ -1,6 +1,13 @@
 <div class="sidebar-wrapper scrollbar scrollbar-inner">
     <div class="sidebar-content">
         <ul class="nav nav-secondary">
+        <li class="nav-item">
+    <a href="{{ Auth::user()->role_id == 3 ? route('dashboardSalesman') : route('dashboard') }}"
+       class="{{ request()->routeIs('dashboard') || request()->routeIs('dashboardSalesman') ? 'active' : '' }}">
+        <i class="fas fa-home"></i>
+        <p>Dashboard</p>
+    </a>
+</li>
 
             <!-- Inventory Management Section -->
             <li class="nav-item submenu">
@@ -99,6 +106,19 @@
                                 <p>Order Status</p>
                             </a>
                         </li>
+                        <li class="{{ request()->url() == url('/shipping-orders') ? 'active' : '' }}">
+                <a href="{{ route('ShippingOrders.shippingDetails') }}">
+                    <i class="fas fa-truck"></i> <!-- Optional icon -->
+                    <p>Shipping Orders</p>
+                </a>
+            </li>
+            <li class="{{ request()->url() == url('/returnorderstatus') ? 'active' : '' }}">
+    <a href="{{ route('Returnorders.index') }}">
+        <i class="fas fa-undo"></i> <!-- Optional icon -->
+        <p>Return Orders</p>
+    </a>
+</li>
+
                     </ul>
                 </div>
             </li>
@@ -160,6 +180,8 @@
                             </a>
                         </li>
                         @endif
+                      
+
                     </ul>
                 </div>
             </li>

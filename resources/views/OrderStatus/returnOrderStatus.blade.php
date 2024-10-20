@@ -354,14 +354,18 @@
                                             <div class="dropdown-divider"></div>
                                             <a class="dropdown-item" href="#">Account Setting</a>
                                             <div class="dropdown-divider"></div>
-                                            <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
-    @csrf
-</form>
+                                            <!-- Logout Form -->
+                                            <form id="logout-form" action="{{ route('logout') }}" method="POST"
+                                                style="display: none;">
+                                                @csrf
+                                            </form>
 
-<!-- Logout Link -->
-<a class="dropdown-item" href="#" onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
-    Logout
-</a>
+                                            <!-- Logout Link -->
+                                            <a class="dropdown-item" href="#"
+                                                onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
+                                                Logout
+                                            </a>
+
                                         </li>
                                     </div>
                                 </ul>
@@ -373,91 +377,88 @@
             </div>
 
             <div class="container">
-                <div class="page-inner">
-
-                    <div class="row">
-
-
-
-
-                        <div class="col-md-12">
-                            <div class="card">
-                                <div class="card-header">
-                                    <div class="d-flex align-items-center">
-                                        <h4 class="card-title">Stock Management-Admin</h4>
-
-                                    </div>
-                                    <div class="table-responsive">
-                                        <table id="add-row" class="display table table-striped table-hover">
-                                            <thead>
-                                                <tr>
-                                                    <th>Batch Number</th>
-                                                    <th>Product Category</th>
-                                                    <th>Product Name</th>
-
-                                                    <th>Package</th>
-                                                    <th>Quantity</th>
-                                                    <th>Stock Count</th>
-                                                    <th>Stock Update</th>
-
-                                                </tr>
-                                            </thead>
-
-                                            <tbody>
-                                                @foreach($products as $product)
-                                                <tr>
-                                                    <td>{{$product->batch_number}}</td>
-                                                    <td>{{$product->category}}</td>
-                                                    <td>{{$product->product_name}}</td>
-                                                    <td>{{$product->packaging}}</td>
-                                                    <td>{{$product->quantity}}</td>
-                                                    <td>@if(Auth::check() && (Auth::user()->role_id == 2 || Auth::user()->role_id == 3))
-    <span>{{ $product->stock_count }}</span> <!-- Display as normal text -->
-@else
-                                                        <input type="number" name="stock_count[]"
-                                                            class="form-control stock-input"
-                                                            data-id="{{ $product->id }}"
-                                                            value="{{ $product->stock_count }}" min="0">
-                                                            @endif
-                                                    </td>
-                                                    <td>
-                                                        @if($product->stock_count == 0)
-                                                        <button
-                                                            class="btn btn-danger btn-round btn-sm ms-auto">Out-Stock</button>
-
-                                                        @elseif($product->stock_count < 7) <button
-                                                            class="btn btn-warning btn-round btn-sm ms-auto">
-                                                            Low-Stock</button>
-                                                            @else
-                                                            <button
-                                                                class="btn btn-success btn-round btn-sm ms-auto">In-Stock</button>
-                                                            @endif
-                                                    </td>
-
-
-                                                </tr>
-                                                @endforeach
-                                            </tbody>
-                                        </table>
-                                    </div>
-
-
-                                </div>
-                            </div>
+    <div class="page-inner">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="card">
+                    <div class="card-header">
+                        <div class="d-flex align-items-center">
+                            <h4 class="card-title">Return Order</h4>
+                           
                         </div>
                     </div>
-
+                    <div class="table-responsive">
+                        <table id="add-row" class="display table table-striped table-hover">
+                            <thead>
+                                <tr>
+                                    <th>Return Date</th>
+                                    <th>Order Number</th>
+                                    <th>Total Cost</th>
+                                    <th>Distributor Name</th>
+                                    <th>Return By</th>
+                                    <th>Order Status</th>
+                                   
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach($orders as $order)
+                                <tr>
+                                    <td>{{ $order->updated_at }}</td>
+                                    <td>{{ $order->order_id }}</td>
+                                    <td>{{ $order->total_cost }}</td>
+                                    <td>{{ $order->distributor_name }}</td>
+                                    <td>{{ $order->order_by }}</td>
+                                    <td>
+                                        @if ($order->order_status == 'Accept')
+                                        <button class="btn btn-primary btn-round ms-auto btn-accept"
+                                            data-order-id="{{ $order->id }}">
+                                            Accept
+                                        </button>
+                                        <button class="btn btn-danger btn-round ms-auto btn-decline" 
+                                            data-order-id="{{ $order->id }}" style="opacity:0.5;">
+                                            Decline
+                                        </button>
+                                        @elseif ($order->order_status == 'Decline')
+                                        <button class="btn btn-primary btn-round ms-auto btn-accept" 
+                                            data-order-id="{{ $order->id }}" style="opacity: 0.5;">
+                                            Accept
+                                        </button>
+                                        <button class="btn btn-danger btn-round ms-auto btn-decline" 
+                                            data-order-id="{{ $order->id }}">
+                                            Decline
+                                        </button>
+                                        @else
+                                        <button class="btn btn-primary btn-round ms-auto btn-accept" 
+                                            data-order-id="{{ $order->id }}">
+                                            Accept
+                                        </button>
+                                        <button class="btn btn-danger btn-round ms-auto btn-decline" 
+                                            data-order-id="{{ $order->id }}">
+                                            Decline
+                                        </button>
+                                        @endif
+                                    </td>
+                                   
+                                </tr>
+                                @endforeach
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
-
             </div>
-            @include('partials.footer')
+        </div>
+    </div>
+    @include('partials.footer')
+</div>
+
 
         </div>
 
 
-
     </div>
 
+
+    </div>
     <!--   Core JS Files   -->
     <script src="../assets/js/core/jquery-3.7.1.min.js"></script>
     <script src="../assets/js/core/popper.min.js"></script>
@@ -535,49 +536,6 @@
                 ]);
             $("#addRowModal").modal("hide");
         });
-
-
-        function updateStockAndRefresh(inputElement) {
-            var stockCount = inputElement.val(); // Get the updated stock count
-            var productId = inputElement.data('id'); // Get the product ID from data-id
-
-            // Send AJAX request to update stock count
-            $.ajax({
-                url: '/update-stock', // Replace with the route URL that handles stock update
-                method: 'POST',
-                data: {
-                    _token: '{{ csrf_token() }}', // Laravel CSRF token for security
-                    id: productId,
-                    stock_count: stockCount
-                },
-                success: function(response) {
-                    if (response.success) {
-                        // Refresh the page after the stock is updated successfully
-                        location.reload(); // This refreshes the page
-                    } else {
-                        alert('Failed to update stock. Please try again.');
-                    }
-                },
-                error: function() {
-                    alert('Error while updating stock.');
-                }
-            });
-        }
-
-        // Event listener for when input box loses focus (blur event)
-        $('.stock-input').on('blur', function() {
-            updateStockAndRefresh($(this));
-        });
-
-        // Event listener for pressing "Enter" key inside input field
-        $('.stock-input').on('keypress', function(e) {
-            if (e.which == 13) { // 13 is the keycode for the "Enter" key
-                updateStockAndRefresh($(this));
-            }
-        });
-
-
-
     });
     </script>
 </body>

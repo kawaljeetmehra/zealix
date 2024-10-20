@@ -72,9 +72,9 @@ class TaskReportController extends Controller
     {   
         // Fetch task by ID
         $task = TaskReport::where('Report_id', $id)
-        ->join('salesmans', 'salesmans.salesman_id', '=', 'Task_Report.Salesman_id')
-        ->join('task_assign', 'task_assign.task_id', '=', 'Task_Report.Task_id')
-        ->select('Task_Report.*', 'salesmans.*','task_assign.*') // Add more fields if needed
+        ->join('salesmans', 'salesmans.salesman_id', '=', 'task_report.Salesman_id')
+        ->join('task_assign', 'task_assign.task_id', '=', 'task_report.Task_id')
+        ->select('task_report.*', 'salesmans.*','task_assign.*') // Add more fields if needed
         ->first();
        
        

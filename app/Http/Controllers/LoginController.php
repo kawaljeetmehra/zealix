@@ -33,11 +33,11 @@ class LoginController extends Controller
             // Redirect based on role
             switch ($user->role_id) {
                 case 1: // Admin
-                    return redirect()->route('products.index');
+                    return redirect()->route('dashboard');
                 case 2: // Distributor
-                    return redirect()->route('stockDistributor');
+                    return redirect()->route('dashboard');
                 case 3: // Salesman
-                    return redirect()->route('salesman.attendance');
+                    return redirect()->route('dashboardSalesman');
                 default:
                     Auth::logout();
                     return redirect()->route('login')->withErrors([

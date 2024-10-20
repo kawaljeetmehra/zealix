@@ -6,32 +6,68 @@ use Illuminate\Http\Request;
 use App\Models\Product;
 use App\Models\AssignStock;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Auth;
 class stockManagementDisributorController extends Controller
 {
     //
     public function index()
-{
-    // Set distributor_id to 1
-    $distributor_id = 18;
-
-    // Fetch product IDs that are assigned to the specified distributor
-    $assignedProductIds = DB::table('assign_stock')
-        ->where('distributor_id', $distributor_id)
-        ->pluck('product_id');
-
-    // Fetch only those products that are assigned to distributor_id = 1
-    $products = Product::whereIn('id', $assignedProductIds)->get();
-
-    // Check if any products were found
-    if ($products->isEmpty()) {
-        $message = "No products assigned to distributor with ID 1.";
-    } else {
-        $message = null; // No message if products are found
-    }
+    {
+        // Fetch the currently authenticated user
+        $user = Auth::user(); // Get the authenticated user object
+        $userId = $user->id;// Get the authenticated user's ID
+        $isAdmin = $user->role_id == 1;
+        $isSalesman=$user->role_id==3;
+        // Fetch the distributor_id by joining users and distributors tables
+        if ($isAdmin || $isSalesman) {
+            // Admin can view all distributors and products
+            $distributors = DB::table('distributors')->get(); // Get all distributors
     
-
-    return view('stockManagement.stockListDistributor', compact('products', 'message'));
-}
+            // Get the selected distributor from the request, or default to the first one
+            $selectedDistributorId = request('distributor_id', $distributors->first()->id ?? null);
+    
+            // Fetch product IDs assigned to the selected distributor
+            $assignedProductIds = DB::table('assign_stock')
+                ->where('distributor_id', $selectedDistributorId)
+                ->pluck('product_id');
+    
+            // Fetch products based on assigned product IDs
+            $products = DB::table('stock_distributors')
+                ->whereIn('product_id', $assignedProductIds)
+                ->get();
+    
+            $message = null;
+    
+            // Return the view with products, distributors, and selected distributor
+            return view('stockManagement.stockListDistributor', compact('products', 'distributors', 'selectedDistributorId', 'message'));
+    
+        } else {
+            // Fetch distributor_id for the logged-in user
+            $distributor_id = DB::table('users')
+                ->join('distributors', 'users.distributor_id', '=', 'distributors.id')
+                ->where('users.id', $userId)
+                ->value('distributor_id'); // Fetch distributor_id for the logged-in user
+    
+            // Fetch product IDs that are assigned to the distributor
+            $assignedProductIds = DB::table('assign_stock')
+                ->where('distributor_id', $distributor_id)
+                ->pluck('product_id');
+    
+            // Fetch products based on assigned product IDs
+            $products = DB::table('stock_distributors')
+                ->whereIn('product_id', $assignedProductIds)
+                ->get();
+    
+            // Check if products are assigned
+            if ($products->isEmpty()) {
+                $message = "No products assigned to distributor with ID {$distributor_id}.";
+            } else {
+                $message = null; // No message if products are found
+            }
+    
+            // Return the view with products and message
+            return view('stockManagement.stockListDistributor', compact('products', 'message'));
+        }
+    }
 
      public function updateStock(Request $request)
  {

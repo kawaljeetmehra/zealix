@@ -5,7 +5,9 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
-
+use Illuminate\Support\Facades\Log;
+use App\Models\Distributors;
+use App\Models\Salesman;
 class RecordController extends Controller
 {
 
@@ -13,11 +15,11 @@ class RecordController extends Controller
 {
     // Fetch all records from both tables
     $distributors = DB::table('distributors')
-        ->select('name', 'contact_name as contact', 'email', DB::raw("'Distributor' as role"))
+        ->select('id','contact_name as name', 'contact', 'email', DB::raw("'Distributor' as role"))
         ->get();
 
     $salesmans = DB::table('salesmans')
-        ->select('name', 'contact', 'email', DB::raw("'Salesman' as role"))
+        ->select('id','name', 'contact', 'email', DB::raw("'Salesman' as role"))
         ->get();
 
     // Merge both collections
@@ -125,5 +127,105 @@ class RecordController extends Controller
             return response()->json(['success' => false, 'message' => 'An unexpected error occurred: ' . $e->getMessage()], 500);
         }
     }
+
+    public function edit($id, Request $request)
+    {
+        try {
+            // Get the role from the request
+            $role = $request->query('role');
+    
+            Log::info("Editing record with ID: {$id}, Role: {$role}");
+    
+            if ($role === 'Distributor') {
+                // Fetch distributor data
+                $distributor = Distributors::find($id);
+    
+                if ($distributor) {
+                    Log::info("Distributor found: ", [$distributor]);
+                    return response()->json($distributor);
+                } else {
+                    Log::warning("No distributor found for ID: {$id}");
+                    return response()->json(['error' => 'Distributor not found'], 404);
+                }
+            } elseif ($role === 'Salesman') {
+                // Fetch salesman data
+                $salesman = Salesman::find($id);
+    
+                if ($salesman) {
+                    Log::info("Salesman found: ", [$salesman]);
+                    return response()->json($salesman);
+                } else {
+                    Log::warning("No salesman found for ID: {$id}");
+                    return response()->json(['error' => 'Salesman not found'], 404);
+                }
+            } else {
+                Log::warning("Invalid role provided: {$role}");
+                return response()->json(['error' => 'Invalid role'], 400);
+            }
+        } catch (\Exception $e) {
+            Log::error("Error occurred while editing record: " . $e->getMessage());
+            return response()->json(['error' => 'Something went wrong'], 500);
+        }
+    }
+    public function update(Request $request, $id)
+    {
+        $role = $request->input('role');
+    
+        if ($role === 'distributor') {
+            // Validate and update distributor fields
+            $validatedData = $request->validate([
+                'name' => 'required|string|max:255',
+                'contact_name' => 'required|string|max:255',
+                'contact' => 'required|string|max:15',
+                'email' => 'required|email',
+                'geographic_coverage' => 'nullable|string',
+                'location' => 'nullable|string',
+                'shipping_location' => 'nullable|string',
+                'terms_of_agreement' => 'nullable|string',
+            ]);
+    
+            // Update logic for Distributor
+            $distributor = Distributors::findOrFail($id);
+            $distributor->update($validatedData);
+            DB::table('users')->updateOrInsert(
+                ['distributor_id' => $id], // Use distributor ID as a condition
+                [
+                    'role_id' => 2, // Assuming role_id 2 corresponds to distributor
+                    'email' => $validatedData['email'],
+                    // Add any other fields that need to be updated
+                ]
+            );
+    
+    
+        } elseif ($role === 'salesman') {
+            // Validate and update salesman fields
+            $validatedData = $request->validate([
+                'name' => 'required|string|max:255',
+                'contact' => 'required|string|max:15',
+                'email' => 'required|email',
+                'salesman_id' => 'nullable|string|max:255',
+                'salary' => 'nullable|numeric',
+                'address' => 'nullable|string',
+            ]);
+    
+            // Update logic for Salesman
+            $salesman = Salesman::findOrFail($id);
+            $salesman->update($validatedData);
+            DB::table('users')->updateOrInsert(
+                ['salesman_id' => $id], // Use salesman ID as a condition
+                [
+                    'role_id' => 3, // Assuming role_id 3 corresponds to salesman
+                    'email' => $validatedData['email'],
+                    // Add any other fields that need to be updated
+                ]
+            );
+    
+        }
+    
+        return response()->json(['message' => 'Record updated successfully']);
+    }
+    
+
+    
 }
 

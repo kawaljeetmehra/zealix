@@ -402,8 +402,9 @@
                                                 <th>Order Status</th>
                                                 <th>Delivery Status</th>
                                                 <th>Order Adjustment</th>
-
-                                                <th style="width: 10%">Action</th>
+                                                @if(Auth::check() && Auth::user()->role_id == 1)
+    <th style="width: 10%">Action</th>
+@endif
                                             </tr>
                                         </thead>
 
@@ -470,7 +471,8 @@
                                                     @endif
                                                 </td>
 
-                                                <td> @if(Auth::check() && Auth::user()->role_id == 1 )
+                                                 @if(Auth::check() && Auth::user()->role_id == 1 )
+                                                 <td>
                                                     <div class="form-button-action">
                                                         <a href="/orderstatus/{{$order->id}}/edit" data-toggle="tooltip"
                                                             title="Edit" class="btn btn-link btn-primary btn-lg">
@@ -479,8 +481,9 @@
 
 
                                                     </div>
+                                                    </td>
                                                     @endif
-                                                </td>
+                                               
                                             </tr>
                                             @endforeach
                                         </tbody>

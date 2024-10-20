@@ -398,6 +398,7 @@
                                                 <th>Name</th>
                                                 <th>Contact</th>
                                                 <th>Email</th>
+                                                <th>Action</th>
                                             </tr>
                                         </thead>
                                         <tbody>
@@ -407,6 +408,13 @@
                                                 <td>{{ $record->name }}</td>
                                                 <td>{{ $record->contact }}</td>
                                                 <td>{{ $record->email }}</td>
+                                                
+                                                <td>
+                <button class="btn btn-warning btn-sm" onclick="openEditModal('{{ $record->id }}', '{{ $record->role }}')">
+                    Edit
+                </button>
+            </td>
+        
                                             </tr>
                                             @endforeach
                                         </tbody>
@@ -544,6 +552,93 @@
                         </div>
                     </div>
                 </div>
+<!-- Edit Record Modal -->
+<div class="modal fade" id="editRecordModal" tabindex="-1" role="dialog" aria-labelledby="editRecordModalLabel" aria-hidden="true" data-backdrop="false">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="editRecordModalLabel">Edit Record</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form id="editRecordForm" onsubmit="updateRecord(event)">
+                    <input type="hidden" id="editRole" name="role">
+                    <input type="hidden" id="editRecordId" name="record_id">
+                    <!-- Distributor Fields -->
+                    <div id="editDistributorFields" style="display: none;">
+                        <div class="form-group">
+                            <label for="editDistributorName">Name</label>
+                            <input type="text" id="editDistributorName" name="name" class="form-control" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="editContactName">Contact Name</label>
+                            <input type="text" id="editContactName" name="contact_name" class="form-control" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="editContact">Contact</label>
+                            <input type="text" id="editContact" name="contact" class="form-control" maxlength="15" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="editEmail">Email</label>
+                            <input type="email" id="editEmail" name="email" class="form-control" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="editGeographicCoverage">Geographic Coverage</label>
+                            <input type="text" id="editGeographicCoverage" name="geographic_coverage" class="form-control">
+                        </div>
+                        <div class="form-group">
+                            <label for="editLocation">Location</label>
+                            <input type="text" id="editLocation" name="location" class="form-control">
+                        </div>
+                        <div class="form-group">
+                            <label for="editShippingLocation">Shipping Location</label>
+                            <input type="text" id="editShippingLocation" name="shipping_location" class="form-control">
+                        </div>
+                        <div class="form-group">
+                            <label for="editTermsOfAgreement">Terms of Agreement</label>
+                            <textarea id="editTermsOfAgreement" name="terms_of_agreement" class="form-control"></textarea>
+                        </div>
+                    </div>
+
+                    <!-- Salesman Fields -->
+                    <div id="editSalesmanFields" style="display: none;">
+                        <div class="form-group">
+                            <label for="editSalesmanId">Salesman ID</label>
+                            <input type="text" id="editSalesmanId" name="salesman_id" class="form-control">
+                        </div>
+                        <div class="form-group">
+                            <label for="editSalesmanName">Name</label>
+                            <input type="text" id="editSalesmanName" name="name" class="form-control" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="editSalesmanContact">Contact</label>
+                            <input type="text" id="editSalesmanContact" name="contact" class="form-control" maxlength="15">
+                        </div>
+                        <div class="form-group">
+                            <label for="editSalesmanEmail">Email</label>
+                            <input type="email" id="editSalesmanEmail" name="email" class="form-control">
+                        </div>
+                        <div class="form-group">
+                            <label for="editSalary">Salary</label>
+                            <input type="number" id="editSalary" name="salary" class="form-control" step="0.01">
+                        </div>
+                        <div class="form-group">
+                            <label for="editSalesmanAddress">Address</label>
+                            <input type="text" id="editSalesmanAddress" name="salesman_address" class="form-control">
+                        </div>
+                    </div>
+
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                        <button type="submit" class="btn btn-primary" form="editRecordForm">Save changes</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
 
             </div>
         </div>
@@ -650,6 +745,122 @@
 
         $('#addRecordModal').modal('hide'); // Hide modal after submission
     }
+
+    function toggleEditAdditionalFields() {
+        const role = document.getElementById('editRole').value;
+        const distributorFields = document.getElementById('editDistributorFields');
+        const salesmanFields = document.getElementById('editSalesmanFields');
+
+        if (role === 'distributor') {
+            distributorFields.style.display = 'block';
+            salesmanFields.style.display = 'none';
+        } else if (role === 'salesman') {
+            distributorFields.style.display = 'none';
+            salesmanFields.style.display = 'block';
+        }
+
+        // Clear and set 'required' attribute based on the role
+        clearEditRequiredAttributes();
+        setEditRequiredAttributes(role);
+    }
+
+    function clearEditRequiredAttributes() {
+        const distributorFields = document.querySelectorAll("#editDistributorFields [required]");
+        const salesmanFields = document.querySelectorAll("#editSalesmanFields [required]");
+
+        distributorFields.forEach(field => field.removeAttribute('required'));
+        salesmanFields.forEach(field => field.removeAttribute('required'));
+    }
+
+    function setEditRequiredAttributes(role) {
+        if (role === 'distributor') {
+            document.getElementById('editDistributorName').setAttribute('required', true);
+            document.getElementById('editContactName').setAttribute('required', true);
+            document.getElementById('editContact').setAttribute('required', true);
+            document.getElementById('editEmail').setAttribute('required', true);
+        } else if (role === 'salesman') {
+            document.getElementById('editSalesmanName').setAttribute('required', true);
+            document.getElementById('editSalesmanContact').setAttribute('required', true);
+        }
+    }
+
+    function openEditModal(id, role) {
+        $.ajax({
+            url: `/record/${id}/edit?role=${role}`,  // Assuming this is the route for fetching data
+            type: 'GET',
+            success: function(response) {
+                // Open the modal
+                $('#editRecordModal').modal('show');
+                $('#editRecordId').val(id); 
+                // Set form values based on role
+                if (role === 'Distributor') {
+                    $('#editRole').val('distributor');
+                    $('#editDistributorFields').show();
+                    $('#editSalesmanFields').hide();
+                    $('#editDistributorName').val(response.name);
+                    $('#editContactName').val(response.contact_name);
+                    $('#editContact').val(response.contact);
+                    $('#editEmail').val(response.email);
+                    $('#editGeographicCoverage').val(response.geographic_coverage);
+                    $('#editLocation').val(response.location);
+                    $('#editShippingLocation').val(response.shipping_location);
+                    $('#editTermsOfAgreement').val(response.terms_of_agreement);
+                } else if (role === 'Salesman') {
+                    $('#editRole').val('salesman');
+                    $('#editDistributorFields').hide();
+                    $('#editSalesmanFields').show();
+                    $('#editSalesmanName').val(response.name);
+                    $('#editSalesmanContact').val(response.contact);
+                    $('#editSalesmanEmail').val(response.email);
+                    $('#editSalesmanId').val(response.salesman_id);
+                    $('#editSalary').val(response.salary);
+                    $('#editSalesmanAddress').val(response.address);
+                }
+
+                toggleEditAdditionalFields(); // Set fields correctly
+            },
+            error: function(error) {
+                console.error(error);
+            }
+        });
+    }
+
+    function updateRecord(event) {
+        event.preventDefault(); 
+    const role = $('#editRole').val();
+    const id = $('#editRecordId').val();
+    const data = {
+        role: role,
+        name: role === 'distributor' ? $('#editDistributorName').val() : $('#editSalesmanName').val(),
+        contact_name: role === 'distributor' ? $('#editContactName').val() : undefined,
+        contact: role === 'distributor' ? $('#editContact').val() : $('#editSalesmanContact').val(),
+        email: role === 'distributor' ? $('#editEmail').val() : $('#editSalesmanEmail').val(),
+        geographic_coverage: role === 'distributor' ? $('#editGeographicCoverage').val() : undefined,
+        location: role === 'distributor' ? $('#editLocation').val() : undefined,
+        shipping_location: role === 'distributor' ? $('#editShippingLocation').val() : undefined,
+        terms_of_agreement: role === 'distributor' ? $('#editTermsOfAgreement').val() : undefined,
+        salesman_id: role === 'salesman' ? $('#editSalesmanId').val() : undefined,
+        salary: role === 'salesman' ? $('#editSalary').val() : undefined,
+        address: role === 'salesman' ? $('#editSalesmanAddress').val() : undefined,
+    };
+
+    $.ajax({
+        url: `/record/${id}/update`,  // Ensure this is the correct route
+        type: 'PUT',
+        data: data,
+        success: function(response) {
+            alert(response.message);
+            $('#editRecordModal').modal('hide'); // Hide modal after successful update
+            location.reload(); // Reload to see updated data
+        },
+        error: function(xhr) {
+            console.error(xhr.responseJSON.errors);
+            // Handle validation errors and display them to the user
+        }
+    });
+}
+
+
 
     $(document).ready(function() {
         // Initialize DataTable

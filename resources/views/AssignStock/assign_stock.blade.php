@@ -426,7 +426,10 @@
                                                     <td>{{ $product->product_name }}</td>
                                                     <td>{{ $product->mrp }}</td>
                                                     <td>{{ $product->packaging }}</td>
-                                                    <td>{{ $product->quantity }}</td>
+                                                    <td>
+                <input type="number" name="quantity[]" class="form-control quantity-input"
+                       data-id="{{ $product->id }}" value="{{ $product->quantity }}" min="0">
+            </td>
                                                     <td>
                                                         <input type="number" name="stock_count[]"
                                                             class="form-control stock-input"
@@ -539,33 +542,7 @@
             $("#addRowModal").modal("hide");
         });
 
-        function updateStockAndRefresh(inputElement) {
-            var stockCount = inputElement.val(); // Get the updated stock count
-            var productId = inputElement.data('id'); // Get the product ID from data-id
-            console.log(productId, "hi");
-            console.log(stockCount, "how")
-            // Send AJAX request to update stock count
-            $.ajax({
-                url: '/update-stock', // Replace with the route URL that handles stock update
-                method: 'POST',
-                data: {
-                    _token: '{{ csrf_token() }}', // Laravel CSRF token for security
-                    id: productId,
-                    stock_count: stockCount
-                },
-                success: function(response) {
-                    if (response.success) {
-                        // Refresh the page after the stock is updated successfully
-                        location.reload(); // This refreshes the page
-                    } else {
-                        alert('Failed to update stock. Please try again.');
-                    }
-                },
-                error: function() {
-                    alert('Error while updating stock.');
-                }
-            });
-        }
+      
 
         // Event listener for when input box loses focus (blur event)
         $('.stock-input').on('blur', function() {
@@ -593,45 +570,69 @@
 
         // Assign Stock AJAX Request
         $('#assign-stock').off('click').on('click', function() {
-            const selectedProducts = $('.product-checkbox:checked').map(function() {
-                return $(this).val();
-            }).get();
+    const selectedProducts = [];
+    const distributorId = $('#distributor').val();
 
-            const distributorId = $('#distributor').val();
+    // Loop through each checked product checkbox and gather the necessary data
+    $('.product-checkbox:checked').each(function() {
+        const row = $(this).closest('tr'); // Get the closest row of the selected checkbox
+        const productId = $(this).val(); // Get the product ID from checkbox value
+          
+        // Gather product-related data from the table row
+        const batchNumber = row.find('td').eq(1).text();
+        const productCategory = row.find('td').eq(2).text();
+        const productName = row.find('td').eq(3).text();
+        const mrp = row.find('td').eq(4).text();
+        const packaging = row.find('td').eq(5).text();
+        const quantity = parseInt(row.find('input.quantity-input').val(), 10); 
+        const stockCount = row.find('input.stock-input').val(); // Get the stock count from the input field
 
-            if (selectedProducts.length === 0) {
-                alert('Please select at least one product.');
-                return;
-            }
-            if (!distributorId) {
-                alert('Please select a distributor.');
-                return;
-            }
-
-            const data = {
-                product_ids: selectedProducts,
-                distributor_id: distributorId,
-                _token: '{{ csrf_token() }}' // Include CSRF token for Laravel
-            };
-
-            $.ajax({
-                url: '/assign-stock', // Adjust this URL as needed
-                method: 'POST',
-                data: data,
-                success: function(response) {
-                    // Combine messages into a single string
-                    if (response.messages.length > 0) {
-                        // Show only the first message
-                        alert(response.messages[0]);
-                    }
-
-                    location.reload();
-                },
-                error: function(xhr) {
-                    alert('Error: ' + xhr.responseText);
-                }
-            });
+        // Push the data into the array as an object
+        selectedProducts.push({
+            product_id: productId,
+            batch_number: batchNumber,
+            product_category: productCategory,
+            product_name: productName,
+            mrp: mrp,
+            packaging: packaging,
+            quantity: quantity,
+            stock_count: stockCount
         });
+    });
+
+    if (selectedProducts.length === 0) {
+        alert('Please select at least one product.');
+        return;
+    }
+    if (!distributorId) {
+        alert('Please select a distributor.');
+        return;
+    }
+
+    const data = {
+        products: selectedProducts,
+        distributor_id: distributorId,
+        _token: '{{ csrf_token() }}' // Include CSRF token for Laravel
+    };
+
+    $.ajax({
+        url: '/assign-stock', // Adjust this URL as needed
+        method: 'POST',
+        data: data,
+        success: function(response) {
+            // Combine messages into a single string
+            if (response.messages.length > 0) {
+                // Show only the first message
+                alert(response.messages[0]);
+            }
+
+            location.reload();
+        },
+        error: function(xhr) {
+            alert('Error: ' + xhr.responseText);
+        }
+    });
+});
 
 
     });

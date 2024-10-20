@@ -16,8 +16,9 @@ use App\Http\Controllers\RouteTrackingController;
 
 use App\Http\Controllers\RecordController;
 use App\Http\Controllers\CategoryController;
-
-
+use App\Http\Controllers\StockReturnController;
+use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\ReturnOrderController;
 
 
 /*
@@ -38,6 +39,8 @@ Route::post('/logout', [LoginController::class, 'logout'])->name('logout');
 
 
 Route::group(['middleware' => ['auth', 'role:1,2,3']], function () {
+    Route::get('/dashboard',[DashboardController::class,'index'])->name('dashboard');
+    Route::get('/dashboardSalesman',[DashboardController::class,'salesmandashboard'])->name('dashboardSalesman');
 Route::resource('products', ProductController::class);
 
 // Show the product entry form
@@ -58,6 +61,8 @@ Route::get('/stockExpire',[StockListAdminController::class,'stockExipre'])->name
 Route::post('/update-stock-distributor', [stockManagementDisributorController::class, 'updateStock'])->name('update.stock.distributor');
 Route::get('/stockExpireDistributor',[stockManagementDisributorController::class,'stockExipre'])->name('expirestockDistributor'); 
 
+
+Route::get('/stock-return', [StockReturnController::class, 'index'])->name('stock.return');
 
 
 Route::get("/assign",[TaskController::class,'index']);
@@ -104,6 +109,7 @@ Route::post("/assign/store-salesman",[TaskController::class,'storeSalesman']);
 Route::get('/salesman/attendance', [AttendanceController::class, 'showAttendance']);
 Route::post('/attendance', [AttendanceController::class, 'store'])->name('attendance.store'); // Route for adding attendance
 Route::put('/attendance/{id}', [AttendanceController::class, 'update'])->name('attendance.update'); // Route for updating attendance
+Route::get('/attendance/filter', [AttendanceController::class, 'salesmanAttendance'])->name('attendance.filter');
 
 
 
@@ -126,7 +132,7 @@ Route::put('/categories/{id}', [CategoryController::class, 'update']);
 Route::post('/categories/save', [CategoryController::class, 'saveCategory'])->name('categories.save');
 Route::delete('/categories/{id}', [CategoryController::class, 'deleteCategory'])->name('categories.delete');
 
-
+Route::get('/returnorderstatus', [ReturnOrderController::class, 'index'])->name('Returnorders.index');
 
 });
 
@@ -138,6 +144,8 @@ Route::group(['middleware' => ['auth', 'role:1']], function () {
 
 // Route to store new records
 Route::post('/records', [RecordController::class, 'store'])->name('records.store');
+Route::get('/record/{id}/edit', [RecordController::class, 'edit'])->name('record.edit');
+Route::put('/record/{id}/update', [RecordController::class, 'update'])->name('record.update');
 
 });
 

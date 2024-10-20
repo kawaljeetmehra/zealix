@@ -10,34 +10,89 @@ use Carbon\Carbon;
 class AttendanceController extends Controller
 {
     //
-    public function salesmanAttendance(){
-
+    public function salesmanAttendance(Request $request)
+    {
+        // Fetch all salesmen
         $salesmen = Salesman::all();
-        $attendances = [];
-        
-        foreach ($salesmen as $salesman) {
-            // Fetch attendance for each salesman
-            $attendanceRecords = Attendance::where('salesman_id', $salesman->id)
-                ->get();
-        
-            // Initialize attendance array with 'N/A'
-            $attendanceArray = array_fill(1, 30, 'N/A');
-        
-            foreach ($attendanceRecords as $record) {
-                // Extract the day from the 'day' column in your attendance table
-                $day = \Carbon\Carbon::parse($record->day)->day; // Use Carbon to get the day of the month
-                $attendanceArray[$day] = $record->status; // Set the attendance status for that day
-            }
-        
-            $attendances[] = (object) [
-                'id' => $salesman->id,
-                'salesman_id' => $salesman->salesman_id,
-                'attendance' => $attendanceArray,
-            ];
+    
+        // Get the authenticated user
+        $authenticatedUser = Auth::user();
+   
+        // Determine the selected salesman ID
+        // If the authenticated user is a salesman, use their ID
+        // Otherwise, use the selected salesman from the request or default to the first one
+        if ($authenticatedUser->role_id == 3) { // Assuming 3 is the ID for salesman
+            $salesman = Salesman::where('id', $authenticatedUser->salesman_id)->first();
+            $selectedSalesmanId = $salesman->id; 
+         
+        } else {
+            $selectedSalesmanId = $request->has('salesman_id') ? $request->salesman_id : $salesmen->first()->id;
         }
-        
-        return view('Attendance.index', compact('salesmen', 'attendances'));
+    
+        // Get the selected status for filtering (P, A, L)
+        $selectedStatus = $request->get('status', ''); // Default to no status filter
+    
+        // Get the search input
+        $search = $request->get('search', '');
+    
+        // Fetch attendance records for the selected salesman
+        $attendanceRecords = Attendance::where('salesman_id', $selectedSalesmanId)->get();
+    
+        // Initialize attendance array for each month (January to December)
+        $monthlyAttendance = array_fill(1, 12, array_fill(1, 31, 'N/A'));
+    
+        // Populate the attendance array
+        foreach ($attendanceRecords as $record) {
+            $month = \Carbon\Carbon::parse($record->day)->month; // Get the month (1-12)
+            $day = \Carbon\Carbon::parse($record->day)->day; // Get the day (1-31)
+            $monthlyAttendance[$month][$day] = $record->status; // Set the attendance status for that day
+        }
+    
+        // If a status filter is set, modify the $monthlyAttendance accordingly
+        if ($selectedStatus) {
+            foreach ($monthlyAttendance as $month => $days) {
+                foreach ($days as $day => $status) {
+                    if ($status !== $selectedStatus) {
+                        $monthlyAttendance[$month][$day] = 'N/A'; // Hide non-selected statuses
+                    }
+                }
+            }
+        }
+    
+        // If a search term is provided, filter the attendance records
+        if ($search) {
+            // Split the search input to extract month and day
+            $searchParts = explode(' ', $search);
+            if (count($searchParts) == 2) {
+                $monthName = ucfirst(strtolower($searchParts[0])); // Capitalize the first letter
+                $day = (int)$searchParts[1];
+    
+                // Convert month name to month number
+                $monthNumber = \Carbon\Carbon::createFromFormat('F', $monthName)->month;
+    
+                // Reset attendance for all days in the selected month
+                $monthlyAttendance[$monthNumber] = array_fill(1, 31, 'N/A');
+    
+                // If the day is valid and the month is valid, check attendance
+                if ($day > 0 && $day <= 31 && $monthlyAttendance[$monthNumber]) {
+                    $attendanceStatus = $attendanceRecords->firstWhere(function ($record) use ($monthNumber, $day) {
+                        return \Carbon\Carbon::parse($record->day)->month == $monthNumber && 
+                               \Carbon\Carbon::parse($record->day)->day == $day;
+                    });
+    
+                    if ($attendanceStatus) {
+                        $monthlyAttendance[$monthNumber][$day] = $attendanceStatus->status;
+                    }
+                }
+            }
+        }
+    
+        return view('Attendance.index', compact('salesmen', 'monthlyAttendance', 'selectedSalesmanId', 'selectedStatus', 'search'));
     }
+    
+    
+    
+    
 
 
     public function store(Request $request)
