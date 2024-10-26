@@ -113,7 +113,7 @@ Route::post("/assign/store-salesman",[TaskController::class,'storeSalesman']);
 Route::get('/salesman/attendance', [AttendanceController::class, 'showAttendance']);
 Route::post('/attendance', [AttendanceController::class, 'store'])->name('attendance.store'); // Route for adding attendance
 Route::put('/attendance/{id}', [AttendanceController::class, 'update'])->name('attendance.update'); // Route for updating attendance
-Route::get('/attendance/filter', [AttendanceController::class, 'salesmanAttendance'])->name('attendance.filter');
+
 Route::post('/markAttendance',[AttendanceController::class, 'MarkAttendance']);
 Route::get('/getAttendanceStatus',[AttendanceController::class, 'getAttendanceStatus']);
 

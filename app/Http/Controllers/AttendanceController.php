@@ -8,36 +8,59 @@ use Illuminate\Support\Facades\Auth;
 
 use Carbon\Carbon;
 class AttendanceController extends Controller
-{
-    //
-    public function salesmanAttendance(){
-
+{public function salesmanAttendance(Request $request) {
+    // Determine if the logged-in user is a salesman or admin
+    if (Auth::user()->role_id == 3) {
+        // For salesmen, restrict to only their own attendance
+        $selectedSalesmanId = Auth::user()->salesman_id;
+        $salesmen = Salesman::where('id', $selectedSalesmanId)->get();
+    } else {
+        // For admins, show all salesmen
         $salesmen = Salesman::all();
-        $attendances = [];
-        
-        foreach ($salesmen as $salesman) {
-            // Fetch attendance for each salesman
+        $selectedSalesmanId = $request->input('salesman_id', $salesmen->first()->id ?? null);
+    }
+
+    // Get the selected status filter if provided
+    $selectedStatus = $request->input('status', '');
+
+    $attendanceData = [];
+
+    foreach ($salesmen as $salesman) {
+        // Only fetch attendance if the salesman ID matches the selectedSalesmanId
+        if ($salesman->id == $selectedSalesmanId) {
             $attendanceRecords = Attendance::where('salesman_id', $salesman->id)
+                ->when($selectedStatus, function ($query) use ($selectedStatus) {
+                    return $query->where('status', $selectedStatus);
+                })
                 ->get();
-        
-            // Initialize attendance array with 'N/A'
-            $attendanceArray = array_fill(1, 30, 'N/A');
-        
-            foreach ($attendanceRecords as $record) {
-                // Extract the day from the 'day' column in your attendance table
-                $day = \Carbon\Carbon::parse($record->day)->day; // Use Carbon to get the day of the month
-                $attendanceArray[$day] = $record->status; // Set the attendance status for that day
+
+            // Initialize attendance data for each month and day with 'N/A'
+            $monthlyAttendance = [];
+            foreach (range(1, 12) as $month) {
+                $days = array_fill(1, 31, 'N/A');
+                $monthlyAttendance[$month] = $days;
             }
-        
-            $attendances[] = (object) [
+
+            // Populate the attendance status for each day from records
+            foreach ($attendanceRecords as $record) {
+                $month = \Carbon\Carbon::parse($record->day)->month;
+                $day = \Carbon\Carbon::parse($record->day)->day;
+                $monthlyAttendance[$month][$day] = $record->status;
+            }
+
+            $attendanceData[] = (object) [
                 'id' => $salesman->id,
                 'salesman_id' => $salesman->salesman_id,
-                'attendance' => $attendanceArray,
+                'attendance' => $monthlyAttendance,
             ];
         }
-        
-        return view('Attendance.index', compact('salesmen', 'attendances'));
     }
+
+    return view('Attendance.index', compact('salesmen', 'attendanceData', 'selectedSalesmanId', 'selectedStatus'));
+}
+
+
+    
 
 
     public function store(Request $request)

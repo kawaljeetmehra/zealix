@@ -394,15 +394,15 @@
                             {{ \Carbon\Carbon::now()->setTimezone('Asia/Kolkata')->format('d-m-Y') }}
                         </h4>
                     </div>
-                    <form action="{{ route('attendance.filter') }}" method="GET" class="mb-3">
+                    <form action="{{ route('salesman.attendance') }}" method="GET" class="mb-3">
     <div class="row mt-2 d-flex justify-content-center">
         <div class="col-md-3">
             @if (Auth::user()->role_id == 1)
                 <label for="salesman_id">Select Salesman</label>
                 <select class="form-control" id="salesman_id" name="salesman_id" onchange="this.form.submit()">
+                    <option value="" disabled>Select Salesman</option>
                     @foreach ($salesmen as $salesman)
-                        <option value="{{ $salesman->id }}"
-                            {{ $selectedSalesmanId == $salesman->id ? 'selected' : '' }}>
+                        <option value="{{ $salesman->id }}" {{ $selectedSalesmanId == $salesman->id ? 'selected' : '' }}>
                             {{ $salesman->name }}
                         </option>
                     @endforeach
@@ -415,7 +415,7 @@
         <div class="col-md-3">
             <label for="status">Filter by Status</label>
             <select class="form-control" id="status" name="status" onchange="this.form.submit()">
-                <option value="">All</option>
+                <option value="" {{ $selectedStatus === '' ? 'selected' : '' }}>All</option>
                 <option value="P" {{ $selectedStatus === 'P' ? 'selected' : '' }}>Present</option>
                 <option value="A" {{ $selectedStatus === 'A' ? 'selected' : '' }}>Absent</option>
                 <option value="L" {{ $selectedStatus === 'L' ? 'selected' : '' }}>Leave</option>
@@ -424,35 +424,37 @@
     </div>
 </form>
 
+
                     <div class="table-responsive">
-                        <table id="attendance-table" class="display table table-striped table-hover">
-                            <thead class="table-dark" >
-                                <tr>
-                                    <th>Month</th>
-                                    @for ($day = 1; $day <= 31; $day++)
-                                        <th>Day {{ $day }}</th>
-                                    @endfor
-                                </tr>
-                            </thead>
-                            <tbody>
-                                @for ($month = 1; $month <= 12; $month++)
-                                    <tr>
-                                        <td>{{ \Carbon\Carbon::create()->month($month)->format('F') }}</td>
-                                        @for ($day = 1; $day <= 31; $day++)
-                                            <td style="background-color: 
-                                                {{ isset($monthlyAttendance[$month][$day]) ? 
-                                                    ($monthlyAttendance[$month][$day] === 'P' ? 'green' : 
-                                                    ($monthlyAttendance[$month][$day] === 'A' ? 'red' : 
-                                                    ($monthlyAttendance[$month][$day] === 'L' ? 'yellow' : 'white'))) 
-                                                    : 'white' }}; 
-                                                color: {{ isset($monthlyAttendance[$month][$day]) ? 'white' : 'black' }};">
-                                                {{ $monthlyAttendance[$month][$day] ?? 'N/A' }}
-                                            </td>
-                                        @endfor
-                                    </tr>
-                                @endfor
-                            </tbody>
-                        </table>
+                    <table id="attendance-table" class="display table table-striped table-hover">
+    <thead class="table-dark">
+        <tr>
+            <th>Month</th>
+            @for ($day = 1; $day <= 31; $day++)
+                <th>Day {{ $day }}</th>
+            @endfor
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (range(1, 12) as $month)
+            <tr>
+                <td>{{ \Carbon\Carbon::create()->month($month)->format('F') }}</td>
+                @for ($day = 1; $day <= 31; $day++)
+                    <td style="background-color: 
+                        {{ isset($attendanceData[0]->attendance[$month][$day]) ? 
+                            ($attendanceData[0]->attendance[$month][$day] === 'P' ? 'green' : 
+                            ($attendanceData[0]->attendance[$month][$day] === 'A' ? 'red' : 
+                            ($attendanceData[0]->attendance[$month][$day] === 'L' ? 'yellow' : 'white'))) 
+                            : 'white' }};
+                        color: {{ isset($attendanceData[0]->attendance[$month][$day]) ? 'white' : 'black' }};">
+                        {{ $attendanceData[0]->attendance[$month][$day] ?? 'N/A' }}
+                    </td>
+                @endfor
+            </tr>
+        @endforeach
+    </tbody>
+</table>
+
 
                         <div class="modal fade" id="attendanceModal" tabindex="-1" role="dialog"
                             aria-labelledby="attendanceModalLabel" aria-hidden="true" data-backdrop="false">
