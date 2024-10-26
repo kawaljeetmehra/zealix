@@ -13,10 +13,18 @@ class Salesman extends Model
     protected $fillable = [
         'name',
         'contact',
+        'salesman_id',
         'email',
         'salary',
         'salesman_address',
+        'address',
+        'qualification',
+
         // Add any other fields you need to allow for mass assignment
     ];
+    public function users()
+    {
+        return $this->hasMany(User::class);
+    }
     public $timestamps = true;
 }

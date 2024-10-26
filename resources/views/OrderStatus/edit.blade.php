@@ -586,11 +586,7 @@
             // Get the selected values
             const deliveryStatus = $('#deliveryStatus').val();
             const orderAdjustment = $('#orderAdjustment').val();
-            const orderId = {
-                {
-                    $order - > id
-                }
-            }; // Assuming you have access to the order ID
+            const orderId = {{$order -> id}}; // Assuming you have access to the order ID
 
             // Send the AJAX request
             $.ajax({

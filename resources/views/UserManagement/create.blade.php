@@ -354,17 +354,15 @@
                                             <div class="dropdown-divider"></div>
                                             <a class="dropdown-item" href="#">Account Setting</a>
                                             <div class="dropdown-divider"></div>
-                                            <!-- Logout Form -->
-                                            <form id="logout-form" action="{{ route('logout') }}" method="POST"
-                                                style="display: none;">
-                                                @csrf
-                                            </form>
+                                           <!-- Logout Form -->
+<form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
+    @csrf
+</form>
 
-                                            <!-- Logout Link -->
-                                            <a class="dropdown-item" href="#"
-                                                onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
-                                                Logout
-                                            </a>
+<!-- Logout Link -->
+<a class="dropdown-item" href="#" onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
+    Logout
+</a>
 
                                         </li>
                                     </div>
@@ -377,104 +375,102 @@
             </div>
 
             <div class="container">
-                <div class="page-inner">
-                    @if (session('success'))
-                    <div class="alert alert-success">
-                        {{ session('success') }}
-                    </div>
-                    @endif
+    <div class="page-inner">
+    @if (session('success'))
+        <div class="alert alert-success">
+            {{ session('success') }}
+        </div>
+    @endif
 
-                    @if ($errors->any())
-                    <div class="alert alert-danger">
-                        <ul>
-                            @foreach ($errors->all() as $error)
-                            <li>{{ $error }}</li>
-                            @endforeach
-                        </ul>
-                    </div>
-                    @endif
-                    <div class="row">
-                        <div class="col-md-12">
-                            <div class="card">
-                                <div class="card-header">
-                                    <div class="d-flex align-items-center">
-                                        <h4 class="card-title">User Management</h4>
-                                        <a class="btn btn-primary btn-round ms-auto" href="{{ route('user.create') }}">
-                                            <i class="fa fa-plus"></i>
-                                            Add User
+    @if ($errors->any())
+        <div class="alert alert-danger">
+            <ul>
+                @foreach ($errors->all() as $error)
+                    <li>{{ $error }}</li>
+                @endforeach
+            </ul>
+        </div>
+    @endif
+        <div class="row">
+            <div class="col-md-12">
+                <div class="card">
+                    <div class="card-header">
+                        <div class="d-flex align-items-center">
+                            <h4 class="card-title">User Account</h4>
+                            <a class="btn btn-primary btn-round ms-auto" href="{{ route('user.index') }}">
+                                            <i class="fa fa-arrow-left"></i> Back to User List
                                         </a>
-                                    </div>
-                                </div>
-
-                                <div class="table-responsive">
-                                    <table id="add-row" class="display table table-striped table-hover">
-                                        <thead>
-                                            <tr>
-                                                <th>ID</th>
-
-                                                <th>Email</th>
-                                                <th>Role</th>
-                                                <th>Qualification</th>
-                                                <th>Status</th>
-                                                <th style="width: 10%">Action</th>
-                                            </tr>
-                                        </thead>
-
-                                        <tbody>
-                                            @foreach($users as $user)
-                                            <tr>
-                                                <td>{{ $user->id }}</td>
-
-                                                <td>{{ $user->email }}</td>
-                                                <td>
-                                                    @if($user->distributor)
-                                                    Distributor
-                                                    @elseif($user->salesman)
-                                                    Salesman
-                                                    @else
-                                                    N/A
-                                                    @endif
-                                                </td>
-                                                <td>
-                                                    @if($user->distributor)
-                                                    {{ $user->distributor->qualification }}
-                                                    @elseif($user->salesman)
-                                                    {{ $user->salesman->qualification }}
-                                                    @else
-                                                    N/A
-                                                    @endif
-                                                </td>
-                                                <td>{{ $user->is_active ? 'Active' : 'Inactive' }}</td>
-                                                <td>
-                                                    <div class="form-button-action">
-                                                        <a href="{{ route('user.edit', $user->id) }}"
-                                                            data-toggle="tooltip" title="Edit"
-                                                            class="btn btn-link btn-primary btn-lg">
-                                                            <i class="fa fa-edit"></i>
-                                                        </a>
-                                                        <form action="{{ route('user.destroy', $user->id) }}"
-                                                            method="POST" style="display:inline;" class="delete-form">
-                                                            @csrf
-                                                            @method('DELETE')
-                                                            <button type="submit" class="btn btn-link btn-danger"
-                                                                data-toggle="tooltip" title="Delete">
-                                                                <i class="fa fa-times"></i>
-                                                            </button>
-                                                        </form>
-                                                    </div>
-                                                </td>
-                                            </tr>
-                                            @endforeach
-                                        </tbody>
-                                    </table>
-                                </div>
-                            </div>
                         </div>
                     </div>
+                    
+                    <div class="card-body">
+                        <form method="POST" action="{{ route('user.store') }}">
+                            @csrf
+
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label for="name">Name:</label>
+                                        <input type="text" class="form-control" id="name" name="name" placeholder="Enter Name">
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="contact_number">Contact Number:</label>
+                                        <input type="text" class="form-control" id="contact_number" name="contact_number" placeholder="Enter Contact Number">
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="email">Email Address:</label>
+                                        <input type="email" class="form-control" id="email" name="email" placeholder="Enter Email Address">
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="qualification">Qualification:</label>
+                                        <input type="text" class="form-control" id="qualification" name="qualification" placeholder="Enter your Credentials">
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="location">Location:</label>
+                                        <textarea class="form-control" id="location" name="location" placeholder="Enter Address Here - Shop Name, Shop Number, Area, City/Town, State"></textarea>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="status">Status:</label>
+                                        <select class="form-control" id="status" name="status">
+                                            <option value="active">Active</option>
+                                            <option value="inactive">Inactive</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label for="role">Select Role:</label>
+                                        <select class="form-control" id="role" name="role">
+                                            <option value="distributor">Distributor</option>
+                                            <option value="salesman">Salesman</option>
+                                        </select>
+                                    </div>
+
+                                    <h5 class="mt-3">User Role ID - Password</h5>
+                                    <div class="form-group">
+                                        <label for="user_role_id">User Role ID:</label>
+                                        <input type="text" class="form-control" id="user_role_id" name="user_role_id" placeholder="Enter User Name">
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="password">Password:</label>
+                                        <input type="password" class="form-control" id="password" name="password" placeholder="Enter User Password">
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="form-group mt-3">
+                                <button type="submit" class="btn btn-success">Add</button>
+                            </div>
+                        </form>
+                    </div>
+
                 </div>
-                @include('partials.footer')
-                <!-- Include your footer -->
             </div>
+        </div>
+    </div>
+    @include('partials.footer')
+</div>
+
 
         </div>
 
@@ -496,72 +492,7 @@
     <script src="../assets/js/kaiadmin.min.js"></script>
     <!-- Kaiadmin DEMO methods, don't include it in your project! -->
     <script src="../assets/js/setting-demo2.js"></script>
-    <script>
-    $(document).ready(function() {
-        $("#basic-datatables").DataTable({});
-        $('.delete-form').on('submit', function(e) {
-            e.preventDefault();
-
-
-            var confirmed = confirm("Are you sure you want to delete this record?");
-
-            if (confirmed) {
-                this.submit();
-            }
-        });
-        $("#multi-filter-select").DataTable({
-            pageLength: 5,
-            initComplete: function() {
-                this.api()
-                    .columns()
-                    .every(function() {
-                        var column = this;
-                        var select = $(
-                                '<select class="form-select"><option value=""></option></select>'
-                            )
-                            .appendTo($(column.footer()).empty())
-                            .on("change", function() {
-                                var val = $.fn.dataTable.util.escapeRegex($(this).val());
-
-                                column
-                                    .search(val ? "^" + val + "$" : "", true, false)
-                                    .draw();
-                            });
-
-                        column
-                            .data()
-                            .unique()
-                            .sort()
-                            .each(function(d, j) {
-                                select.append(
-                                    '<option value="' + d + '">' + d + "</option>"
-                                );
-                            });
-                    });
-            },
-        });
-
-        // Add Row
-        $("#add-row").DataTable({
-            pageLength: 5,
-        });
-
-        var action =
-            '<td> <div class="form-button-action"> <button type="button" data-bs-toggle="tooltip" title="" class="btn btn-link btn-primary btn-lg" data-original-title="Edit Task"> <i class="fa fa-edit"></i> </button> <button type="button" data-bs-toggle="tooltip" title="" class="btn btn-link btn-danger" data-original-title="Remove"> <i class="fa fa-times"></i> </button> </div> </td>';
-
-        $("#addRowButton").click(function() {
-            $("#add-row")
-                .dataTable()
-                .fnAddData([
-                    $("#addName").val(),
-                    $("#addPosition").val(),
-                    $("#addOffice").val(),
-                    action,
-                ]);
-            $("#addRowModal").modal("hide");
-        });
-    });
-    </script>
+    
 </body>
 
 </html>

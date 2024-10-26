@@ -20,7 +20,11 @@ class User extends Authenticatable
     protected $fillable = [
         'name',
         'email',
+        'salesman_id',
         'password',
+        'Username',
+        'role_id',
+        'distributor_id',
     ];
 
     /**
@@ -42,4 +46,33 @@ class User extends Authenticatable
         'email_verified_at' => 'datetime',
         'password' => 'hashed',
     ];
+
+    public function distributor()
+    {
+        return $this->belongsTo(Distributors::class, 'distributor_id');
+    }
+
+    public function salesman()
+    {
+        return $this->belongsTo(Salesman::class, 'salesman_id');
+    }
+
+
+    protected static function boot()
+    {
+        parent::boot();
+
+        static::deleting(function ($user) {
+            // Delete associated distributor record if it exists
+            if ($user->distributor) {
+                $user->distributor->delete();
+            }
+            
+            // Delete associated salesman record if it exists
+            if ($user->salesman) {
+                $user->salesman->delete();
+            }
+        });
+    }
+
 }

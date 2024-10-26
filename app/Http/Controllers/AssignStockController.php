@@ -43,10 +43,7 @@ class AssignStockController extends Controller
             // Check if the requested quantity or stock_count is valid
             if ($currentProduct) {
                 // Check if the requested quantity or stock_count is more than the available stock
-                if ($quantity > $currentProduct->quantity) {
-                    $messages[] = "Error: Requested quantity for product '{$product_name}' exceeds the available stock.";
-                    continue; // Skip this product and move to the next one
-                }
+               
                 if ($stock_count > $currentProduct->stock_count) {
                     $messages[] = "Error: Requested stock count for product '{$product_name}' exceeds the available stock.";
                     continue; // Skip this product and move to the next one
@@ -86,13 +83,7 @@ class AssignStockController extends Controller
                     'updated_at' => now()
                 ]);
     
-                if ($quantity > 0) {
-                    DB::table('products')
-                        ->where('id', $product_id)
-                        
-                        ->decrement('quantity', $quantity);
-                }
-        
+               
                 if ($stock_count > 0) {
                     DB::table('products')
                         ->where('id', $product_id)
@@ -107,10 +98,7 @@ class AssignStockController extends Controller
                     ->where('distributor_id', $distributor_id) 
                     ->increment('stock_count', $stock_count); // Increment by the new stock count
             
-                DB::table('stock_distributors')
-                    ->where('product_id', $product_id)
-                    ->where('distributor_id', $distributor_id) 
-                    ->increment('quantity', $quantity); // Increment by the new quantity
+               
             
                 // Update the `updated_at` column once for both increments
                 DB::table('stock_distributors')
@@ -118,12 +106,7 @@ class AssignStockController extends Controller
                     ->where('distributor_id', $distributor_id) 
                     ->update(['updated_at' => now()]);
             
-                // Decrement `quantity` and `stock_count` in `products`
-                if ($quantity > 0) {
-                    DB::table('products')
-                        ->where('id', $product_id)
-                        ->decrement('quantity', $quantity);
-                }
+               
             
                 if ($stock_count > 0) {
                     DB::table('products')
@@ -131,7 +114,7 @@ class AssignStockController extends Controller
                         ->decrement('stock_count', $stock_count);
                 }
             
-                $messages[] = "Stock for product '{$product_name}' is already assigned to this distributor, stock count and quantity updated.";
+                $messages[] = "Stock for product '{$product_name}' is already assigned to this distributor, stock count  updated.";
             }
             
         }

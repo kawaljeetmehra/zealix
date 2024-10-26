@@ -645,109 +645,129 @@
         });
     });
     </script>
-    <script>
+   <script>
     $(document).ready(function() {
-        // Fetch products and populate the modal when it's opened
         $('#productModal').on('show.bs.modal', function() {
-            $.ajax({
-                url: '/your-product-route', // Replace with your route to fetch products
-                method: 'GET',
-                success: function(response) {
-                    $('#product-list').empty(); // Clear the existing list
-                    response.products.forEach(function(product) {
-                        $('#product-list').append(`
-                    <tr>
-                        <td><input type="checkbox" class="product-checkbox" value="${product.id}"></td>
-                        <td>${product.batch_number}</td>
-                        <td>${product.category}</td>
-                        <td>${product.product_name}</td>
-                        <td><input type="number" class="form-control stock-input" value="${product.stock_count}" min="0"></td>
-                   <td>${product.mrp}</td>
-                        </tr>
-                `);
-                    });
-                },
-                error: function(xhr) {
-                    console.error(xhr.responseText); // Handle errors if necessary
-                }
-            });
+            var distributorId = $('#distributor').val(); // Get the selected distributor ID
+            // Clear the existing product list
+            $('#product-list').empty();
+
+            // Check if a distributor is selected
+            if (distributorId) {
+                // Fetch products for the selected distributor
+                $.ajax({
+                    url: '/your-distributor-product-route', // Replace with your route to fetch products
+                    method: 'GET',
+                    data: { distributor_id: distributorId }, // Send distributor ID as a parameter
+                    success: function(response) {
+                        // Populate the product table with distributor's products
+                        response.products.forEach(function(product) {
+                            $('#product-list').append(`
+                                <tr>
+                                    <td><input type="checkbox" class="product-checkbox" value="${product.id}"></td>
+                                    <td>${product.batch_number}</td>
+                                    <td>${product.product_category}</td>
+                                    <td>${product.product_name}</td>
+                                    <td><input type="number" class="form-control stock-input" value="${product.stock_count}" min="0"></td>
+                                    <td>${product.mrp}</td>
+                                </tr>
+                            `);
+                        });
+                    },
+                    error: function(xhr) {
+                        console.error(xhr.responseText); // Handle any errors
+                    }
+                });
+            } else {
+                // If no distributor is selected, fetch all products
+                $.ajax({
+                    url: '/your-product-route', // Replace with your route to fetch products
+                    method: 'GET',
+                    success: function(response) {
+                        response.products.forEach(function(product) {
+                            $('#product-list').append(`
+                                <tr>
+                                    <td><input type="checkbox" class="product-checkbox" value="${product.id}"></td>
+                                    <td>${product.batch_number}</td>
+                                    <td>${product.category}</td>
+                                    <td>${product.product_name}</td>
+                                    <td><input type="number" class="form-control stock-input" value="${product.stock_count}" min="0"></td>
+                                    <td>${product.mrp}</td>
+                                </tr>
+                            `);
+                        });
+                    },
+                    error: function(xhr) {
+                        console.error(xhr.responseText); // Handle errors if necessary
+                    }
+                });
+            }
         });
 
         // Handle adding selected products to the main table
         $('#add-selected-products').click(function() {
             let totalCost = 0; // Initialize total cost
             let totalStock = 0;
+
             $('#product-list .product-checkbox:checked').each(function() {
                 let productId = $(this).val();
                 let productRow = $(this).closest('tr');
                 let batchNumber = productRow.find('td:nth-child(2)').text();
                 let category = productRow.find('td:nth-child(3)').text();
                 let productName = productRow.find('td:nth-child(4)').text();
-
                 // Retrieve the stock count from the input field
-                let stockCount = parseInt(productRow.find('td:nth-child(5)').find('input')
-                .val()) || 0; // Get stock count
-                let mrp = parseFloat(productRow.find('td:nth-child(6)').text()) || 0; // Get MRP
-                console.log(mrp, "data2")
-                // Calculate total stock and total cost
+                let stockCount = parseInt(productRow.find('td:nth-child(5)').find('input').val()) || 0;
+                let mrp = parseFloat(productRow.find('td:nth-child(6)').text()) || 0;
 
+                // Calculate total stock and total cost
                 totalCost += stockCount * mrp; // Calculate total cost for this product
                 totalStock++;
 
                 $('#selected-products').append(`
-            <tr>
-                <td><i class="fa-solid fa-x" style="color: #f2071f; cursor: pointer;" onclick="removeRow(this)"></i></td>
-                <td>${batchNumber}</td>
-                <td>${category}</td>
-                <td>${productName}</td>
-                <td>${stockCount}</td>
-                <td>${mrp}</td>
-            </tr>
-        `);
+                    <tr>
+                        <td><i class="fa-solid fa-x" style="color: #f2071f; cursor: pointer;" onclick="removeRow(this)"></i></td>
+                        <td>${batchNumber}</td>
+                        <td>${category}</td>
+                        <td>${productName}</td>
+                        <td>${stockCount}</td>
+                        <td>${mrp}</td>
+                    </tr>
+                `);
 
                 $('#hidden-product-inputs').append(`
-            <input type="hidden" name="products[${productId}][batch_number]" value="${batchNumber}">
-            <input type="hidden" name="products[${productId}][category]" value="${category}">
-            <input type="hidden" name="products[${productId}][name]" value="${productName}">
-            <input type="hidden" name="products[${productId}][stock_count]" value="${stockCount}">
-            <input type="hidden" name="products[${productId}][mrp]" value="${mrp}">
-        `);
-
+                    <input type="hidden" name="products[${productId}][batch_number]" value="${batchNumber}">
+                    <input type="hidden" name="products[${productId}][category]" value="${category}">
+                    <input type="hidden" name="products[${productId}][name]" value="${productName}">
+                    <input type="hidden" name="products[${productId}][stock_count]" value="${stockCount}">
+                    <input type="hidden" name="products[${productId}][mrp]" value="${mrp}">
+                `);
             });
 
             $('#total-stock').val(totalStock); // Update total stock field
-            $('#total-cost').val(totalCost.toFixed(2));
-
+            $('#total-cost').val(totalCost.toFixed(2)); // Update total cost field
             $('#productModal').modal('hide'); // Close the modal after adding products
         });
 
         // Optional: Function to remove a row
         window.removeRow = function(element) {
-            $(element).closest('tr').remove();
-        }
-        window.removeRow = function(element) {
             let productRow = $(element).closest('tr');
-            let stockCount = parseInt(productRow.find('td:nth-child(5)').text()) || 0; // Get stock count
+            let stockCount = parseInt(productRow.find('td:nth-child(5)').text()) || 0;
+            let mrp = parseFloat(productRow.find('td:nth-child(6)').text()) || 0;
 
-            let mrp = parseFloat(productRow.find('td:nth-child(6)').text()) || 0; // Get MRP
-            console.log(mrp);
             // Update total stock and total cost
             let currentTotalStock = parseInt($('#total-stock').val()) || 0;
             let currentTotalCost = parseFloat($('#total-cost').val()) || 0;
 
-
             // Subtract stock count and update total fields
-
-            $('#total-cost').val((currentTotalCost - (stockCount * mrp)).toFixed(2)); // Subtract cost
-            $('#total-stock').val(currentTotalStock - 1); // Subtract stock count
+            $('#total-cost').val((currentTotalCost - (stockCount * mrp)).toFixed(2));
+            $('#total-stock').val(currentTotalStock - 1);
 
             // Remove the row from the table
             $(element).closest('tr').remove();
         };
-
-
     });
-    </script>
+</script>
+
 
 </body>
 

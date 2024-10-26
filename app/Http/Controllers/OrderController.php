@@ -7,14 +7,16 @@ use App\Models\Distributors;
 use App\Models\Product;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class OrderController extends Controller
 {
     // List all orders
     public function index()
     {
-        $orders = Order::join('distributors', 'orders.distributor_name', '=', 'distributors.id')
-        ->select('orders.*', 'distributors.name as distributor_name')
+        $orders = Order::join('distributors', 'orders.distributor_name', '=', 'distributors.id', 'left') // Left join to include null distributor_name
+        ->select('orders.*', 
+                 DB::raw("COALESCE(distributors.name, 'Admin') as distributor_name")) // Use 'Admin' if distributor_name is null
         ->get();
     
         return view('orders.index', compact('orders'));
@@ -24,6 +26,20 @@ class OrderController extends Controller
         $products = Product::all(); // Adjust this to your query as needed
         return response()->json(['products' => $products]);
     }
+    public function getDistributorProducts(Request $request)
+{
+    // Get distributor ID from the request
+    $distributorId = $request->input('distributor_id');
+    
+    // Fetch products from distributors_stock table based on the distributor_id
+    $products = DB::table('stock_distributors')
+        ->where('distributor_id', $distributorId)
+        ->get();
+
+    // Return the products in JSON format
+    return response()->json(['products' => $products]);
+}
+
     
     // Show form to create new order
     public function create()
@@ -41,16 +57,18 @@ class OrderController extends Controller
         'contact' => 'required',
         'email' => 'required|email',
         'total_stock' => 'required|numeric',
-        'distributor_id'=>'required',
+       
         'total_cost' => 'required|numeric',
     ]);
 
     // Generate random order ID
     $randomOrderId = 'ORD-' . strtoupper(uniqid());
+$userId=Auth::user()->id;
 
     // Create a new order record
    $order= Order::create([
-        'order_by' => $request->input('name'), // Use 'name' as 'order_by'
+        'order_by' => $request->input('name'),
+        'created_by'=> $userId,// Use 'name' as 'order_by'
         'order_id' => $randomOrderId,         // Random generated order_id
         'location' => $request->input('location'),
         'contact' => $request->input('contact'),
@@ -71,6 +89,19 @@ class OrderController extends Controller
             'created_at' => now(),
             'updated_at' => now(),
         ]);
+    }
+
+    if ($request->input('distributor_id')) {
+        // Decrease stock_count from distributors_stock table
+        DB::table('stock_distributors')
+            ->where('distributor_id', $request->input('distributor_id'))
+          
+            ->decrement('stock_count', $productData['stock_count']);
+    } else {
+        // Decrease stock_count from products table
+        DB::table('products')
+            ->where('id', $productId) // Assuming the product ID matches the products table ID
+            ->decrement('stock_count', $productData['stock_count']);
     }
 
     // Redirect after successful order creation
@@ -103,49 +134,55 @@ public function show($id)
 
 
 
-    // Show order edit form
-    public function edit($id)
-    {  
-        // Fetch the order and associated products
-        $order = Order::join('distributors', 'orders.distributor_name', '=', 'distributors.id')
-            ->join('order_details', 'orders.id', '=', 'order_details.order_id') // Join with order_details
-            ->select(
-                'orders.*', 
-                'distributors.name as distributor_name',
-                'order_details.id',
-                'order_details.batch_number',
-                'order_details.category',
-                'order_details.name as product_name',
-                'order_details.stock_count',
-                'order_details.mrp'
-            )
-            ->where('orders.id', $id)
-            ->get(); // Use get() to retrieve multiple rows
-      $distributors=Distributors::all();
-    
-        return view('orders.edit', compact('order','distributors'));
-    }
-    
+public function edit($id)
+{
+    // Fetch the order and associated products using left join
+    $order = Order::leftJoin('distributors', 'orders.distributor_name', '=', 'distributors.id')
+        ->leftJoin('order_details', 'orders.id', '=', 'order_details.order_id')
+        ->select(
+            'orders.*', 
+            DB::raw("COALESCE(distributors.name, 'Admin') as distributor_name"), // Default to 'Admin' if distributor is null
+            'order_details.id as order_detail_id',
+            'order_details.batch_number',
+            'order_details.category',
+            'order_details.name as product_name',
+            'order_details.stock_count',
+            'order_details.mrp'
+        )
+        ->where('orders.id', $id)
+        ->first(); // Use first() to get a single order
+
+    // Fetch all distributors for the dropdown
+    $distributors = Distributors::all();
+
+    // Pass the order and distributors to the edit view
+    return view('orders.edit', compact('order', 'distributors'));
+}
+
 
     // Update existing order in the database
     public function update(Request $request, $id)
     {
         // Validate the incoming request
         $request->validate([
-            'name' => 'required',
+            'name' => 'required',  // Use 'name' for 'order_by'
             'location' => 'required',
             'contact' => 'required',
             'email' => 'required|email',
             'total_stock' => 'required|numeric',
-            'distributor_id' => 'required',
             'total_cost' => 'required|numeric',
-            'products' => 'required|array',
+            'products' => 'required|array', // Ensure products is an array
+            'products.*.batch_number' => 'required|string',
+            'products.*.category' => 'required|string',
+            'products.*.name' => 'required|string',
+            'products.*.stock_count' => 'required|integer',
+            'products.*.mrp' => 'required|numeric',
         ]);
     
-        // Find the existing order
+        // Find the existing order record by ID
         $order = Order::findOrFail($id);
     
-        // Update the order details
+        // Update the order record
         $order->update([
             'order_by' => $request->input('name'),
             'location' => $request->input('location'),
@@ -154,64 +191,57 @@ public function show($id)
             'email' => $request->input('email'),
             'total_stock' => $request->input('total_stock'),
             'total_cost' => $request->input('total_cost'),
-            'order_date' => now(),
+            'order_date' => now(),  // Update to current date if needed
         ]);
     
-        // Get existing products in the order
-        $existingProducts = DB::table('order_details')->where('order_id', $id)->get();
-        $existingProductIds = $existingProducts->pluck('id')->toArray();
-    
-        // Get submitted product IDs
-        $submittedProductIds = array_keys($request->input('products'));
-    
-        // Determine which products to remove
-        $productsToRemove = array_diff($existingProductIds, $submittedProductIds);
-    
-        // Remove products that are not submitted
-        if (!empty($productsToRemove)) {
-            DB::table('order_details')
-                ->where('order_id', $id)
-                ->whereIn('id', $productsToRemove)
-                ->delete();
-        }
-    
-        // Update existing products and add new ones
+        // Loop through the products and update order details
         foreach ($request->input('products') as $productId => $productData) {
-            // Retrieve the existing product record
-            $existingProduct = DB::table('order_details')
-                ->where('order_id', $id)
-                ->where('id', $productId)
+            // Check if the order detail already exists
+            $orderDetail = OrderDetail::where('order_id', $id)
+                ->where('batch_number', $productData['batch_number']) // Assuming batch_number is unique in this context
                 ->first();
-            
-            if ($existingProduct) {
-                // Update the product directly without adding to the existing stock count
-                DB::table('order_details')
-                    ->where('id', $productId)
-                    ->update([
-                        'batch_number' => $productData['batch_number'],
-                        'category' => $productData['category'],
-                        'stock_count' => $productData['stock_count'], // Use the submitted stock count directly
-                        'mrp' => $productData['mrp'],
-                        'updated_at' => now(),
-                    ]);
+    
+            if ($orderDetail) {
+                // Update existing order detail
+                $orderDetail->update([
+                    'category' => $productData['category'],
+                    'name' => $productData['name'],
+                    'stock_count' => $productData['stock_count'],
+                    'mrp' => $productData['mrp'],
+                    'updated_at' => now(),
+                ]);
             } else {
-                // If the product doesn't exist, add it
+                // Insert new order detail if it doesn't exist
                 DB::table('order_details')->insert([
-                    'order_id' => $id,
+                    'order_id' => $id, // Use the current order ID
                     'batch_number' => $productData['batch_number'],
                     'category' => $productData['category'],
                     'name' => $productData['name'],
-                    'stock_count' => $productData['stock_count'], // Treat as a new entry
+                    'stock_count' => $productData['stock_count'],
                     'mrp' => $productData['mrp'],
                     'created_at' => now(),
                     'updated_at' => now(),
                 ]);
+            }
+    
+            // Decrease stock_count from appropriate stock table
+            if ($request->input('distributor_id')) {
+                // Decrease stock_count from distributors_stock table
+                DB::table('stock_distributors')
+                    ->where('distributor_id', $request->input('distributor_id'))
+                    ->decrement('stock_count', $productData['stock_count']);
+            } else {
+                // Decrease stock_count from products table
+                DB::table('products')
+                    ->where('id', $productId) // Assuming the product ID matches the products table ID
+                    ->decrement('stock_count', $productData['stock_count']);
             }
         }
     
         // Redirect after successful order update
         return redirect()->route('orders.index')->with('success', 'Order updated successfully.');
     }
+    
     
     
     

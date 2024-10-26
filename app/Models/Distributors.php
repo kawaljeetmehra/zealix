@@ -13,10 +13,15 @@ class Distributors extends Model
     'contact_name',
     'contact',
     'email',
+    'qualification',
     'geographic_coverage',
     'location',
     'shipping_location',
     'terms_of_agreement'];
     protected $table = 'distributors';
     public $timestamps = true;
+    public function users()
+    {
+        return $this->hasMany(User::class);
+    }
 }

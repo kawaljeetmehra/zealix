@@ -412,6 +412,7 @@
                                                     <th>Package</th>
                                                     <th>Quantity</th>
                                                     <th>Stock Count</th>
+                                                    <th>Assign Stock</th>
                                                 </tr>
                                             </thead>
                                             <tbody>
@@ -427,9 +428,8 @@
                                                     <td>{{ $product->mrp }}</td>
                                                     <td>{{ $product->packaging }}</td>
                                                     <td>
-                <input type="number" name="quantity[]" class="form-control quantity-input"
-                       data-id="{{ $product->id }}" value="{{ $product->quantity }}" min="0">
-            </td>
+                                                    {{ $product->quantity }}
+            </td> <td> {{ $product->stock_count }}</td>
                                                     <td>
                                                         <input type="number" name="stock_count[]"
                                                             class="form-control stock-input"
@@ -584,7 +584,7 @@
         const productName = row.find('td').eq(3).text();
         const mrp = row.find('td').eq(4).text();
         const packaging = row.find('td').eq(5).text();
-        const quantity = parseInt(row.find('input.quantity-input').val(), 10); 
+        const quantity = row.find('td').eq(6).text();
         const stockCount = row.find('input.stock-input').val(); // Get the stock count from the input field
 
         // Push the data into the array as an object

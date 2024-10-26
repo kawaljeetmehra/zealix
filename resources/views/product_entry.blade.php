@@ -75,6 +75,7 @@
     .modal-backdrop {
             display: none !important; /* Hides the backdrop */
         }
+        
     </style>
 </head>
 
@@ -469,13 +470,54 @@
                                             <div class="col-md-4">
                                                 <div class="form-group">
                                                     <label for="productPackaging">Product Packaging</label>
-                                                    <select name="packaging" class="form-select" id="productPackaging"
-                                                        required>
-                                                        <option value="Box">Box</option>
-                                                        <option value="Bottle">Bottle</option>
-                                                    </select>
+                                                    <div class="d-flex align-items-center">
+                                                        <div class="custom-dropdown" onclick="togglePackagingDropdown()"
+                                                            style="flex: 1;">
+                                                            <div class="dropdown-selected" id="selectedPackaging">
+                                                                Select Product Packaging Here
+                                                            </div>
+                                                            <i class="fa fa-caret-down"></i>
+                                                        </div>
+                                                        <button class="btn btn-success rounded-circle ms-2"
+                                                            type="button" onclick="openAddEditPackagingModal()"
+                                                            style="width: 36px; height: 36px;">
+                                                            <i class="fa fa-plus text-white"></i>
+                                                        </button>
+                                                    </div>
+                                                    <div class="dropdown-options" id="packagingOptions"
+                                                        style="display: none; width:297px;">
+                                                        <!-- Packaging options will be dynamically loaded here -->
+                                                    </div>
+                                                    <input type="hidden" name="product_packaging"
+                                                        id="productPackagingInput" />
                                                 </div>
                                             </div>
+
+                                            <!-- Add/Edit Packaging Modal -->
+                                            <div class="modal fade" id="addEditPackagingModal" tabindex="-1"
+                                                aria-labelledby="packagingModalLabel" aria-hidden="true">
+                                                <div class="modal-dialog">
+                                                    <div class="modal-content">
+                                                        <div class="modal-header">
+                                                            <h5 class="modal-title" id="packagingModalLabel">Add/Edit
+                                                                Packaging</h5>
+                                                            <button type="button" class="btn-close"
+                                                                data-bs-dismiss="modal" aria-label="Close"></button>
+                                                        </div>
+                                                        <div class="modal-body">
+                                                            <input type="text" id="packagingInput" class="form-control"
+                                                                placeholder="Enter Packaging Name">
+                                                        </div>
+                                                        <div class="modal-footer">
+                                                            <button type="button" class="btn btn-secondary"
+                                                                data-bs-dismiss="modal">Close</button>
+                                                            <button type="button" class="btn btn-primary"
+                                                                onclick="savePackaging()">Save</button>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+
                                             <div class="col-md-4">
                                                 <div class="form-group">
                                                     <label for="stockCount">Stock Count</label>
@@ -515,11 +557,12 @@
 
                                                 <!-- Add/Edit Modal -->
                                                 <div class="modal fade" id="addEditModal" tabindex="-1"
-                                                    aria-labelledby="modalLabel" aria-hidden="true"  data-backdrop="false">
+                                                    aria-labelledby="modalLabel" aria-hidden="true"
+                                                    data-backdrop="false">
                                                     <div class="modal-dialog">
                                                         <div class="modal-content">
                                                             <div class="modal-header">
-                                                                <h5 class="modal-title" id="modalLabel">Add/Edit
+                                                                <h5 class="modal-title" id="modalLabel">Add
                                                                     Category</h5>
                                                                 <button type="button" class="btn-close"
                                                                     data-bs-dismiss="modal" aria-label="Close"></button>
@@ -554,19 +597,57 @@
                                             <div class="col-md-6">
                                                 <div class="form-group">
                                                     <label for="productQuantity">Product Quantity</label>
-                                                    <div class="input-group">
+                                                    <div class="input-group" style="position: relative;">
                                                         <input type="number" name="product_quantity"
                                                             class="form-control" id="productQuantity"
                                                             placeholder="Enter quantity" required />
-                                                        <select name="quantity_unit" class="form-control"
-                                                            id="quantityUnit" style="width: auto;" required>
-                                                            <option value="Unit">Unit</option>
-                                                            <option value="ML">ML</option>
-                                                            <option value="L">L</option>
-                                                            <option value="Pack">Pack</option>
-                                                        </select>
+                                                        <div class="custom-dropdown" onclick="toggleUnitDropdown()"
+                                                            style="flex: 1; position: relative;">
+                                                            <div class="dropdown-selected" id="selectedUnit">Select Unit
+                                                            </div>
+                                                            <i class="fa fa-caret-down"></i>
+                                                        </div>
+                                                        <button class="btn btn-success rounded-circle ms-2"
+                                                            type="button" onclick="openAddEditUnitModal()"
+                                                            style="width: 36px; height: 36px;">
+                                                            <i class="fa fa-plus text-white"></i>
+                                                        </button>
+                                                       
+                                                    </div>
+                                                    <div class="dropdown-options" id="unitOptions"
+                                                        style="display: none; margin-left:250px; width: 242px; height: auto;">
+                                                        <!-- Unit options will be dynamically loaded here -->
+                                                    </div>
+                                                    <input type="hidden" name="product_category"
+                                                        id="productCategoryInput" />
+                                                        <input type="hidden" name="quantityUnit" id="quantityUnitInput" /> <!-- Renamed this id -->
+                                                </div>
+                                            
+
+                                            <!-- Add/Edit Unit Modal -->
+                                            <div class="modal fade" id="addEditUnitModal" tabindex="-1"
+                                                aria-labelledby="modalLabel" aria-hidden="true" data-backdrop="false">
+                                                <div class="modal-dialog">
+                                                    <div class="modal-content">
+                                                        <div class="modal-header">
+                                                            <h5 class="modal-title" id="modalLabel">Add Quantity
+                                                                Unit</h5>
+                                                            <button type="button" class="btn-close"
+                                                                data-bs-dismiss="modal" aria-label="Close"></button>
+                                                        </div>
+                                                        <div class="modal-body">
+                                                            <input type="text" id="unitInput" class="form-control"
+                                                                placeholder="Enter Unit Name">
+                                                        </div>
+                                                        <div class="modal-footer">
+                                                            <button type="button" class="btn btn-secondary"
+                                                                data-bs-dismiss="modal">Close</button>
+                                                            <button type="button" class="btn btn-primary"
+                                                                onclick="saveUnit()">Save</button>
+                                                        </div>
                                                     </div>
                                                 </div>
+                                             </div>
                                             </div>
                                         </div>
 
@@ -586,7 +667,7 @@
                                                     <label for="description">Description</label>
                                                     <textarea name="description" class="form-control" id="description"
                                                         rows="5" placeholder="Enter product description"
-                                                        required></textarea>
+                                                        ></textarea>
                                                 </div>
                                             </div>
                                         </div>
@@ -643,6 +724,7 @@
         fetch('/categories') // Fetch categories from the database
             .then(response => response.json())
             .then(data => {
+                console.log(data,"categories");
                 categories = data; // Store fetched categories
                 displayCategories(); // Display categories in the dropdown
 
@@ -672,6 +754,7 @@
         if (event) event.stopPropagation();
         isEditing = index !== null;
         editingIndex = index;
+        console.log(editingIndex,"First");
         document.getElementById("modalLabel").innerText = isEditing ? "Edit Category" : "Add Category";
         document.getElementById("categoryInput").value = category;
         const addEditModal = new bootstrap.Modal(document.getElementById("addEditModal"));
@@ -728,7 +811,7 @@
                 .then(data => {
                     if (data.success) {
                         categories = categories.filter(category => category.id !==
-                        id); // Remove category from array
+                            id); // Remove category from array
                         displayCategories(); // Refresh the dropdown
                     }
                 })
@@ -736,10 +819,281 @@
         }
     }
 
-    // Initialize categories on page load
-    window.onload = loadCategories;
+    
+    document.addEventListener("DOMContentLoaded",loadCategories);
 
 
+    /*************************************************Product   quainty***************************************************** */
+    let units = []; // Store quantity units
+    let isEditingUnit = false; // Track editing state
+    let editingUnitIndex = null; // Track the index of the unit being edited
+
+    // Function to toggle the unit dropdown visibility
+    function toggleUnitDropdown() {
+        const options = document.getElementById("unitOptions");
+        options.style.display = options.style.display === "none" ? "block" : "none";
+    }
+
+    // Function to select a unit from the dropdown
+    function selectUnit(unit) {
+       
+        document.getElementById("selectedUnit").textContent = unit;
+        document.getElementById("quantityUnitInput").value = unit; 
+        toggleUnitDropdown(); // Close dropdown after selection
+    }
+
+    // Function to load quantity units from the server
+    function loadUnits() {
+        fetch('/quantity') // Fetch units from the server (update the endpoint as needed)
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                return response.json();
+            })
+            .then(data => {
+                console.log("Fetched units:", data); // Corrected typo here
+                units = data; // Store fetched units
+                displayUnits(); // Display units in the dropdown
+            })
+            .catch(error => console.error('Error fetching units:', error));
+    }
+
+    // Function to display the available units in the dropdown
+    function displayUnits() {
+        const optionsContainer = document.getElementById("unitOptions");
+        optionsContainer.innerHTML = ''; // Clear existing options
+
+        units.forEach((unit, index) => {
+            const item = document.createElement("div");
+            item.className = "dropdown-item d-flex justify-content-between align-items-center";
+            item.innerHTML = `
+            ${unit.quantity}
+            <span>
+                <i class="fa fa-edit text-warning me-4" onclick="openAddEditUnitModal('${unit.quantity}',${index}, event)"></i>
+                <i class="fa fa-trash text-danger" onclick="deleteUnit(${unit.id}, event)"></i>
+            </span>
+        `;
+            // Update item.onclick to select the unit based on its id or quantity
+            item.onclick = () => selectUnit(unit.quantity);
+            optionsContainer.appendChild(item);
+        });
+    }
+
+    // Call loadUnits on page load or as needed
+    document.addEventListener("DOMContentLoaded", loadUnits);
+
+
+    // Function to open the modal for adding/editing a unit
+    function openAddEditUnitModal(unit = "", index = null, event = null) {
+        if (event) event.stopPropagation();
+        isEditingUnit = index !== null; // Set editing state
+        editingUnitIndex = index;
+        
+        document.getElementById("modalLabel").innerText = isEditingUnit ? "Edit Quantity Unit" : "Add Quantity Unit";
+        document.getElementById("unitInput").value = unit || ""; // Pre-fill for editing
+        const addEditUnitModal = new bootstrap.Modal(document.getElementById("addEditUnitModal"));
+        addEditUnitModal.show();
+    }
+
+    // Function to save the unit
+    function saveUnit() {
+        const unit = document.getElementById("unitInput").value.trim();
+        if (unit) {
+            const url = isEditingUnit ? `/quantity/${units[editingUnitIndex].id}` : '/quantity';
+            const method = isEditingUnit ? 'PUT' : 'POST';
+
+
+            fetch(url, {
+                    method: method,
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+                    },
+                    body: JSON.stringify({
+                        name: unit
+                    }) // Send the unit data
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        if (isEditingUnit) {
+                            units[editingUnitIndex].name = unit; // Update existing unit
+                        } else {
+                            units.push({
+                                id: data.quantity.id, // Access the ID from the quantity
+                name: data.quantity.quantity // Access the quantity value
+                            }); // Append new unit
+                        }
+                        displayUnits(); // Refresh the dropdown
+                        window.location.replace(window.location.href);
+                    }
+                })
+                .catch(error => console.error('Error saving unit:', error));
+
+            const addEditUnitModal = bootstrap.Modal.getInstance(document.getElementById("addEditUnitModal"));
+            addEditUnitModal.hide();
+        }
+    }
+
+    // Function to delete a unit
+    function deleteUnit(id, event) {
+        event.stopPropagation();
+        if (confirm("Are you sure you want to delete this unit?")) {
+            fetch(`/quantity/${id}`, {
+                    method: 'DELETE',
+                    headers: {
+                        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+                    }
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        units = units.filter(unit => unit.id !== id); // Remove unit from array
+                        
+                        displayUnits(); // Refresh the dropdown
+                        
+                    }
+                })
+                .catch(error => console.error('Error deleting unit:', error));
+        }
+    }
+    document.addEventListener("DOMContentLoaded",loadUnits);
+
+    // Initialize units on page load
+    window.onload = loadUnits;
+    
+
+    /******************************************** Product Packaging*************************************************************** */
+    let packagings = [];
+    let isPackagingEditing = false;
+    let packagingEditingIndex = null;
+
+    // Toggle the packaging dropdown visibility
+    function togglePackagingDropdown() {
+        const options = document.getElementById("packagingOptions");
+        options.style.display = options.style.display === "none" ? "block" : "none";
+    }
+
+    // Select a packaging option
+    function selectPackaging(packaging) {
+        document.getElementById("selectedPackaging").textContent = packaging;
+        document.getElementById("productPackagingInput").value = packaging;
+        togglePackagingDropdown(); // Close dropdown after selection
+    }
+
+    // Load packagings from the server
+    function loadPackagings() {
+        fetch('/packaging') // Adjust the endpoint as necessary
+            .then(response => response.json())
+            .then(data => {
+                console.log("data", data);
+                packagings = data; // Store fetched packagings
+                displayPackagings(); // Display packagings in the dropdown
+            })
+            .catch(error => console.error('Error fetching packagings:', error));
+    }
+
+    // Display packagings in the dropdown
+    function displayPackagings() {
+        const optionsContainer = document.getElementById("packagingOptions");
+        optionsContainer.innerHTML = ''; // Clear existing options
+        packagings.forEach((packaging, index) => {
+            const item = document.createElement("div");
+            item.className = "dropdown-item d-flex justify-content-between align-items-center";
+            item.innerHTML = `
+            ${packaging.packaging_name}
+            <span>
+                <i class="fa fa-edit text-warning me-4" onclick="openAddEditPackagingModal('${packaging.packaging_name}', ${index}, event)"></i>
+                <i class="fa fa-trash text-danger" onclick="deletePackaging(${packaging.id}, event)"></i>
+            </span>
+        `;
+            item.onclick = () => selectPackaging(packaging.packaging_name);
+            optionsContainer.appendChild(item);
+        });
+    }
+
+    // Open the modal for adding/editing packaging
+    function openAddEditPackagingModal(packaging = "", index = null, event = null) {
+        if (event) event.stopPropagation();
+        isPackagingEditing = index !== null;
+        packagingEditingIndex = index;
+        console.log(packagingEditingIndex,"indexvalue");
+        document.getElementById("packagingModalLabel").innerText = isPackagingEditing ? "Edit Packaging" :
+            "Add Packaging";
+        document.getElementById("packagingInput").value = packaging;
+        const modal = new bootstrap.Modal(document.getElementById("addEditPackagingModal"));
+        modal.show();
+    }
+
+    // Save packaging (add/edit)
+    function savePackaging() {
+        const packaging = document.getElementById("packagingInput").value.trim();
+        console.log(packaging,"data999999");
+        if (packaging) {
+            const url = isPackagingEditing ? `/packaging/${packagings[packagingEditingIndex].id}` : '/packaging';
+            const method = isPackagingEditing ? 'PUT' : 'POST';
+
+            fetch(url, {
+                    method: method,
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+                    },
+                    body: JSON.stringify({
+                        packaging
+                    }) // Send the packaging data
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        if (isPackagingEditing) {
+                            packagings[packagingEditingIndex].name = packaging; // Update existing packaging
+                        } else {
+                            packagings.push({
+                                id: data.packaging.id,
+                                name: data.packaging.packaging_name
+                            }); // Append new packaging
+                        }
+                        
+                        displayPackagings(); // Refresh the dropdown
+                        window.location.replace(window.location.href);
+                    // Refresh the current page
+
+
+                    }
+                }).catch(error => console.error('Error saving packaging:', error));
+
+            const modal = bootstrap.Modal.getInstance(document.getElementById("addEditPackagingModal"));
+            modal.hide();
+        }
+    }
+
+    // Delete packaging
+    function deletePackaging(id, event) {
+        event.stopPropagation();
+        if (confirm("Are you sure you want to delete this packaging?")) {
+            fetch(`/packaging/${id}`, {
+                    method: 'DELETE',
+                    headers: {
+                        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+                    }
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        packagings = packagings.filter(packaging => packaging.id !==
+                        id); // Remove packaging from array
+                        displayPackagings(); // Refresh the dropdown
+                    }
+                })
+                .catch(error => console.error('Error deleting packaging:', error));
+        }
+    }
+
+    // Initialize packagings on page load
+    window.onload = loadPackagings;
+    document.addEventListener("DOMContentLoaded",loadPackagings);
 
     document.addEventListener('DOMContentLoaded', function() {
         const manufacturingInput = document.getElementById('manufacturingDate');

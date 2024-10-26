@@ -189,15 +189,15 @@
             <!-- Records Management Section -->
             <li class="nav-item submenu">
                 <a data-bs-toggle="collapse" href="#records-management"
-                    aria-expanded="{{ request()->routeIs('records.*') ? 'true' : 'false' }}">
+                    aria-expanded="{{ request()->routeIs('user.*') ? 'true' : 'false' }}">
                     <i class="fas fa-folder"></i>
                     <p>User Management</p>
                     <span class="caret"></span>
                 </a>
-                <div class="collapse {{ request()->routeIs('records.*') ? 'show' : '' }}" id="records-management">
+                <div class="collapse {{ request()->routeIs('user.*') ? 'show' : '' }}" id="records-management">
                     <ul class="nav nav-collapse">
-                        <li class="{{ request()->routeIs('records.index') ? 'active' : '' }}">
-                            <a href="{{ route('records.index') }}">
+                        <li class="{{ request()->routeIs('user.index') ? 'active' : '' }}">
+                            <a href="{{ route('user.index') }}">
                                 <i class="fas fa-list"></i>
                                 <p>List Records</p>
                             </a>

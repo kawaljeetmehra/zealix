@@ -6,7 +6,7 @@
     <title>Zealix</title>
     <meta content="width=device-width, initial-scale=1.0, shrink-to-fit=no" name="viewport" />
     <link rel="icon" href="../assets/img/kaiadmin/favicon.ico" type="image/x-icon" />
-
+    <meta name="csrf-token" content="{{ csrf_token() }}">
     <!-- Fonts and icons -->
     <script src="../assets/js/plugin/webfont/webfont.min.js"></script>
     <script>
@@ -37,34 +37,36 @@
     <!-- CSS Just for demo purpose, don't include it in your project -->
     <link rel="stylesheet" href="../assets/css/demo.css" />
     <style>
-    .dot {
-        height: 10px;
-        width: 10px;
-        border-radius: 50%;
-        display: inline-block;
-        margin-right: 5px;
-    }
-
-    .present {
-        background-color: green;
-    }
-
-    .leave {
-        background-color: yellow;
-    }
-
-    .absent {
-        background-color: red;
-    }
-
-    .current-month {
-        font-weight: bold;
-        /* Make it bold */
-        color: #007bff;
-        /* Change color if needed */
-        margin-left: 10px;
-        /* Add some space */
-    }
+        .btn-group .btn.active {
+            opacity: 1; /* Full opacity for active button */
+            background-color: #007bff; /* Primary color for active button */
+            color: white; /* Text color for active button */
+        }
+        .btn-group .btn:disabled {
+            background-color: #d3d3d3; /* Grey color for disabled buttons */
+            color: #a9a9a9; /* Grey text color for disabled buttons */
+        }
+        .dot {
+            height: 10px;
+            width: 10px;
+            border-radius: 50%;
+            display: inline-block;
+            margin-right: 5px;
+        }
+        .present {
+            background-color: green;
+        }
+        .leave {
+            background-color: yellow;
+        }
+        .absent {
+            background-color: red;
+        }
+        .current-month {
+            font-weight: bold; /* Make it bold */
+            color: #007bff; /* Change color if needed */
+            margin-left: 10px; /* Add some space */
+        }
     </style>
 </head>
 
@@ -454,18 +456,21 @@
     </div>
 </div>
 
-            <div class="col-md-6 mb-3">
-                <div class="card">
-                    <div class="card-header">Mark Attendance</div>
-                    <div class="card-body text-center">
-                        <div class="btn-group" role="group">
-                            <button type="button" class="btn btn-success">Present</button>
-                            <button type="button" class="btn btn-danger">Absent</button>
-                            <button type="button" class="btn btn-warning">Leave</button>
+<div class="col-md-6 mb-3">
+                            <div class="card">
+                                <div class="card-header">Mark Attendance</div>
+                                <div class="card-body text-center">
+                                    <div class="btn-group" role="group" id="attendanceButtons">
+                                        <button type="button" class="btn btn-success"
+                                            data-status="Present">Present</button>
+                                        <button type="button" class="btn btn-danger"
+                                            data-status="Absent">Absent</button>
+                                        <button type="button" class="btn btn-warning" data-status="Leave">Leave</button>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
-                    </div>
-                </div>
-            </div>
+
         </div>
 
         <div class="row">
@@ -643,6 +648,93 @@
         });
     });
     </script>
+  <script>
+    $(document).ready(function() {
+        $.ajaxSetup({
+            headers: {
+                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+            }
+        });
+
+        // Get the authenticated user's ID from Laravel
+        var salesmanId = {{Auth::user()->id}}; // Use the authenticated user's ID
+
+        // Map status button data to enum values
+        var statusMap = {
+            'present': 'P', // Present corresponds to 'P'
+            'absent': 'A', // Absent corresponds to 'A'
+            'leave': 'L' // Leave corresponds to 'L'
+        };
+
+        // Fetch today's attendance status from the database
+        $.ajax({
+            url: '/getAttendanceStatus', // Endpoint to fetch attendance status
+            method: 'GET',
+            success: function(response) {
+                var savedStatus = response.status; // Get the saved status from the response
+
+                // If there's a saved status, update button states
+                if (savedStatus) {
+                    $('#attendanceButtons button').each(function() {
+                        var status = $(this).data('status').toLowerCase();
+                        if (status === Object.keys(statusMap).find(key => statusMap[key] ===
+                                savedStatus)) {
+                            $(this).addClass('active btn-' + status).removeClass(
+                                'btn-secondary'); // Highlight active button
+                        } else {
+                            $(this).prop('disabled', true).addClass(
+                            'btn-secondary'); // Disable other buttons
+                        }
+                    });
+                }
+            },
+            error: function(xhr) {
+                alert('An error occurred while fetching attendance status: ' + xhr.responseText);
+            }
+        });
+
+        $('#attendanceButtons button').on('click', function() {
+            // Get the status from the clicked button's data attribute
+            var status = $(this).data('status'); // e.g. 'present', 'absent', 'leave'
+            var enumStatus = statusMap[status.toLowerCase()]; // Map to enum value
+
+            // Get today's date in 'YYYY-MM-DD' format
+            var today = new Date();
+            var day = String(today.getDate()).padStart(2, '0'); // Pad with leading zero if necessary
+            var month = String(today.getMonth() + 1).padStart(2, '0'); // Months are zero-indexed
+            var year = today.getFullYear();
+            var dateString = `${year}-${month}-${day}`; // Format as YYYY-MM-DD
+
+            // Prepare the data for the AJAX request
+            var data = {
+                salesman_id: salesmanId,
+                attendance: {
+                    [dateString]: enumStatus // Use today's date as the key and the mapped status
+                }
+            };
+
+            // Make the AJAX request
+            $.ajax({
+                url: '/markAttendance', // Replace with your endpoint URL
+                method: 'POST',
+                data: data,
+                success: function(response) {
+                    alert(response.message); // Display a success message
+
+                    // Disable all buttons and highlight the selected button
+                    $('#attendanceButtons button').prop('disabled', true).addClass(
+                        'btn-secondary'); // Disable all buttons and change them to grey
+                    $(this).removeClass('btn-secondary').addClass('active btn-' + status
+                        .toLowerCase()); // Highlight the selected button
+                }.bind(this), // Bind 'this' to the success function
+                error: function(xhr) {
+                    alert('An error occurred: ' + xhr.responseText);
+                }
+            });
+        });
+    });
+</script>
+
 </body>
 
 </html>

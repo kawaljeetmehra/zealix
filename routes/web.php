@@ -19,8 +19,9 @@ use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\StockReturnController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\ReturnOrderController;
-
-
+use App\Http\Controllers\ProductPackagingController;
+use App\Http\Controllers\ProductQuantityController;
+use App\Http\Controllers\UserController;
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -45,7 +46,8 @@ Route::resource('products', ProductController::class);
 
 // Show the product entry form
 Route::get('/products/create', [ProductController::class, 'create'])->name('products.create');
-
+Route::resource('packaging', ProductPackagingController::class); 
+Route::resource('quantity', ProductQuantityController::class);
 // Store the new product
 Route::post('/products', [ProductController::class, 'store'])->name('products.store');
 
@@ -72,6 +74,8 @@ Route::resource('orders', OrderController::class);
 Route::post('/orders/updateStatus', [OrderController::class, 'updateStatus'])->name('orders.updateStatus');
 
 Route::get('/your-product-route', [OrderController::class, 'getProducts']);
+Route::get('/your-distributor-product-route', [OrderController::class, 'getDistributorProducts']);
+
 Route::get('/orders/{id}', [OrderController::class, 'show'])->name('orders.show');
 
 Route::get('/orderstatus',[OrderStatusController::class,'index'])->name('orderstatus.index');
@@ -110,8 +114,8 @@ Route::get('/salesman/attendance', [AttendanceController::class, 'showAttendance
 Route::post('/attendance', [AttendanceController::class, 'store'])->name('attendance.store'); // Route for adding attendance
 Route::put('/attendance/{id}', [AttendanceController::class, 'update'])->name('attendance.update'); // Route for updating attendance
 Route::get('/attendance/filter', [AttendanceController::class, 'salesmanAttendance'])->name('attendance.filter');
-
-
+Route::post('/markAttendance',[AttendanceController::class, 'MarkAttendance']);
+Route::get('/getAttendanceStatus',[AttendanceController::class, 'getAttendanceStatus']);
 
 
 Route::resource('tasks', TaskReportController::class);
@@ -146,6 +150,9 @@ Route::group(['middleware' => ['auth', 'role:1']], function () {
 Route::post('/records', [RecordController::class, 'store'])->name('records.store');
 Route::get('/record/{id}/edit', [RecordController::class, 'edit'])->name('record.edit');
 Route::put('/record/{id}/update', [RecordController::class, 'update'])->name('record.update');
+
+
+Route::resource('user',UserController::class);
 
 });
 
