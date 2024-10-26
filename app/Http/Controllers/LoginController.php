@@ -19,12 +19,12 @@ class LoginController extends Controller
     {  
         // Validate the login form inputs
         $request->validate([
-            'email' => 'required|string',
+            'Username' => 'required|string',
             'password' => 'required|string',
         ]);
 
         // Attempt to log the user in
-        $credentials = $request->only('email', 'password');
+        $credentials = $request->only('Username', 'password');
        
         if (Auth::attempt($credentials)) {
             // Authentication passed

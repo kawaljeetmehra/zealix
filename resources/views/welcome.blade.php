@@ -203,7 +203,7 @@ input[type="submit"]:active{
 
             <div class="input-box">
                 <h2>Sign In</h2>
-                <input type="text"  name="email" required>
+                <input type="text"  name="Username" required>
                 <span>Username</span>
                 <i></i>
             </div>
