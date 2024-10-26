@@ -618,8 +618,7 @@
                                                         style="display: none; margin-left:250px; width: 242px; height: auto;">
                                                         <!-- Unit options will be dynamically loaded here -->
                                                     </div>
-                                                    <input type="hidden" name="product_category"
-                                                        id="productCategoryInput" />
+                                                   
                                                         <input type="hidden" name="quantityUnit" id="quantityUnitInput" /> <!-- Renamed this id -->
                                                 </div>
                                             
