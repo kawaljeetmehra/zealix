@@ -120,6 +120,13 @@ class AttendanceController extends Controller
         if (!in_array($status, ['P', 'A', 'L'])) {
             return response()->json(['error' => 'Invalid status value'], 400);
         }
+        $existingAttendance = Attendance::where('salesman_id', $salesmanId)
+        ->where('day', $date)
+        ->first();
+
+    if ($existingAttendance) {
+        return response()->json(['message' => 'Attendance already marked for today'], 400);
+    }
     
         // Create attendance record
         Attendance::create([
@@ -133,7 +140,7 @@ class AttendanceController extends Controller
     public function getAttendanceStatus(Request $request)
     {
         // Get the authenticated user's ID
-        $salesmanId = Auth::id(); // Use the authenticated user's ID
+        $salesmanId = Auth::user()->salesman_id; // Use the authenticated user's ID
     
         // Get today's date in 'Y-m-d' format
         $date = date('Y-m-d');

@@ -657,7 +657,7 @@
         });
 
         // Get the authenticated user's ID from Laravel
-        var salesmanId = {{Auth::user()->id}}; // Use the authenticated user's ID
+        var salesmanId = {{Auth::user()->salesman_id}}; // Use the authenticated user's ID
 
         // Map status button data to enum values
         var statusMap = {
