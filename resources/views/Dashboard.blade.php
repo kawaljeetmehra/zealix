@@ -451,7 +451,7 @@
                                     <div class="card">
                                         <div class="card-header">Revenue</div>
                                         <div class="card-body d-flex justify-content-between align-items-center">
-                                            <h2 class="card-title">+${{ number_format($totalRevenue, 2) }}</h2>
+                                            <h2 class="card-title">₹ {{ number_format($totalRevenue, 2, '.', ',') }}</h2>
                                             <i class="fas fa-chart-line"></i>
                                         </div>
                                     </div>

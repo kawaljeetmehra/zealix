@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Order;
 use App\Models\Distributors;
 use App\Models\Product;
+use App\Models\OrderDetail;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -134,30 +135,35 @@ public function show($id)
 
 
 
-public function edit($id)
-{
+
     // Fetch the order and associated products using left join
-    $order = Order::leftJoin('distributors', 'orders.distributor_name', '=', 'distributors.id')
-        ->leftJoin('order_details', 'orders.id', '=', 'order_details.order_id')
-        ->select(
-            'orders.*', 
-            DB::raw("COALESCE(distributors.name, 'Admin') as distributor_name"), // Default to 'Admin' if distributor is null
-            'order_details.id as order_detail_id',
-            'order_details.batch_number',
-            'order_details.category',
-            'order_details.name as product_name',
-            'order_details.stock_count',
-            'order_details.mrp'
-        )
-        ->where('orders.id', $id)
-        ->first(); // Use first() to get a single order
-
-    // Fetch all distributors for the dropdown
-    $distributors = Distributors::all();
-
-    // Pass the order and distributors to the edit view
-    return view('orders.edit', compact('order', 'distributors'));
-}
+    public function edit($id)
+    {
+        // Fetch the main order details with distributor info
+        $order = Order::leftJoin('distributors', 'orders.distributor_name', '=', 'distributors.id')
+            ->select(
+                'orders.*',
+                DB::raw("COALESCE(distributors.name, 'Admin') as distributor_name")
+            )
+            ->where('orders.id', $id)
+            ->first();
+    
+        // Fetch all order details (products) associated with this order
+        $orderDetails = DB::table('order_details')
+            ->where('order_id', $id)
+            ->select('id as order_detail_id', 'batch_number', 'category', 'name as product_name', 'stock_count', 'mrp')
+            ->get();
+    
+        // Count the total number of products associated with this order
+        $productCount = $orderDetails->count();
+    
+        // Fetch distributors for the dropdown
+        $distributors = Distributors::all();
+    
+        // Pass all data to the view
+        return view('orders.edit', compact('order', 'orderDetails', 'productCount', 'distributors'));
+    }
+    
 
 
     // Update existing order in the database

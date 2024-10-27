@@ -432,6 +432,7 @@
                                                 </div>
                                             </div>
 
+                                            @if($order->distributor_name !== 'Admin')
                                             <div class="col-md-4">
                                                 <div class="form-group">
                                                     <label for="distributor" class="mr-2">Select Distributor:</label>
@@ -446,6 +447,7 @@
                                                     </select>
                                                 </div>
                                             </div>
+                                            @endif
                                         </div>
 
                                         <!-- Product Selection -->
@@ -503,58 +505,50 @@
                                             </div>
                                         </div>
 
-                                        <!-- Selected Products Table -->
-                                        <div class="table-responsive">
-                                            <table id="add-row" class="display table table-striped table-hover">
-                                                <thead>
-                                                    <tr>
-                                                        <th>Cancel</th>
-                                                        <th>Batch Number</th>
+                                   <!-- Selected Products Table -->
+                                   <div class="table-responsive">
+            <table id="add-row" class="display table table-striped table-hover">
+                <thead>
+                    <tr>
+                        <th>Cancel</th>
+                        <th>Batch Number</th>
+                        <th>Product Category</th>
+                        <th>Product Name</th>
+                        <th>Stock Count</th>
+                        <th>MRP</th>
+                    </tr>
+                </thead>
+                <tbody id="selected-products">
+                    @foreach ($orderDetails as $orderDetail)
+                        <tr data-product-id="{{ $orderDetail->order_detail_id }}">
+                            <td>
+                                <i class="fa-solid fa-x"
+                                   style="color: #f2071f; cursor: pointer;"
+                                   onclick="removeRow(this, '{{ $orderDetail->order_detail_id }}')"></i>
+                            </td>
+                            <td>{{ $orderDetail->batch_number }}</td>
+                            <td>{{ $orderDetail->category }}</td>
+                            <td>{{ $orderDetail->product_name }}</td>
+                            <td>{{ $orderDetail->stock_count }}</td>
+                            <td>{{ $orderDetail->mrp }}</td>
+                        </tr>
 
-                                                        <th>Product Category</th>
-                                                        <th>Product Name</th>
-                                                        <th>Stock Count</th>
-                                                        <th>MRP</th>
-                                                    </tr>
-                                                </thead>
-                                                <tbody id="selected-products">
-                                                   
-                                                    <tr data-product-id="{{ $order->order_detail_id }}">
-                                                        <td>
-                                                            <i class="fa-solid fa-x"
-                                                                style="color: #f2071f; cursor: pointer;"
-                                                                onclick="removeRow(this, '{{ $order->order_detail_id }}')"></i>
-                                                        </td>
-                                                        <td>{{ $order->batch_number }}</td>
+                        <!-- Hidden inputs to submit product data -->
+                        <input type="hidden" name="products[{{ $orderDetail->order_detail_id }}][batch_number]"
+                               value="{{ $orderDetail->batch_number }}">
+                        <input type="hidden" name="products[{{ $orderDetail->order_detail_id }}][category]"
+                               value="{{ $orderDetail->category }}">
+                        <input type="hidden" name="products[{{ $orderDetail->order_detail_id }}][name]"
+                               value="{{ $orderDetail->product_name }}">
+                        <input type="hidden" name="products[{{ $orderDetail->order_detail_id }}][stock_count]"
+                               value="{{ $orderDetail->stock_count }}">
+                        <input type="hidden" name="products[{{ $orderDetail->order_detail_id }}][mrp]"
+                               value="{{ $orderDetail->mrp }}">
+                    @endforeach
+                </tbody>
+            </table>
+</div>
 
-                                                        <td>{{ $order->category}}</td>
-                                                        <td>{{$order->product_name}}</td>
-                                                        <td>{{ $order->stock_count }}</td>
-                                                        <td>{{ $order->mrp }}</td>
-                                                    </tr>
-
-                                                    <!-- Hidden inputs to send product data -->
-                                                    <input type="hidden"
-                                                        name="products[{{ $order->order_detail_id }}][batch_number]"
-                                                        value="{{ $order->batch_number }}"
-                                                        class="hidden-input-{{ $order->order_detail_id }}">
-                                                    <input type="hidden" name="products[{{ $order->order_detail_id }}][category]"
-                                                        value="{{ $order->category }}"
-                                                        class="hidden-input-{{ $order->order_detail_id }}">
-                                                    <input type="hidden" name="products[{{ $order->order_detail_id }}][name]"
-                                                        value="{{ $order->product_name }}"
-                                                        class="hidden-input-{{ $order->order_detail_id }}">
-                                                    <input type="hidden"
-                                                        name="products[{{ $order->order_detail_id }}][stock_count]"
-                                                        value="{{ $order->stock_count }}"
-                                                        class="hidden-input-{{ $order->order_detail_id }}">
-                                                    <input type="hidden" name="products[{{ $order->order_detail_id }}][mrp]"
-                                                        value="{{ $order->mrp }}"
-                                                        class="hidden-input-{{ $order->order_detail_id}}">
-                                                   
-                                                </tbody>
-                                            </table>
-                                        </div>
 
                                         <!-- Total Stock and Cost -->
                                         <div class="row p-3">
@@ -562,7 +556,7 @@
                                                 <div class="mb-3">
                                                     <label for="total-stock">Total Products</label>
                                                     <input type="number" name="total_stock" class="form-control"
-                                                        value="{{ $order->count() }}" id="total-stock" readonly />
+                                                        value="{{ $productCount }}" id="total-stock" readonly />
                                                 </div>
                                                 <div class="mb-3">
                                                     <label for="total-cost">Total Cost</label>
@@ -670,27 +664,26 @@
                 });
             });
             </script>
-            <script>
+ <script>
     $(document).ready(function() {
-        let initialTotalStock = parseInt($('#total-stock').val()) || 0;
-        let initialTotalCost = parseFloat($('#total-cost').val()) || 0;
-
-        // Fetch products based on distributor selection when the modal is opened
         $('#productModal').on('show.bs.modal', function() {
             var distributorId = $('#distributor').val(); // Get the selected distributor ID
-            $('#product-list').empty(); // Clear the existing product list
+            // Clear the existing product list
+            $('#product-list').empty();
 
             // Check if a distributor is selected
             if (distributorId) {
+                // Fetch products for the selected distributor
                 $.ajax({
-                    url: '/your-distributor-product-route', // Replace with your route to fetch products by distributor
+                    url: '/your-distributor-product-route', // Replace with your route to fetch products
                     method: 'GET',
                     data: { distributor_id: distributorId }, // Send distributor ID as a parameter
                     success: function(response) {
+                        // Populate the product table with distributor's products
                         response.products.forEach(function(product) {
                             $('#product-list').append(`
                                 <tr>
-                                    <td><input type="checkbox" class="product-checkbox" value="${product.id}" data-stock="${product.stock_count}"></td>
+                                    <td><input type="checkbox" class="product-checkbox" value="${product.id}"></td>
                                     <td>${product.batch_number}</td>
                                     <td>${product.product_category}</td>
                                     <td>${product.product_name}</td>
@@ -705,15 +698,15 @@
                     }
                 });
             } else {
-                // Fetch all products if no distributor is selected
+                // If no distributor is selected, fetch all products
                 $.ajax({
-                    url: '/your-product-route', // Replace with your route to fetch all products
+                    url: '/your-product-route', // Replace with your route to fetch products
                     method: 'GET',
                     success: function(response) {
                         response.products.forEach(function(product) {
                             $('#product-list').append(`
                                 <tr>
-                                    <td><input type="checkbox" class="product-checkbox" value="${product.id}" data-stock="${product.stock_count}"></td>
+                                    <td><input type="checkbox" class="product-checkbox" value="${product.id}"></td>
                                     <td>${product.batch_number}</td>
                                     <td>${product.category}</td>
                                     <td>${product.product_name}</td>
@@ -731,82 +724,83 @@
         });
 
         // Handle adding selected products to the main table
-        $('#add-selected-products').click(function() {
-            let totalCost = 0;
-            let totalStock = 0;
-            let isOutOfStock = false;
+       $('#add-selected-products').click(function() {
+    let totalCost = parseFloat($('#total-cost').val()) || 0; // Initialize total cost with current total
+    let totalStock = parseInt($('#total-stock').val()) || 0; // Initialize total stock with current total
 
-            $('#product-list .product-checkbox:checked').each(function() {
-                let productId = $(this).val();
-                let availableStock = parseInt($(this).data('stock')); // Get available stock
-                let productRow = $(this).closest('tr');
-                let batchNumber = productRow.find('td:nth-child(2)').text();
-                let category = productRow.find('td:nth-child(3)').text();
-                let productName = productRow.find('td:nth-child(4)').text();
-                let newStockCount = parseInt(productRow.find('td:nth-child(5)').find('input').val()) || 0;
-                let mrp = parseFloat(productRow.find('td:nth-child(6)').text()) || 0;
+    $('#product-list .product-checkbox:checked').each(function() {
+        let productId = $(this).val();
+        let productRow = $(this).closest('tr');
+        let batchNumber = productRow.find('td:nth-child(2)').text();
+        let category = productRow.find('td:nth-child(3)').text();
+        let productName = productRow.find('td:nth-child(4)').text();
+        let stockCount = parseInt(productRow.find('td:nth-child(5)').find('input').val()) || 0;
+        let mrp = parseFloat(productRow.find('td:nth-child(6)').text()) || 0;
 
-                // Check if the new stock count exceeds available stock
-                if (newStockCount > availableStock) {
-                    alert(`Cannot add ${newStockCount} units. Only ${availableStock} units are available for ${productName}.`);
-                    isOutOfStock = true;
-                    return false; // Stop further processing
-                }
+        // Calculate cost for selected stock
+        let productCost = stockCount * mrp;
 
-                // Add new stock to the table or update existing
-                let existingRow = $('#selected-products').find(`tr[data-product-id="${productId}"]`);
-                if (existingRow.length > 0) {
-                    let existingStock = parseInt(existingRow.find('td:nth-child(5)').text()) || 0;
-                    let totalStockCount = existingStock + newStockCount;
-                    existingRow.find('td:nth-child(5)').text(totalStockCount);
-                    totalCost += newStockCount * mrp;
-                } else {
-                    $('#selected-products').append(`
-                        <tr data-product-id="${productId}">
-                            <td><i class="fa-solid fa-x" style="color: #f2071f; cursor: pointer;" onclick="removeRow(this, '${productId}')"></i></td>
-                            <td>${batchNumber}</td>
-                            <td>${category}</td>
-                            <td>${productName}</td>
-                            <td>${newStockCount}</td>
-                            <td>${mrp}</td>
-                        </tr>
-                    `);
-                    totalCost += newStockCount * mrp;
-                }
+        // Check if product already exists in the selected-products table
+        let existingRow = $(`#selected-products tr[data-product-id="${productId}"]`);
+       
+        if (existingRow.length > 0) {
+            
+            // If product exists, increase the stock count and update the cost
+            let existingStockCount = parseInt(existingRow.find('td:nth-child(5)').text()) || 0;
+            let newStockCount = existingStockCount + stockCount;
 
-                totalStock++;
+            existingRow.find('td:nth-child(5)').text(newStockCount); // Update stock count in table
+            totalCost += stockCount * mrp; // Update total cost
+        } else {
+            // If product doesn't exist, append a new row
+            alert("hi");
+            $('#selected-products').append(`
+                <tr data-product-id="${productId}">
+                    <td><i class="fa-solid fa-x" style="color: #f2071f; cursor: pointer;" onclick="removeRow(this)"></i></td>
+                    <td>${batchNumber}</td>
+                    <td>${category}</td>
+                    <td>${productName}</td>
+                    <td>${stockCount}</td>
+                    <td>${mrp}</td>
+                </tr>
+            `);
+            totalStock++; // Increase total stock count
+            totalCost += productCost; // Add product cost to total cost
+        }
 
-                // Add hidden inputs for form submission
-                $('#hidden-product-inputs').append(`
-                    <input type="hidden" class="hidden-input-${productId}" name="products[${productId}][batch_number]" value="${batchNumber}">
-                    <input type="hidden" class="hidden-input-${productId}" name="products[${productId}][category]" value="${category}">
-                    <input type="hidden" class="hidden-input-${productId}" name="products[${productId}][name]" value="${productName}">
-                    <input type="hidden" class="hidden-input-${productId}" name="products[${productId}][stock_count]" value="${newStockCount}">
-                    <input type="hidden" class="hidden-input-${productId}" name="products[${productId}][mrp]" value="${mrp}">
-                `);
-            });
+        // Add hidden input fields for each product
+        $('#hidden-product-inputs').append(`
+            <input type="hidden" name="products[${productId}][batch_number]" value="${batchNumber}">
+            <input type="hidden" name="products[${productId}][category]" value="${category}">
+            <input type="hidden" name="products[${productId}][name]" value="${productName}">
+            <input type="hidden" name="products[${productId}][stock_count]" value="${stockCount}">
+            <input type="hidden" name="products[${productId}][mrp]" value="${mrp}">
+        `);
+    });
 
-            if (!isOutOfStock) {
-                $('#total-stock').val(initialTotalStock + totalStock);
-                $('#total-cost').val((initialTotalCost + totalCost).toFixed(2));
-                $('#productModal').modal('hide'); // Close the modal after adding products
-            }
-        });
+    // Update total stock and cost fields
+    $('#total-stock').val(totalStock);
+    $('#total-cost').val(totalCost.toFixed(2));
+    $('#productModal').modal('hide'); // Close modal after adding products
+});
 
-        // Function to remove a row
-        window.removeRow = function(element, productId) {
+
+        // Optional: Function to remove a row
+        window.removeRow = function(element) {
             let productRow = $(element).closest('tr');
             let stockCount = parseInt(productRow.find('td:nth-child(5)').text()) || 0;
             let mrp = parseFloat(productRow.find('td:nth-child(6)').text()) || 0;
 
+            // Update total stock and total cost
             let currentTotalStock = parseInt($('#total-stock').val()) || 0;
             let currentTotalCost = parseFloat($('#total-cost').val()) || 0;
 
+            // Subtract stock count and update total fields
             $('#total-cost').val((currentTotalCost - (stockCount * mrp)).toFixed(2));
             $('#total-stock').val(currentTotalStock - 1);
 
-            productRow.remove();
-            $(`.hidden-input-${productId}`).remove();
+            // Remove the row from the table
+            $(element).closest('tr').remove();
         };
     });
 </script>
