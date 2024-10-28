@@ -865,17 +865,18 @@
         optionsContainer.innerHTML = ''; // Clear existing options
 
         units.forEach((unit, index) => {
+            const quantityText = (unit.quantity && unit.name) ? unit.name : (unit.quantity || unit.name || "Unnamed Unit");
             const item = document.createElement("div");
             item.className = "dropdown-item d-flex justify-content-between align-items-center";
             item.innerHTML = `
-            ${unit.quantity}
+            ${quantityText}
             <span>
-                <i class="fa fa-edit text-warning me-4" onclick="openAddEditUnitModal('${unit.quantity}',${index}, event)"></i>
+                <i class="fa fa-edit text-warning me-4" onclick="openAddEditUnitModal('${quantityText}',${index}, event)"></i>
                 <i class="fa fa-trash text-danger" onclick="deleteUnit(${unit.id}, event)"></i>
             </span>
         `;
             // Update item.onclick to select the unit based on its id or quantity
-            item.onclick = () => selectUnit(unit.quantity);
+            item.onclick = () => selectUnit(quantityText);
             optionsContainer.appendChild(item);
         });
     }
@@ -926,7 +927,7 @@
                             }); // Append new unit
                         }
                         displayUnits(); // Refresh the dropdown
-                        window.location.replace(window.location.href);
+                      
                     }
                 })
                 .catch(error => console.error('Error saving unit:', error));
@@ -999,16 +1000,17 @@
         const optionsContainer = document.getElementById("packagingOptions");
         optionsContainer.innerHTML = ''; // Clear existing options
         packagings.forEach((packaging, index) => {
+            const packagingText = (packaging.packaging_name && packaging.name) ? packaging.name : (packaging.packaging_name || packaging.name || "Unnamed Unit");
             const item = document.createElement("div");
             item.className = "dropdown-item d-flex justify-content-between align-items-center";
             item.innerHTML = `
-            ${packaging.packaging_name}
+            ${packagingText}
             <span>
-                <i class="fa fa-edit text-warning me-4" onclick="openAddEditPackagingModal('${packaging.packaging_name}', ${index}, event)"></i>
+                <i class="fa fa-edit text-warning me-4" onclick="openAddEditPackagingModal('${packagingText}', ${index}, event)"></i>
                 <i class="fa fa-trash text-danger" onclick="deletePackaging(${packaging.id}, event)"></i>
             </span>
         `;
-            item.onclick = () => selectPackaging(packaging.packaging_name);
+            item.onclick = () => selectPackaging(packagingText);
             optionsContainer.appendChild(item);
         });
     }
@@ -1057,7 +1059,7 @@
                         }
                         
                         displayPackagings(); // Refresh the dropdown
-                        window.location.replace(window.location.href);
+                        
                     // Refresh the current page
 
 

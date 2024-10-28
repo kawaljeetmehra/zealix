@@ -393,6 +393,38 @@
                                         </a>
                                     </div>
                                 </div>
+                                <form method="GET" action="{{ route('products.index') }}" class="d-flex align-items-center mt-3">
+    <div class="form-group me-2">
+        <label for="category">Category:</label>
+        <select name="category" id="category" class="form-control">
+            <option value="">All</option>
+            @foreach($categories as $category)
+                <option value="{{ $category }}" {{ request('category') == $category ? 'selected' : '' }}>
+                    {{ $category }}
+                </option>
+            @endforeach
+        </select>
+    </div>
+
+    <div class="form-group me-2">
+        <label for="package">Package:</label>
+        <select name="package" id="package" class="form-control">
+            <option value="">All</option>
+            @foreach($packages as $package)
+                <option value="{{ $package }}" {{ request('package') == $package ? 'selected' : '' }}>
+                    {{ $package }}
+                </option>
+            @endforeach
+        </select>
+    </div>
+
+    <div class="form-group me-2">
+        <label for="quantity">Quantity:</label>
+        <input type="number" name="quantity" id="quantity" class="form-control" placeholder="Minimum quantity" value="{{ request('quantity') }}">
+    </div>
+
+    <button type="submit" class="btn btn-secondary btn-round mt-4">Filter</button>
+</form>
 
 
                                 <div class="table-responsive">
@@ -476,17 +508,22 @@
     <script src="../assets/js/setting-demo2.js"></script>
     <script>
     $(document).ready(function() {
-        $("#basic-datatables").DataTable({});
+        // Initialize DataTable for add-row with default page length of 5
+        $("#add-row").DataTable({
+            pageLength: 5,  // Set default entries displayed to 5
+            lengthMenu: [5, 10, 25, 50, 100]  // Options for user to choose other entry lengths
+        });
+
+        // Delete confirmation
         $('.delete-form').on('submit', function(e) {
             e.preventDefault();
-
-
             var confirmed = confirm("Are you sure you want to delete this record?");
-
             if (confirmed) {
                 this.submit();
             }
         });
+
+        // Initialize multi-filter-select DataTable with column filtering
         $("#multi-filter-select").DataTable({
             pageLength: 5,
             initComplete: function() {
@@ -494,52 +531,47 @@
                     .columns()
                     .every(function() {
                         var column = this;
-                        var select = $(
-                                '<select class="form-select"><option value=""></option></select>'
-                            )
+                        var select = $('<select class="form-select"><option value=""></option></select>')
                             .appendTo($(column.footer()).empty())
                             .on("change", function() {
                                 var val = $.fn.dataTable.util.escapeRegex($(this).val());
-
                                 column
                                     .search(val ? "^" + val + "$" : "", true, false)
                                     .draw();
                             });
-
                         column
                             .data()
                             .unique()
                             .sort()
                             .each(function(d, j) {
-                                select.append(
-                                    '<option value="' + d + '">' + d + "</option>"
-                                );
+                                select.append('<option value="' + d + '">' + d + "</option>");
                             });
                     });
-            },
+            }
         });
 
-        // Add Row
-        $("#add-row").DataTable({
-            pageLength: 5,
-        });
-
+        // Example of adding a new row dynamically
         var action =
-            '<td> <div class="form-button-action"> <button type="button" data-bs-toggle="tooltip" title="" class="btn btn-link btn-primary btn-lg" data-original-title="Edit Task"> <i class="fa fa-edit"></i> </button> <button type="button" data-bs-toggle="tooltip" title="" class="btn btn-link btn-danger" data-original-title="Remove"> <i class="fa fa-times"></i> </button> </div> </td>';
+            '<td><div class="form-button-action">' +
+            '<button type="button" data-bs-toggle="tooltip" title="Edit Task" class="btn btn-link btn-primary btn-lg"><i class="fa fa-edit"></i></button>' +
+            '<button type="button" data-bs-toggle="tooltip" title="Remove" class="btn btn-link btn-danger"><i class="fa fa-times"></i></button>' +
+            '</div></td>';
 
         $("#addRowButton").click(function() {
             $("#add-row")
-                .dataTable()
-                .fnAddData([
+                .DataTable()
+                .row.add([
                     $("#addName").val(),
                     $("#addPosition").val(),
                     $("#addOffice").val(),
                     action,
-                ]);
+                ])
+                .draw();
             $("#addRowModal").modal("hide");
         });
     });
-    </script>
+</script>
+
 </body>
 
 </html>

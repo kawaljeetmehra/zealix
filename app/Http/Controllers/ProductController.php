@@ -8,12 +8,35 @@ class ProductController extends Controller
 {
     // Show the product entry form
 
-    public function index()
+    public function index(Request $request)
 {
-    // Fetch products and return view
-    $products = Product::all(); // Adjust according to your logic
-    return view('index', compact('products'));
+    // Start building the query for products
+    $query = Product::query();
+
+    // Apply filters only if they are provided in the request
+    if ($request->filled('category')) {
+        $query->where('category', $request->category);
+    }
+
+    if ($request->filled('quantity')) {
+        $query->where('quantity', '>=', $request->quantity); // Modify as needed
+    }
+
+    if ($request->filled('packaging')) {
+        $query->where('packaging', $request->packaging);
+    }
+
+    // Get the filtered products (all by default if no filters are applied)
+    $products = $query->get();
+
+    // Fetch distinct categories and packages for the filter dropdowns
+    $categories = Product::select('category')->distinct()->pluck('category');
+    $packages =Product::select('packaging')->distinct()->pluck('packaging');
+
+    return view('index', compact('products', 'categories', 'packages'));
 }
+
+    
     public function create()
     {
         return view('product_entry');
