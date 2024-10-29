@@ -201,7 +201,7 @@
                         <li class="{{ request()->routeIs('user.index') ? 'active' : '' }}">
                             <a href="{{ route('user.index') }}">
                                 <i class="fas fa-list"></i>
-                                <p>List Records</p>
+                                <p>Users</p>
                             </a>
                         </li>
 

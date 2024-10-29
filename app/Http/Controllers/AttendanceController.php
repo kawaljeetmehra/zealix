@@ -63,53 +63,45 @@ class AttendanceController extends Controller
     
 
 
-    public function store(Request $request)
-    {  
-        // Validate the incoming request data
-        $request->validate([
-            'salesman_id' => 'required|exists:salesmans,id',
-            'attendance' => 'required|array',
+public function store(Request $request)
+{
+   
+
+    // Validate the incoming request data
+    $request->validate([
+        'salesman_id' => 'required|exists:salesmans,id',
+        'attendance_date' => 'required|date',
+        'status' => 'required|string',
+    ]);
+
+    $salesmanId = $request->salesman_id;
+    $date = $request->attendance_date;
+    $status = $request->status;
+
+    // Check if an attendance record already exists for this salesman and date
+    $attendanceRecord = Attendance::where('salesman_id', $salesmanId)
+        ->where('day', $date)
+        ->first();
+
+    if ($attendanceRecord) {
+        // Update the existing record
+        $attendanceRecord->update([
+            'status' => $status,
+            'updated_at' => now(),
         ]);
-    
-        // Get the salesman ID
-        $salesmanId = $request->salesman_id;
-    
-        // Initialize a flag to check if any record was updated
-        $anyUpdated = false;
-    
-        // Loop through each day in the attendance array and create or update individual records
-        foreach ($request->attendance as $dayNumber => $status) {
-            // Calculate the specific date based on the day number
-            $date = Carbon::now()->startOfMonth()->addDays($dayNumber - 1)->toDateString();
-    
-            // Check if an attendance record already exists for this salesman and day
-            $attendanceRecord = Attendance::where('salesman_id', $salesmanId)
-                ->where('day', $date)
-                ->first();
-    
-            if ($attendanceRecord) {
-                // If it exists, update the existing record
-                $attendanceRecord->update([
-                    'status' => $status,
-                    'updated_at' => now(), // Update the timestamp if necessary
-                ]);
-                // Set the updated flag to true
-                $anyUpdated = true;
-            } else {
-                // If it doesn't exist, create a new record
-                Attendance::create([
-                    'salesman_id' => $salesmanId,
-                    'day' => $date, // Store as a full date
-                    'status' => $status,
-                ]);
-            }
-        }
-    
-        // Set the success message based on whether any record was updated or added
-        $message = $anyUpdated ? 'Attendance updated successfully!' : 'Attendance added successfully!';
-        
-        return redirect()->back()->with('success', $message);
+        $message = 'Attendance updated successfully!';
+    } else {
+        // Create a new record
+        Attendance::create([
+            'salesman_id' => $salesmanId,
+            'day' => $date,
+            'status' => $status,
+        ]);
+        $message = 'Attendance added successfully!';
     }
+
+    return redirect()->back()->with('success', $message);
+}
 
     public function update(Request $request, $id)
     {
@@ -120,6 +112,7 @@ class AttendanceController extends Controller
         $request->validate([
             'salesman_id' => 'required',
             'attendance' => 'required|array',
+            
             // Add additional validation rules as necessary
         ]);
 
@@ -127,6 +120,7 @@ class AttendanceController extends Controller
         $attendance->update([
             'salesman_id' => $request->salesman_id,
             'attendance' => $request->attendance,
+          
             // Update other fields as necessary
         ]);
 

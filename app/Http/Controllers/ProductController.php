@@ -33,7 +33,7 @@ class ProductController extends Controller
     $categories = Product::select('category')->distinct()->pluck('category');
     $packages =Product::select('packaging')->distinct()->pluck('packaging');
 
-    return view('index', compact('products', 'categories', 'packages'));
+    return view ('index', compact('products', 'categories', 'packages'));
 }
 
     

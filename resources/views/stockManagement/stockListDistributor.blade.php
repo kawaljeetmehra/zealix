@@ -427,9 +427,14 @@
                                                     <td>{{$product->product_name}}</td>
                                                     <td>{{$product->package}}</td>
                                                     <td>{{$product->quantity}}</td>
-                                                    <td>
-                                                       
-                                                            {{ $product->stock_count }}
+                                                    <td>@if(Auth::check() && (Auth::user()->role_id == 2 || Auth::user()->role_id == 3))
+    <span>{{ $product->stock_count }}</span> <!-- Display as normal text -->
+@else
+                                                        <input type="number" name="stock_count[]"
+                                                            class="form-control stock-input"
+                                                            data-id="{{ $product->id }}"
+                                                            value="{{ $product->stock_count }}" min="0">
+                                                            @endif
                                                     </td>
                                                     <td>
                                                         @if($product->stock_count == 0)
@@ -481,7 +486,10 @@
     <script src="../assets/js/setting-demo2.js"></script>
     <script>
     $(document).ready(function() {
-        $("#basic-datatables").DataTable({});
+        $("#add-row").DataTable({
+            pageLength: 5,  // Set default entries displayed to 5
+            lengthMenu: [5, 10, 25, 50, 100]  // Options for user to choose other entry lengths
+        });
         $('.delete-form').on('submit', function(e) {
             e.preventDefault();
 
@@ -524,10 +532,6 @@
             },
         });
 
-        // Add Row
-        $("#add-row").DataTable({
-            pageLength: 5,
-        });
 
         var action =
             '<td> <div class="form-button-action"> <button type="button" data-bs-toggle="tooltip" title="" class="btn btn-link btn-primary btn-lg" data-original-title="Edit Task"> <i class="fa fa-edit"></i> </button> <button type="button" data-bs-toggle="tooltip" title="" class="btn btn-link btn-danger" data-original-title="Remove"> <i class="fa fa-times"></i> </button> </div> </td>';

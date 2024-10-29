@@ -485,29 +485,29 @@
                                             </div>
 
                                             @php
-                                                use Carbon\Carbon;
-                                                $currentDay = Carbon::now()->setTimezone('Asia/Kolkata')->day;
-                                            @endphp
+    use Carbon\Carbon;
+@endphp
 
-                                            <div class="form-group">
-                                                <label for="day{{ $currentDay }}">Day {{ $currentDay }}</label>
-                                                <select class="form-control" id="day{{ $currentDay }}"
-                                                    name="attendance[{{ $currentDay }}]">
-                                                    <option value="">Select Status</option>
-                                                    <option value="P"
-                                                        {{ isset($attendance) && isset($attendance->attendance[$currentDay]) && $attendance->attendance[$currentDay] === 'P' ? 'selected' : '' }}>
-                                                        Present
-                                                    </option>
-                                                    <option value="A"
-                                                        {{ isset($attendance) && isset($attendance->attendance[$currentDay]) && $attendance->attendance[$currentDay] === 'A' ? 'selected' : '' }}>
-                                                        Absent
-                                                    </option>
-                                                    <option value="L"
-                                                        {{ isset($attendance) && isset($attendance->attendance[$currentDay]) && $attendance->attendance[$currentDay] === 'L' ? 'selected' : '' }}>
-                                                        Leave
-                                                    </option>
-                                                </select>
-                                            </div>
+<div class="form-group">
+    <label for="attendanceDate">Select Date</label>
+    <input 
+        type="date" 
+        id="attendanceDate" 
+        name="attendance_date" 
+        class="form-control" 
+        value="{{ old('attendance_date', isset($attendance->day) ? Carbon::parse($attendance->day)->format('Y-m-d') : Carbon::now()->format('Y-m-d')) }}"
+    >
+</div>
+
+<div class="form-group">
+    <label for="attendanceStatus">Attendance Status</label>
+    <select class="form-control" id="attendanceStatus" name="status">
+        <option value="">Select Status</option>
+        <option value="P" {{ isset($attendance) && $attendance->status === 'P' ? 'selected' : '' }}>Present</option>
+        <option value="A" {{ isset($attendance) && $attendance->status === 'A' ? 'selected' : '' }}>Absent</option>
+        <option value="L" {{ isset($attendance) && $attendance->status === 'L' ? 'selected' : '' }}>Leave</option>
+    </select>
+</div>
 
                                             <button type="submit" class="btn btn-primary" id="submitBtn">Save Attendance</button>
                                         </form>

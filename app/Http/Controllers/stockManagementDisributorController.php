@@ -71,16 +71,19 @@ class stockManagementDisributorController extends Controller
 
      public function updateStock(Request $request)
  {
-     $product = Product::find($request->id);
-     
-     if ($product) {
-         $product->stock_count = $request->stock_count;
-         $product->save();
- 
-         return response()->json(['success' => true]);
-     }
- 
-     return response()->json(['success' => false]);
+    $product = DB::table('stock_distributors')->where('id', $request->id)->first();
+
+    if ($product) {
+        // Update the stock_count field
+        DB::table('stock_distributors')
+            ->where('id', $request->id)
+            ->update(['stock_count' => $request->stock_count]);
+    
+        return response()->json(['success' => true]);
+    }
+    
+    return response()->json(['success' => false]);
+    
  }
 
 
