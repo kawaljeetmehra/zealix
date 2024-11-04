@@ -7,6 +7,7 @@ use App\Models\Task;
 use App\Models\TaskSalesman;
 use Illuminate\Http\Request;
 use App\Models\TaskStop; // Include TaskStop model for stop data
+use Illuminate\Support\Facades\DB;
 
 class TaskController extends Controller
 {
@@ -34,6 +35,7 @@ class TaskController extends Controller
         $task->task_id = $request->task_id;
         $task->priority = $request->priority;
         $task->description = $request->description;
+        $task->due_date=$request->dueDate;
         $task->save();
 
         return redirect('/assign')->with('success', 'Task Added Successfully!');
@@ -68,6 +70,23 @@ class TaskController extends Controller
                     'task_id' => $taskId,
                     'salesman_id' => $request->salesman_id,
                 ]);
+                  // Also insert data into task_reports table
+                  $taskAssign = DB::table('task_assign')
+                  ->where('task_id', $taskId)
+                  ->first();
+      
+              if ($taskAssign) {
+                  // Step 3: Insert data into task_reports table with the retrieved due_date
+                  DB::table('task_report')->insert([
+                      'Task_id' => $taskId,
+                      'Salesman_id' => $request->salesman_id,
+                      'Assign_Date' => now(),
+                      'Due_Date' => $taskAssign->due_date, // Retrieved due_date from task_assign
+                      'Task_Status' => 'not started', // Default status
+                      'Completion_Percentage' => 0.00, // Default completion percentage
+                     
+                  ]);
+              }
             }
         }
     

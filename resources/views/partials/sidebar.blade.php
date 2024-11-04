@@ -167,7 +167,7 @@
                             </a>
                         </li>
                         <!-- Task Reports Sub-section -->
-                        @if(Auth::check() && Auth::user()->role_id == 1 )
+                        @if(Auth::check() && Auth::user()->role_id == 1 || Auth::user()->role_id==3 )
                         <li class="{{ request()->url() == url('/tasks') ? 'active' : '' }}">
                             <a href="{{ url('/tasks') }}">
                                 <i class="fas fa-file-alt"></i>

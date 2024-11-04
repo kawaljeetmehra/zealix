@@ -6,19 +6,35 @@ use App\Models\TaskReport;
 use App\Models\TaskSalesman;
 use App\Models\Salesman;
 use Illuminate\Http\Request;
-
+use Illuminate\Support\Facades\Auth;
 class TaskReportController extends Controller
 {
     // Display a listing of tasks
-    public function index()
+    public function index(Request $request)
     {
-        // Fetch all tasks
+       // Fetch all salesmen
         $salesmen = Salesman::all();
-        $tasks = TaskReport::all();
-        
-        // Return view with tasks data
-        return view('TaskReport.index', compact('tasks','salesmen'));
+    
+        // Initialize $tasks variable
+        $tasks = collect();
+        $selectedSalesmanId = null;
+        // Check if the authenticated user is a salesman
+        if (Auth::user()->role_id == 3) {
+            $salesmanId = Auth::user()->salesman_id;
+            $salesman_data=Salesman::where('id',$salesmanId)->first();
+          
+            $tasks = TaskReport::where('salesman_id', $salesman_data->salesman_id)->get();
+        } else {
+            // Determine the selected salesman: from filter or default to first salesman
+            $selectedSalesmanId = $request->input('salesman_id') ?? $salesmen->first()->salesman_id;
+          // dd($selectedSalesmanId);
+            $tasks = TaskReport::where('Salesman_id', $selectedSalesmanId)->get();
+        } 
+    
+        return view('TaskReport.index', compact('tasks', 'salesmen', 'selectedSalesmanId'));
     }
+    
+    
 
     // Show the form for creating a new task
     public function getTasksBySalesman($salesmanId)
@@ -69,7 +85,7 @@ class TaskReportController extends Controller
     
     // Show the form for editing a specified task
     public function edit($id)
-    {   
+    {  
         // Fetch task by ID
         $task = TaskReport::where('Report_id', $id)
         ->join('salesmans', 'salesmans.salesman_id', '=', 'task_report.Salesman_id')
@@ -77,7 +93,7 @@ class TaskReportController extends Controller
         ->select('task_report.*', 'salesmans.*','task_assign.*') // Add more fields if needed
         ->first();
        
-       
+   
         // Return edit view with task data
         return view('TaskReport.edit', compact('task'));
     }

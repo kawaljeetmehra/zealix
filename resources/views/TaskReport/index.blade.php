@@ -388,34 +388,51 @@
                         <div class="col-md-12">
                             <div class="card">
                                 <div class="card-header">
-                                    <div class="d-flex align-items-center">
-                                        <h4 class="card-title">Task Report</h4>
-                                        <a class="btn btn-primary btn-round ms-auto" data-bs-toggle="modal"
-                                            data-bs-target="#taskModal">
-                                            <i class="fa fa-plus"></i> Add
-                                        </a>
+                                <div class="d-flex align-items-center justify-content-between mb-3">
+    <h4 class="card-title">Task Report</h4>
+    @if (Auth::user()->role_id == 1)
+    <form method="GET" action="{{ route('tasks.index') }}" class="d-flex align-items-center">
+        <div class="form-group me-2">
+            <label for="salesman_id" class="form-label">Select Salesman:</label>
+            <select id="salesman_id" name="salesman_id" class="form-select">
+                @foreach ($salesmen as $salesman)
+                    <option value="{{ $salesman->salesman_id }}" 
+                        {{ $salesman->salesman_id == $selectedSalesmanId ? 'selected' : '' }}>
+                        {{ $salesman->name }}
+                    </option>
+                @endforeach
+            </select>
+        </div>
+        <button type="submit" class="btn btn-primary btn-sm">Filter</button>
+    </form>
+    @endif
+</div>
 
-                                    </div>
+
                                 </div>
 
-                                <div class="table-responsive">
+                                <div class="table-responsive mt-2">
                                     <table id="add-row" class="display table table-striped table-hover">
                                         <thead>
-                                            <tr>
+                                            <tr> @if (Auth::user()->role_id == 1)
                                                 <th>Salesman ID</th>
+                                                @endif
                                                 <th>Task ID</th>
                                                 <th>Assign Date</th>
                                                 <th>Due Date</th>
                                                 <th>Task Status</th>
                                                 <th>Completion %</th>
+                                                @if (Auth::user()->role_id == 1)
                                                 <th style="width: 10%">Action</th>
+                                                @endif
                                             </tr>
                                         </thead>
 
                                         <tbody>
                                             @foreach($tasks as $task)
-                                            <tr>
+                                            <tr> @if (Auth::user()->role_id == 1)
                                                 <td>{{ $task->Salesman_id }}</td>
+                                                @endif
                                                 <td>{{ $task->Task_id }}</td>
                                                 <td>{{ $task->Assign_Date }}</td>
                                                 <td>{{ $task->Due_Date }}</td>
@@ -428,6 +445,7 @@
                                                     </button>
                                                 </td>
                                                 <td>{{ $task->Completion_Percentage }}%</td>
+                                                @if (Auth::user()->role_id == 1)
                                                 <td>
                                                     <div class="form-button-action">
                                                         <a href="/tasks/{{ $task->Report_id }}/edit"
@@ -438,6 +456,7 @@
 
                                                     </div>
                                                 </td>
+                                                @endif
                                             </tr>
                                             @endforeach
                                         </tbody>
@@ -513,9 +532,13 @@
     <script src="../assets/js/kaiadmin.min.js"></script>
     <!-- Kaiadmin DEMO methods, don't include it in your project! -->
     <script src="../assets/js/setting-demo2.js"></script>
+
     <script>
     $(document).ready(function() {
-        $("#basic-datatables").DataTable({});
+        $("#add-row").DataTable({
+            pageLength: 5,  // Set default entries displayed to 5
+            lengthMenu: [5, 10, 25, 50, 100]  // Options for user to choose other entry lengths
+        });
         $('.delete-form').on('submit', function(e) {
             e.preventDefault();
 
@@ -558,11 +581,7 @@
             },
         });
 
-        // Add Row
-        $("#add-row").DataTable({
-            pageLength: 5,
-        });
-
+      
         var action =
             '<td> <div class="form-button-action"> <button type="button" data-bs-toggle="tooltip" title="" class="btn btn-link btn-primary btn-lg" data-original-title="Edit Task"> <i class="fa fa-edit"></i> </button> <button type="button" data-bs-toggle="tooltip" title="" class="btn btn-link btn-danger" data-original-title="Remove"> <i class="fa fa-times"></i> </button> </div> </td>';
 
@@ -580,10 +599,9 @@
     });
     </script>
 
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+   
 
-    <!-- Bootstrap Bundle JS (includes Popper.js) -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
+ 
 
     <script>
     document.getElementById('salesman_id').addEventListener('change', function() {

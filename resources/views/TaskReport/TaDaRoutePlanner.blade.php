@@ -392,19 +392,22 @@
                                 <div class="card-header">
                                     <div class="d-flex align-items-center">
                                         <h4 class="card-title">Route Tracking for TA and DA</h4>
+                                        @if (Auth::user()->role_id == 1)
                                         <a class="btn btn-primary btn-round ms-auto" data-toggle="modal"
                                             data-target="#addRouteModal">
                                             <i class="fa fa-plus"></i>
                                             Add
                                         </a>
+                                        @endif
                                     </div>
                                 </div>
 
                                 <div class="table-responsive mt-2">
                                     <table id="add-row" class="display table table-striped table-hover">
                                         <thead>
-                                            <tr>
+                                            <tr> @if (Auth::user()->role_id == 1)
                                                 <th>Salesman ID</th>
+                                                @endif
                                                 <th>Travel Date</th>
                                                 <th>Start Location</th>
                                                 <th>End Location</th>
@@ -413,13 +416,16 @@
                                                 <th>TA Rate (per KM)</th>
                                                 <th>TA Amount</th>
                                                 <th>DA Amount</th>
+                                                @if (Auth::user()->role_id == 1)
                                                 <th style="width: 10%">Action</th>
+                                                @endif
                                             </tr>
                                         </thead>
                                         <tbody>
                                             @foreach($routeTrackings as $tracking)
-                                            <tr>
+                                            <tr> @if (Auth::user()->role_id == 1)
                                                 <td>{{ $tracking->salesman_id }}</td>
+                                                @endif
                                                 <td>{{ \Carbon\Carbon::parse($tracking->travel_date)->format('Y-m-d') }}
                                                 </td>
                                                 <td>{{ $tracking->start_location }}</td>
@@ -429,6 +435,7 @@
                                                 <td>{{ $tracking->ta_rate }}</td>
                                                 <td>{{ $tracking->ta_amount }}</td>
                                                 <td>{{ $tracking->da_amount }}</td>
+                                                @if (Auth::user()->role_id == 1)
                                                 <td>
                                                     <div class="form-button-action">
 
@@ -449,6 +456,7 @@
                                                         </form>
                                                     </div>
                                                 </td>
+                                                @endif
                                             </tr>
                                             @endforeach
                                         </tbody>

@@ -384,17 +384,21 @@
                                 <div class="card-body">
                                     <form id="assignTaskForm">
                                         <div class="row mb-3 align-items-end">
-                                            <div class="col-md-4"> <label for="taskId">Task ID:</label> <input
+                                            <div class="col-md-3"> <label for="taskId">Task ID:</label> <input
                                                     type="text" id="taskId" class="form-control" value="" readonly>
                                             </div>
-                                            <div class="col-md-4"> <label for="taskPriority">Task Priority:</label>
+                                            <div class="col-md-3"> <label for="taskPriority">Task Priority:</label>
                                                 <select id="taskPriority" class="form-control" required>
                                                     <option value="" disabled selected>Select Priority</option>
                                                     <option value="high">High</option>
                                                     <option value="medium">Medium</option>
                                                     <option value="low">Low</option>
                                                 </select> </div>
-                                            <div class="col-md-4 text-end"> <button type="button" id="doneButton"
+                                                <div class="col-md-3">
+            <label for="dueDate">Due Date:</label>
+            <input type="date" id="dueDate" class="form-control" required>
+        </div>
+                                            <div class="col-md-3 text-end"> <button type="button" id="doneButton"
                                                     class="btn btn-success btn-rounded">Done</button> </div>
                                         </div>
                                         <div class="form-group mb-3"> <label for="description">Description:</label>
@@ -571,7 +575,7 @@ $(document).ready(function() {
         const taskId = $('#taskId').val();
         const taskPriority = $('#taskPriority').val();
         const description = $('#description').val();
-
+        const dueDate=$('#dueDate').val();
         // Validate the inputs
         if (!taskPriority || !description) {
             alert('Please fill in all fields except Salesman.');
@@ -582,7 +586,8 @@ $(document).ready(function() {
         const taskData = {
             task_id: taskId,
             priority: taskPriority,
-            description: description
+            description: description,
+            dueDate:dueDate
         };
 
         // AJAX request to store the task in the database
