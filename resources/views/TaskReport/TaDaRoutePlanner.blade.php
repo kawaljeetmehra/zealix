@@ -401,13 +401,29 @@
                                         @endif
                                     </div>
                                 </div>
+                                    <!-- Salesman Filter Dropdown -->
+                                    @if (Auth::user()->role_id == 1)
+                <div class="card-body">
+                    <div class="form-group col-md-4">
+                        <label for="salesmanFilter">Filter by Salesman:</label>
+                        <select id="salesmanFilter" class="form-control" onchange="filterBySalesman()">
+    <option value="">Select Salesman</option>
+    @foreach($salesmen as $salesman)
+        <option value="{{ $salesman->salesman_id }}" 
+            {{ $salesmanId == $salesman->salesman_id ? 'selected' : '' }}>
+            {{ $salesman->name }}
+        </option>
+    @endforeach
+</select>
+
+                    </div>
+                </div>
+                @endif
 
                                 <div class="table-responsive mt-2">
                                     <table id="add-row" class="display table table-striped table-hover">
                                         <thead>
-                                            <tr> @if (Auth::user()->role_id == 1)
-                                                <th>Salesman ID</th>
-                                                @endif
+                                            <tr> 
                                                 <th>Travel Date</th>
                                                 <th>Start Location</th>
                                                 <th>End Location</th>
@@ -423,9 +439,7 @@
                                         </thead>
                                         <tbody>
                                             @foreach($routeTrackings as $tracking)
-                                            <tr> @if (Auth::user()->role_id == 1)
-                                                <td>{{ $tracking->salesman_id }}</td>
-                                                @endif
+                                            <tr>
                                                 <td>{{ \Carbon\Carbon::parse($tracking->travel_date)->format('Y-m-d') }}
                                                 </td>
                                                 <td>{{ $tracking->start_location }}</td>
@@ -723,6 +737,10 @@
         document.getElementById('edit_ta_amount').value = tracking.ta_amount;
         document.getElementById('edit_da_amount').value = tracking.da_amount;
     }
+    function filterBySalesman() {
+    var salesmanId = document.getElementById('salesmanFilter').value;
+    window.location.href = "{{ route('routeTracking.index') }}?salesman_id=" + salesmanId;
+}
     </script>
 
 </body>

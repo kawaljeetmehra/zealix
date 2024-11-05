@@ -455,7 +455,9 @@
                                     <table id="add-row" class="display table table-striped table-hover">
                                         <thead>
                                             <tr>
+                                            @if(Auth::check() && Auth::user()->role_id == 1 )
                                                 <th>Salesman ID</th>
+                                            @endif
                                                 <th>Total Sales</th>
                                                 <th>Number of Sales</th>
                                                 <th>Average Sales Value</th>
@@ -468,8 +470,9 @@
 
                                         <tbody>
                                             @foreach($oversales as $oversale)
-                                            <tr>
+                                            <tr> @if(Auth::check() && Auth::user()->role_id == 1 )
                                                 <td>{{ $oversale->salesman_name }}</td>
+                                                @endif
                                                 <td>{{ $oversale->total_sales }}</td>
                                                 <td>{{ $oversale->number_of_sales }}</td>
                                                 <td>{{ $oversale->average_sales_value }}</td>

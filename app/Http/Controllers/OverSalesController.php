@@ -6,12 +6,12 @@ use App\Models\OverSale;
 use App\Models\Salesman;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Http\Request;
-
+use Illuminate\Support\Facades\Auth;
 class OverSalesController extends Controller
 {
     public function index()
     {
-        $oversales = DB::table('oversales')
+        $oversalesQuery = DB::table('oversales')
     ->join('salesmans', 'oversales.salesman_id', '=', 'salesmans.id')
     ->select(
         'oversales.id',
@@ -20,9 +20,18 @@ class OverSalesController extends Controller
         'oversales.number_of_sales',
         'oversales.average_sales_value',
         'oversales.total_customer'
-    )
-    ->get();
-        $salesmen=Salesman::all();
+    );
+       // If the user role is 3 (salesman), only show data for their salesman ID
+    if (Auth::user()->role_id == 3) {
+        $salesman = Salesman::where('id', Auth::user()->salesman_id)->first();
+
+        if ($salesman) {
+            $oversalesQuery->where('salesmans.salesman_id', $salesman->salesman_id);
+        }
+    }
+
+    $oversales = $oversalesQuery->get();
+    $salesmen = Salesman::all();
         return view('oversales.index', compact('oversales','salesmen'));
     }
 

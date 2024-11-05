@@ -6,15 +6,37 @@ use App\Models\RouteTracking;
 use App\Models\Salesman; // Adjust the namespace as per your folder structure
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\Auth;
+
 
 class RouteTrackingController extends Controller
 {
     // Display a listing of the route tracking entries
-    public function index()
-    {$salesmen=Salesman::all();
-        $routeTrackings = RouteTracking::all(); // Fetch all route tracking entries
-        return view('TaskReport.TaDaRoutePlanner', compact('routeTrackings','salesmen'));
+    public function index(Request $request)
+    {
+        $salesmen = Salesman::all(); // Fetch all salesmen for the dropdown
+        $routeTrackings = RouteTracking::query();
+        $salesmanId = $request->get('salesman_id');
+        if (Auth::user()->role_id == 3) {
+            $salesman = Salesman::find(Auth::user()->salesman_id);
+        
+            if ($salesman) {
+                // Use the `salesman_id` string (e.g., "salesman-002") for filtering
+                $routeTrackings->where('salesman_id', $salesman->salesman_id);
+            }
+        } else {
+            // For other roles, allow filtering by selected salesman ID from the request
+           
+            $routeTrackings->when($salesmanId, function ($query, $salesmanId) {
+                return $query->where('salesman_id', $salesmanId);
+            });
+        }
+    
+        $routeTrackings = $routeTrackings->get();
+    // dd($routeTrackings);
+        return view('TaskReport.TaDaRoutePlanner', compact('routeTrackings', 'salesmen','salesmanId'));
     }
+    
 
     // Show the form for creating a new route tracking entry
    
