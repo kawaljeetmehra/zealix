@@ -415,9 +415,10 @@
                                             <div class="col-md-4">
                                                 <div class="form-group">
                                                     <label for="contact">Contact Number</label>
-                                                    <input type="number" name="contact" class="form-control"
+                                                    <input type="tel" name="contact" class="form-control"
                                                         id="contact" value="{{ $order->contact }}"
-                                                        placeholder="Enter Contact Number" required />
+                                                        placeholder="Enter Contact Number" pattern="^\d{10}$" maxlength="10" required />
+                                                        <small class="form-text text-muted">Only 10-digit numbers are allowed.</small>
                                                 </div>
                                             </div>
                                         </div>

@@ -409,9 +409,10 @@
                                             <div class="col-md-4">
                                                 <div class="form-group">
                                                     <label for="contact">Contact Number</label>
-                                                    <input type="number" name="contact" class="form-control"
-                                                        placeholder="Enter Contact Number" id="contact" required />
-                                                </div>
+                                                    <input type="tel" name="contact" class="form-control"
+                                                        placeholder="Enter Contact Number" id="contact" pattern="^\d{10}$" maxlength="10" required />
+                                                        <small class="form-text text-muted">Only 10-digit numbers are allowed.</small>
+                                                    </div>
                                             </div>
 
 

@@ -18,7 +18,8 @@ class OrderController extends Controller
         $orders = Order::join('distributors', 'orders.distributor_name', '=', 'distributors.id', 'left') // Left join to include null distributor_name
         ->select('orders.*', 
                  DB::raw("COALESCE(distributors.name, 'Admin') as distributor_name")) // Use 'Admin' if distributor_name is null
-        ->get();
+        ->orderBy('orders.created_at', 'desc')
+                 ->get();
     
         return view('orders.index', compact('orders'));
     }

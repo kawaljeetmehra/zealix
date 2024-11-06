@@ -421,33 +421,22 @@
                                                 <td>{{ $order->location }}</td>
                                                 <td>{{ $order->distributor_name }}</td>
                                                 <td>{{ $order->order_by }}</td>
-                                                @if(Auth::check() && Auth::user()->role_id == 1 )
-                                                <td>
-                                                    @if ($order->order_status == 'Accept')
-
-                                                    <button class="btn btn-primary btn-round btn-sm ms-auto btn-accept"
-                                                        data-order-id="{{ $order->id }}">Accept</button>
-                                                    <button class="btn btn-danger btn-round btn-sm ms-auto btn-decline"
-                                                        data-order-id="{{ $order->id }}"
-                                                        style="opacity: 0.5;">Decline</button>
-                                                    @elseif ($order->order_status == 'Decline')
-
-                                                    <button class="btn btn-primary btn-round btn-sm ms-auto btn-accept"
-                                                        data-order-id="{{ $order->id }}"
-                                                        style="opacity: 0.5;">Accept</button>
-                                                    <button class="btn btn-danger btn-round btn-sm ms-auto btn-decline"
-                                                        data-order-id="{{ $order->id }}">Decline</button>
-                                                    @else
-
-                                                    <button class="btn btn-primary btn-round btn-sm ms-auto btn-accept"
-                                                        data-order-id="{{ $order->id }}">Accept</button>
-                                                    <button class="btn btn-danger btn-round btn-sm ms-auto btn-decline"
-                                                        data-order-id="{{ $order->id }}">Decline</button>
-                                                    @endif
-                                                </td>
+                                                @if(Auth::check() && Auth::user()->role_id == 1)
+    <td>
+        @if ($order->order_status == 'Accept')
+            <button class="btn btn-primary btn-round btn-sm ms-auto" disabled>Accepted</button>
+        @elseif ($order->order_status == 'Decline')
+            <button class="btn btn-danger btn-round btn-sm ms-auto" disabled>Declined</button>
+        @else
+            <button class="btn btn-primary btn-round btn-sm ms-auto btn-accept"
+                    data-order-id="{{ $order->id }}">Accept</button>
+            <button class="btn btn-danger btn-round btn-sm ms-auto btn-decline mt-2"
+                    data-order-id="{{ $order->id }}">Decline</button>
+        @endif
+    </td>
+@endif
 
 
-                                                 @endif
 
 
                                                 
@@ -512,116 +501,115 @@
     <!-- Kaiadmin DEMO methods, don't include it in your project! -->
     <script src="../assets/js/setting-demo2.js"></script>
     <script>
-    $(document).ready(function() {
-        $("#add-row").DataTable({
-            pageLength: 5,  // Set default entries displayed to 5
-            lengthMenu: [5, 10, 25, 50, 100]  // Options for user to choose other entry lengths
-        });
-        $('.delete-form').on('submit', function(e) {
-            e.preventDefault();
-
-
-            var confirmed = confirm("Are you sure you want to delete this record?");
-
-            if (confirmed) {
-                this.submit();
-            }
-        });
-        $("#multi-filter-select").DataTable({
-            pageLength: 5,
-            initComplete: function() {
-                this.api()
-                    .columns()
-                    .every(function() {
-                        var column = this;
-                        var select = $(
-                                '<select class="form-select"><option value=""></option></select>'
-                            )
-                            .appendTo($(column.footer()).empty())
-                            .on("change", function() {
-                                var val = $.fn.dataTable.util.escapeRegex($(this).val());
-
-                                column
-                                    .search(val ? "^" + val + "$" : "", true, false)
-                                    .draw();
-                            });
-
-                        column
-                            .data()
-                            .unique()
-                            .sort()
-                            .each(function(d, j) {
-                                select.append(
-                                    '<option value="' + d + '">' + d + "</option>"
-                                );
-                            });
-                    });
-            },
-        });
-
-       
-
-        var action =
-            '<td> <div class="form-button-action"> <button type="button" data-bs-toggle="tooltip" title="" class="btn btn-link btn-primary btn-lg" data-original-title="Edit Task"> <i class="fa fa-edit"></i> </button> <button type="button" data-bs-toggle="tooltip" title="" class="btn btn-link btn-danger" data-original-title="Remove"> <i class="fa fa-times"></i> </button> </div> </td>';
-
-        $("#addRowButton").click(function() {
-            $("#add-row")
-                .dataTable()
-                .fnAddData([
-                    $("#addName").val(),
-                    $("#addPosition").val(),
-                    $("#addOffice").val(),
-                    action,
-                ]);
-            $("#addRowModal").modal("hide");
-            // Accept order status
-
-
-        });
-
-
-        // Bind click events
-        $('.btn-accept').click(function() {
-            var orderId = $(this).data('order-id');
-            var declineButton = $(this).closest('td').find('.btn-decline');
-            declineButton.prop('disabled', true).css('opacity', '0.5'); // Disable and fade
-            $(this).css('opacity', '1');
-            $.ajax({
-                url: "{{ route('orders.updateStatus') }}", // Ensure no trailing space
-                method: 'POST',
-                data: {
-                    _token: "{{ csrf_token() }}",
-                    order_id: orderId,
-                    status: 'Accept'
-                },
-                success: function(response) {
-                    alert('Order accepted');
-                    location.reload(); // Refresh the table
-                }
-            });
-        });
-
-        $('.btn-decline').click(function() {
-            var orderId = $(this).data('order-id');
-            var acceptButton = $(this).closest('td').find('.btn-accept');
-            acceptButton.prop('disabled', true).css('opacity', '0.5'); // Disable and fade
-            $(this).css('opacity', '1');
-            $.ajax({
-                url: "{{ route('orders.updateStatus') }}", // Ensure no trailing space
-                method: 'POST',
-                data: {
-                    _token: "{{ csrf_token() }}",
-                    order_id: orderId,
-                    status: 'Decline'
-                },
-                success: function(response) {
-                    alert('Order declined');
-                    location.reload(); // Refresh the table
-                }
-            });
-        });
-
+   $(document).ready(function() {
+    // Initialize DataTable for rows with pagination and filter options
+    var table = $("#add-row").DataTable({
+        pageLength: 5,
+        lengthMenu: [5, 10, 25, 50, 100], // User options for entries
+        order: [[0, 'desc']]
     });
+
+    // Confirm delete action before submitting
+    $('.delete-form').on('submit', function(e) {
+        e.preventDefault();
+
+        var confirmed = confirm("Are you sure you want to delete this record?");
+        if (confirmed) {
+            this.submit();
+        }
+    });
+
+    // Multi-filter select initialization
+    $("#multi-filter-select").DataTable({
+        pageLength: 5,
+        initComplete: function() {
+            this.api()
+                .columns()
+                .every(function() {
+                    var column = this;
+                    var select = $('<select class="form-select"><option value=""></option></select>')
+                        .appendTo($(column.footer()).empty())
+                        .on("change", function() {
+                            var val = $.fn.dataTable.util.escapeRegex($(this).val());
+                            column.search(val ? "^" + val + "$" : "", true, false).draw();
+                        });
+
+                    column.data().unique().sort().each(function(d) {
+                        select.append('<option value="' + d + '">' + d + "</option>");
+                    });
+                });
+        }
+    });
+
+    // Add row functionality
+    var action =
+        '<td> <div class="form-button-action"> <button type="button" data-bs-toggle="tooltip" title="" class="btn btn-link btn-primary btn-lg" data-original-title="Edit Task"> <i class="fa fa-edit"></i> </button> <button type="button" data-bs-toggle="tooltip" title="" class="btn btn-link btn-danger" data-original-title="Remove"> <i class="fa fa-times"></i> </button> </div> </td>';
+
+    $("#addRowButton").click(function() {
+        table.row.add([
+            $("#addName").val(),
+            $("#addPosition").val(),
+            $("#addOffice").val(),
+            action
+        ]).draw();
+        $("#addRowModal").modal("hide");
+    });
+
+   // Event delegation for Accept/Decline buttons
+// Event delegation for Accept/Decline buttons
+$(document).on('click', '.btn-accept', function() {
+    var orderId = $(this).data('order-id');
+    var declineButton = $(this).closest('td').find('.btn-decline');
+    
+    // Disable the decline button and hide it
+    declineButton.hide();
+    // Disable the accept button to show it's already clicked
+    $(this).prop('disabled', true).text('Accepted');
+    
+    $.ajax({
+        url: "{{ route('orders.updateStatus') }}", // Ensure no trailing space
+        method: 'POST',
+        data: {
+            _token: "{{ csrf_token() }}",
+            order_id: orderId,
+            status: 'Accept'
+        },
+        success: function(response) {
+            alert('Order accepted');
+            // Optionally update the DOM with the accepted status text
+            // The button text is updated in the previous line, so no need to do it again here
+        }
+    });
+});
+
+$(document).on('click', '.btn-decline', function() {
+    var orderId = $(this).data('order-id');
+    var acceptButton = $(this).closest('td').find('.btn-accept');
+    
+    // Disable the accept button and hide it
+    acceptButton.hide();
+    // Disable the decline button to show it's already clicked
+    $(this).prop('disabled', true).text('Declined');
+    
+    $.ajax({
+        url: "{{ route('orders.updateStatus') }}", // Ensure no trailing space
+        method: 'POST',
+        data: {
+            _token: "{{ csrf_token() }}",
+            order_id: orderId,
+            status: 'Decline'
+        },
+        success: function(response) {
+            alert('Order declined');
+            // Optionally update the DOM with the declined status text
+            // The button text is updated in the previous line, so no need to do it again here
+        }
+    });
+});
+
+
+});
+
     </script>
 </body>
 
